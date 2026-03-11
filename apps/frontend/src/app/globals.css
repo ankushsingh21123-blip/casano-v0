@@ -1,0 +1,47 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* Casano Brand Colors */
+  --color-casano-orange: #FF6B2B;
+  --color-casano-orange-dark: #e05820;
+  --color-casano-orange-light: #FFF0E8;
+  --color-casano-yellow: #FFD700;
+  --color-casano-green: #1A9E3F;
+  --color-casano-green-light: #E8F7EC;
+  --color-casano-blue: #2B5FFF;
+  --color-casano-pink: #FF2D6B;
+
+  /* Neutral Colors */
+  --color-text-dark: #111111;
+  --color-text-mid: #444444;
+  --color-text-muted: #888888;
+  --color-bg-page: #F5F5F5;
+  --color-bg-card: #FFFFFF;
+
+  /* Font */
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+:root {
+  --background: #F5F5F5;
+  --foreground: #111111;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Scrollbar hiding utility */
+.hide-scrollbar::-webkit-scrollbar { display: none; }
+.hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
