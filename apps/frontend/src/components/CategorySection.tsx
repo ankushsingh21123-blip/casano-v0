@@ -57,7 +57,7 @@ export default function CategorySection({ title, items }: CategorySectionProps) 
           className="flex overflow-x-auto gap-4 pb-4 hide-scrollbar snap-x snap-mandatory"
           style={{ scrollPadding: "0 1rem" }}
         >
-          {items.map((item) => (
+          {items.map((item: any) => (
             <div key={item.id} className="min-w-[180px] w-[180px] snap-start flex-shrink-0">
               <ProductCard {...item} />
             </div>

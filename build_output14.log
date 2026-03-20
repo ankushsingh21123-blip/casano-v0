@@ -1,0 +1,113 @@
+
+> casano-monorepo@1.0.0 build
+> npm run build --workspaces --if-present
+
+
+> @casano/frontend@1.0.0 build
+> next build
+
+   ▲ Next.js 15.5.12
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully in 4.0s
+   Linting and checking validity of types ...
+
+./src/app/account/orders/page.tsx
+108:23  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./src/app/checkout/page.tsx
+467:27  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./src/app/order-tracking/page.tsx
+98:17  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./src/app/product/[id]/page.tsx
+71:15  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+89:19  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./src/components/CartPanel.tsx
+93:21  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./src/components/CategoryGrid.tsx
+54:17  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./src/components/OldMobileHome.tsx
+144:21  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+174:25  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+533:25  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./src/components/ProductCard.tsx
+49:11  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./src/components/ProductDetailsModal.tsx
+51:12  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+59:19  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+59:19  Warning: img elements must have an alt prop, either with meaningful text, or an empty string for decorative images.  jsx-a11y/alt-text
+62:19  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+62:19  Warning: img elements must have an alt prop, either with meaningful text, or an empty string for decorative images.  jsx-a11y/alt-text
+
+info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/app/api-reference/config/eslint#disabling-rules
+   Collecting page data ...
+   Generating static pages (0/39) ...
+   Generating static pages (9/39) 
+   Generating static pages (19/39) 
+   Generating static pages (29/39) 
+ ✓ Generating static pages (39/39)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                                      Size  First Load JS
+┌ ○ /                                         56.2 kB         171 kB
+├ ○ /_not-found                                  1 kB         103 kB
+├ ○ /account                                    176 B         102 kB
+├ ○ /account/addresses                        3.21 kB         105 kB
+├ ○ /account/orders                           3.35 kB         106 kB
+├ ○ /account/support                           2.7 kB         105 kB
+├ ○ /admin/investor                           4.15 kB         172 kB
+├ ○ /admin/ops                                2.75 kB         105 kB
+├ ○ /admin/wizard                             2.22 kB         104 kB
+├ ƒ /api/admin/kpis                             176 B         102 kB
+├ ƒ /api/inventory/reconcile                    176 B         102 kB
+├ ƒ /api/marts/inventory                        176 B         102 kB
+├ ƒ /api/merchants/[id]/analytics               176 B         102 kB
+├ ƒ /api/merchants/[id]/orders                  176 B         102 kB
+├ ƒ /api/merchants/[id]/predictions             176 B         102 kB
+├ ƒ /api/merchants/[id]/products                176 B         102 kB
+├ ƒ /api/merchants/[id]/products/[productId]    176 B         102 kB
+├ ƒ /api/merchants/nearby                       176 B         102 kB
+├ ƒ /api/ondc/webhook                           176 B         102 kB
+├ ƒ /api/orders/[id]/deliver                    176 B         102 kB
+├ ƒ /api/orders/[id]/verify-handover            176 B         102 kB
+├ ƒ /api/orders/checkout                        176 B         102 kB
+├ ƒ /api/returns                                176 B         102 kB
+├ ƒ /api/stream                                 176 B         102 kB
+├ ƒ /api/vision/parse                           176 B         102 kB
+├ ƒ /api/webhooks/walk-in                       176 B         102 kB
+├ ○ /architecture                             14.1 kB         116 kB
+├ ○ /category/fashion                         1.84 kB         116 kB
+├ ○ /category/gadgets                         1.84 kB         116 kB
+├ ○ /category/groceries                       1.84 kB         116 kB
+├ ○ /category/gym                             1.84 kB         116 kB
+├ ○ /category/pharmacy                        4.62 kB         122 kB
+├ ○ /category/stationary                      1.29 kB         119 kB
+├ ○ /category/stationery                      1.84 kB         116 kB
+├ ○ /checkout                                 7.42 kB         110 kB
+├ ○ /investors                                2.77 kB         105 kB
+├ ○ /merchant                                 11.4 kB         180 kB
+├ ○ /merchant/scanner                         1.84 kB         104 kB
+├ ○ /order-success                            2.07 kB         116 kB
+├ ○ /order-tracking                           4.52 kB         107 kB
+├ ƒ /product/[id]                             3.45 kB         106 kB
+├ ○ /products                                 3.53 kB         118 kB
+├ ○ /return                                   2.03 kB         104 kB
+├ ○ /rider                                    2.15 kB         104 kB
+└ ○ /rider/onboarding                          1.5 kB         104 kB
++ First Load JS shared by all                  102 kB
+  ├ chunks/1255-40d94dfe15c52dbe.js             46 kB
+  ├ chunks/4bd1b696-f785427dddbba9fb.js       54.2 kB
+  └ other shared chunks (total)               2.01 kB
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

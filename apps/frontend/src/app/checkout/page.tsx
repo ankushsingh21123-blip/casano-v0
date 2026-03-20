@@ -53,8 +53,10 @@ export default function CheckoutPage() {
   const [showQR, setShowQR] = useState(false);
   const [upiId, setUpiId] = useState('');
 
-  /* Payment flow */
-  const [isProcessing, setIsProcessing] = useState(false);
+  /* Payment flow - multi-step async simulation (Stripe → Kafka → Rider) */
+  type ProcessingStep = null | 'initializing' | 'stripe' | 'kafka' | 'rider' | 'done';
+  const [processingStep, setProcessingStep] = useState<ProcessingStep>(null);
+  const isProcessing = processingStep !== null && processingStep !== 'done';
   const [paymentSuccess, setPaymentSuccess] = useState(false);
 
   /* Totals */
@@ -88,15 +90,29 @@ export default function CheckoutPage() {
   };
 
   const simulatePay = () => {
-    setIsProcessing(true);
+    // Stage 1: Initializing request
+    setProcessingStep('initializing');
     setTimeout(() => {
-      setIsProcessing(false);
-      setPaymentSuccess(true);
+      // Stage 2: Contacting Stripe Payment Gateway
+      setProcessingStep('stripe');
       setTimeout(() => {
-        clearCart();
-        router.push('/order-tracking');
-      }, 700);
-    }, 2500);
+        // Stage 3: Requesting to nearby Kirana partner (sends to Vendor App)
+        setProcessingStep('kafka');
+        setTimeout(() => {
+          // Stage 4: Dispatching rider
+          setProcessingStep('rider');
+          setTimeout(() => {
+            // All done!
+            setProcessingStep('done');
+            setPaymentSuccess(true);
+            setTimeout(() => {
+              clearCart();
+              router.push('/order-tracking');
+            }, 1200);
+          }, 1000);
+        }, 1200);
+      }, 1500);
+    }, 800);
   };
 
   const handleCardSubmit = (e: FormEvent) => {
@@ -187,7 +203,7 @@ export default function CheckoutPage() {
 
                     <form onSubmit={handleCardSubmit} className="space-y-4">
                       <input type="text" placeholder="Name on Card" required
-                        value={name} onChange={(e) => setName(e.target.value)}
+                        value={name} onChange={(e: any) => setName(e.target.value)}
                         className="w-full bg-white dark:bg-[#222] border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 outline-none focus:border-[#19c74a] transition-colors text-gray-900 dark:text-white font-medium placeholder:font-normal placeholder:text-gray-400"
                       />
                       <input type="text" placeholder="Card Number" required
@@ -208,7 +224,7 @@ export default function CheckoutPage() {
                         </div>
                       </div>
                       <input type="text" placeholder="Nickname for card (Optional)"
-                        value={nickname} onChange={(e) => setNickname(e.target.value)}
+                        value={nickname} onChange={(e: any) => setNickname(e.target.value)}
                         className="w-full bg-white dark:bg-[#222] border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 outline-none focus:border-[#19c74a] transition-colors text-gray-900 dark:text-white font-medium placeholder:font-normal placeholder:text-gray-400"
                       />
                       <button
@@ -271,7 +287,7 @@ export default function CheckoutPage() {
                         type="text"
                         placeholder="Search all banks..."
                         value={allBanksSearch}
-                        onChange={(e) => setAllBanksSearch(e.target.value)}
+                        onChange={(e: any) => setAllBanksSearch(e.target.value)}
                         className="w-full border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-[#222] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#19c74a] transition-colors text-gray-900 dark:text-white mb-2"
                       />
                       <div className="max-h-40 overflow-y-auto rounded-xl border border-gray-100 dark:border-gray-800">
@@ -335,7 +351,7 @@ export default function CheckoutPage() {
                           type="text"
                           placeholder={`Enter UPI ID (e.g. name@${selectedUPI})`}
                           value={upiId}
-                          onChange={(e) => setUpiId(e.target.value)}
+                          onChange={(e: any) => setUpiId(e.target.value)}
                           className="flex-1 border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-[#222] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#19c74a] transition-colors text-gray-900 dark:text-white"
                         />
                         <button
@@ -387,7 +403,7 @@ export default function CheckoutPage() {
                           <p className="text-[10px] text-gray-400 font-medium">Valid for 10 minutes</p>
                         </div>
                         <button onClick={simulatePay} className="mt-4 w-full bg-[#19c74a] hover:bg-[#15a83e] text-white rounded-xl p-3 font-bold text-sm">
-                          ✓ I've paid via QR
+                          ✓ I&apos;ve paid via QR
                         </button>
                       </div>
                     )}
@@ -511,14 +527,54 @@ export default function CheckoutPage() {
         </div>
       </div>
 
-      {/* ── Processing Overlay ── */}
-      {isProcessing && (
-        <div className="fixed inset-0 bg-white/80 dark:bg-[#121212]/80 backdrop-blur-sm z-[100] flex flex-col items-center justify-center">
-          <div className="w-16 h-16 border-4 border-gray-200 dark:border-gray-800 border-t-[#19c74a] dark:border-t-[#19c74a] rounded-full animate-spin mb-6" />
-          <h2 className="text-2xl font-black text-gray-900 dark:text-white mb-2 tracking-tight">Processing Payment...</h2>
-          <p className="text-gray-500 font-medium animate-pulse">Please do not close or refresh this page.</p>
-        </div>
-      )}
+      {/* ── Async Pipeline Processing Overlay (Stripe → Kafka → Rider) ── */}
+      {isProcessing && (() => {
+        const steps = [
+          { id: 'initializing', icon: '🔐', label: 'Securing Connection', sub: 'Encrypting your payment details...' },
+          { id: 'stripe',       icon: '💳', label: 'Contacting Payment Gateway', sub: 'Verifying with Stripe...' },
+          { id: 'kafka',        icon: '🏪', label: 'Requesting Nearby Store', sub: 'Sending order request to your local Kirana partner...' },
+          { id: 'rider',        icon: '🛵', label: 'Dispatching Your Rider', sub: 'Matching nearest delivery partner...' },
+        ];
+        const currentIdx = steps.findIndex(s => s.id === processingStep);
+        const current = steps[currentIdx] ?? steps[0];
+        return (
+          <div className="fixed inset-0 bg-white/90 dark:bg-[#0a0a0a]/90 backdrop-blur-sm z-[100] flex flex-col items-center justify-center gap-8 px-6">
+            {/* Animated ring with icon */}
+            <div className="relative w-20 h-20 flex items-center justify-center">
+              <div className="absolute inset-0 border-4 border-gray-100 dark:border-gray-800 rounded-full" />
+              <div className="absolute inset-0 border-4 border-transparent border-t-[#19c74a] rounded-full animate-spin" />
+              <span className="text-3xl">{current.icon}</span>
+            </div>
+
+            <div className="text-center">
+              <h2 className="text-xl font-black text-gray-900 dark:text-white mb-1 tracking-tight">{current.label}</h2>
+              <p className="text-sm text-gray-400 dark:text-gray-500 font-medium animate-pulse">{current.sub}</p>
+            </div>
+
+            {/* Progress pipeline */}
+            <div className="flex items-center gap-2">
+              {steps.map((step, i) => (
+                <div key={step.id} className="flex items-center gap-2">
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm border-2 transition-all duration-500 ${
+                    i < currentIdx  ? 'bg-[#19c74a] border-[#19c74a] text-white' :
+                    i === currentIdx ? 'border-[#19c74a] text-[#19c74a] bg-[#e8f9ee] dark:bg-[#19c74a]/10 scale-110' :
+                                       'border-gray-200 dark:border-gray-700 text-gray-300 dark:text-gray-600'
+                  }`}>
+                    {i < currentIdx ? '✓' : step.icon}
+                  </div>
+                  {i < steps.length - 1 && (
+                    <div className={`w-8 h-0.5 rounded-full transition-all duration-500 ${
+                      i < currentIdx ? 'bg-[#19c74a]' : 'bg-gray-200 dark:bg-gray-700'
+                    }`} />
+                  )}
+                </div>
+              ))}
+            </div>
+
+            <p className="text-xs text-gray-400 font-medium">Please do not close or refresh this page.</p>
+          </div>
+        );
+      })()}
 
       {/* ── Payment Success Overlay ── */}
       {paymentSuccess && (

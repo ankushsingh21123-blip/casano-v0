@@ -4,7 +4,9 @@ import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import HeroBanner from "@/components/HeroBanner";
 import CategoryGrid from "@/components/CategoryGrid";
+import CategorySlider from "@/components/CategorySlider";
 import OldMobileHome from "@/components/OldMobileHome";
+import Footer from "@/components/Footer";
 
 export default function Home() {
   const [isMobile, setIsMobile] = useState(false);
@@ -28,7 +30,9 @@ export default function Home() {
       <HeroBanner />
       <main className="pb-20">
         <CategoryGrid />
+        <CategorySlider />
       </main>
+      <Footer />
     </div>
   );
 }

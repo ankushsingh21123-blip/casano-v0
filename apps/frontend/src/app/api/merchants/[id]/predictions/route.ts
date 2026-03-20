@@ -25,7 +25,7 @@ export async function GET(
             // Deterministic pseudo-random velocity (1 to 15 per day) based on product name length
             const baseVelocity = (product.name.length % 15) + 1;
 
-            // If it&apos;s Stationery, give it a higher velocity to trigger the use-case
+            // If it's Stationery, give it a higher velocity to trigger the use-case
             const velocityPerDay = product.category === 'Stationery' ? baseVelocity + 5 : baseVelocity;
 
             const currentStock = product.app_reserved_stock;

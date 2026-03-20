@@ -15,7 +15,7 @@ export default function AdminControlRoom() {
             try {
                 const res = await fetch('/api/merchants/nearby');
                 const data = await res.json();
-                setLiveStoreCount(data.length); // Realistic: we&apos;re only querying nearby local nodes
+                setLiveStoreCount(data.length); // Realistic: we're only querying nearby local nodes
             } catch (e: any) { }
         };
 
@@ -147,7 +147,7 @@ export default function AdminControlRoom() {
                             <div className="text-neutral-500">[{new Date(Date.now() - 600000).toISOString()}] SYSTEM_STARTUP: Initializing Hyperlocal Socket Server... OK</div>
                             <div className="text-emerald-500">[{new Date(Date.now() - 500000).toISOString()}] NODE_01_ONLINE: Connect to ONDC Gateway established.</div>
                             <div className="text-pink-400">[{new Date(Date.now() - 400000).toISOString()}] SHAKTI_FLEET_SYNC: 42 verified riders connected to location ping system.</div>
-                            <div className="text-neutral-500">[{new Date(Date.now() - 300000).toISOString()}] MERCH_SCANNER: Parsed invoice 0x48f for "Sri Venkateshwara Stores". 15 SKUs matched.</div>
+                            <div className="text-neutral-500">[{new Date(Date.now() - 300000).toISOString()}] MERCH_SCANNER: Parsed invoice 0x48f for &quot;Sri Venkateshwara Stores&quot;. 15 SKUs matched.</div>
                             <div className="text-emerald-400">[{new Date(Date.now() - 150000).toISOString()}] NEW_ORDER: App (ONDC) request for 2x Amul Butter. Routing to nearest node...</div>
                             <div className="text-amber-500">[{new Date(Date.now() - 50000).toISOString()}] GHOST_INVENTORY_DETECTED: Target Merchant stock anomaly. Triggering Self-Healing modal via SSE...</div>
                             {failovers > 0 && (

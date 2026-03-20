@@ -1,0 +1,152 @@
+/* Search bar wrapper */
+.searchWrapper {
+  display: flex;
+  align-items: center;
+  background-color: #f9f9f9;
+  border: 2px solid #e5e5e5;
+  border-radius: 50px;
+  padding: 10px 20px;
+  width: 100%;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
+}
+
+.searchWrapper:focus-within,
+.searchWrapperFocused {
+  border-color: #ff6b35;
+  box-shadow: 0 0 0 4px rgba(255, 107, 53, 0.12);
+  background-color: #ffffff;
+}
+
+/* Dark mode */
+:global(.dark) .searchWrapper {
+  background-color: #2a2a2a;
+  border-color: #444;
+}
+
+:global(.dark) .searchWrapper:focus-within,
+:global(.dark) .searchWrapperFocused {
+  border-color: #ff6b35;
+  background-color: #333;
+}
+
+.searchIcon {
+  width: 18px;
+  height: 18px;
+  margin-right: 12px;
+  flex-shrink: 0;
+  color: #888;
+}
+
+/* Input */
+.searchInput {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-size: 15px;
+  font-weight: 500;
+  outline: none;
+  color: #262626;
+  min-width: 0;
+}
+
+.searchInput::placeholder {
+  color: #aaa;
+  font-weight: 400;
+}
+
+:global(.dark) .searchInput {
+  color: #e5e5e5;
+}
+
+:global(.dark) .searchInput::placeholder {
+  color: #666;
+}
+
+/* Loader wrapper */
+.loaderComponentWrapper {
+  transform: scale(0.75);
+  transform-origin: right center;
+  flex-shrink: 0;
+}
+
+.loaderWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #262626;
+  user-select: none;
+  gap: 6px;
+}
+
+:global(.dark) .loaderWrapper {
+  color: #e5e5e5;
+}
+
+/* Spinning circle */
+.loader {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: transparent;
+  animation: loaderRotate 1.5s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes loaderRotate {
+  0% {
+    transform: rotate(90deg);
+    box-shadow:
+      0 1px 1px 0 #fff inset,
+      0 3px 5px 0 #ff2b2b inset,
+      0 4px 4px 0 #ff0606 inset;
+  }
+  50% {
+    transform: rotate(270deg);
+    background: #ffe8e9;
+    box-shadow:
+      0 1px 1px 0 #ffc8c8 inset,
+      0 3px 5px 0 #ff1b1b inset,
+      0 4px 4px 0 #fbef19 inset;
+  }
+  100% {
+    transform: rotate(450deg);
+    box-shadow:
+      0 1px 1px 0 #fff inset,
+      0 3px 5px 0 #ff8f8f inset,
+      0 4px 4px 0 #ff1b1b inset;
+  }
+}
+
+/* Bouncing letters */
+.letterWrapper {
+  display: flex;
+  gap: 1px;
+}
+
+.loaderLetter {
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 600;
+  opacity: 0.4;
+  transform: translateY(0);
+  animation: loaderLetterAnim 2s infinite;
+  border-radius: 50ch;
+}
+
+@keyframes loaderLetterAnim {
+  0%,
+  100% {
+    opacity: 0.4;
+    transform: translateY(0);
+  }
+  20% {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+  40% {
+    opacity: 0.7;
+    transform: translateY(0);
+  }
+}

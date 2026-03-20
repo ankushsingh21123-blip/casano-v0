@@ -1,10 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { X, ChevronRight, Minus, Plus } from "lucide-react";
+import { X, ChevronRight, Minus, Plus, Clock, Truck, FileText, HeartHandshake, Heart, ShoppingCart, MapPin } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
+import Checkbox from "./Checkbox";
 
 interface CartPanelProps {
   isOpen: boolean;
@@ -49,15 +50,16 @@ export default function CartPanel({ isOpen, onClose, onLoginClick }: CartPanelPr
 
       {/* Slide-out Panel */}
       <div
-        className={`fixed inset-y-0 right-0 z-[70] w-full sm:w-[420px] bg-[#f4f6f9] dark:bg-[#121212] shadow-2xl transform transition-transform duration-300 ease-in-out flex flex-col ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
+        className={`fixed inset-y-0 right-0 z-[70] w-full sm:w-[420px] shadow-2xl transform transition-transform duration-300 ease-in-out flex flex-col ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
+        style={{ background: "#FDFBF7" }}
       >
         {/* Header */}
-        <div className="bg-white dark:bg-[#1a1a1a] p-4 flex items-center justify-between shadow-sm z-10 sticky top-0 border-b border-gray-100 dark:border-gray-800">
-          <h2 className="text-[18px] font-black text-gray-900 dark:text-white flex items-center gap-2">
+        <div className="p-4 flex items-center justify-between z-10 sticky top-0" style={{ background: "#EFEADD", borderBottom: "1px solid #E2DDD0" }}>
+          <h2 className="text-[18px] font-black flex items-center gap-2" style={{ color: "#2A2B2A" }}>
             My Cart
           </h2>
-          <button onClick={onClose} className="p-2 hover:bg-gray-100 dark:hover:bg-[#333] border border-gray-200 dark:border-gray-800 rounded-full transition-colors bg-white dark:bg-[#222]">
-            <X className="w-4 h-4 text-gray-900 dark:text-gray-300 stroke-[3]" />
+          <button onClick={onClose} className="p-2 rounded-full transition-colors" style={{ background: "#FDFBF7", border: "1px solid #E2DDD0" }}>
+            <X className="w-4 h-4 stroke-[3]" style={{ color: "#2A2B2A" }} />
           </button>
         </div>
 
@@ -65,26 +67,28 @@ export default function CartPanel({ isOpen, onClose, onLoginClick }: CartPanelPr
         <div className="flex-1 overflow-y-auto p-3 flex flex-col gap-3">
 
           {/* Free Delivery Banner */}
-          <div className="bg-white dark:bg-[#1a1a1a] rounded-2xl p-4 shadow-sm border border-gray-100 dark:border-gray-800 flex items-center gap-4">
-            <div className="w-12 h-12 rounded-full border border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-[#222] flex items-center justify-center text-xl">
-              ⏱️
+          <div className="rounded-2xl p-4 flex items-center gap-4" style={{ background: "#EFEADD", border: "1px solid #E2DDD0" }}>
+            <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{ background: "#E6F2EC", border: "1px solid #C5E4D0" }}>
+              <Clock className="w-5 h-5" style={{ color: "#214A36" }} />
             </div>
             <div>
-              <p className="font-extrabold text-gray-900 dark:text-white text-[15px]">Free delivery in 15 minutes</p>
-              <p className="text-xs text-gray-500 font-medium mt-0.5">Shipment of {items.length} item{items.length !== 1 ? 's' : ''}</p>
+              <p className="font-extrabold text-[15px]" style={{ color: "#2A2B2A" }}>Free delivery in 15 minutes</p>
+              <p className="text-xs font-medium mt-0.5" style={{ color: "#9A9B9A" }}>Shipment of {items.length} item{items.length !== 1 ? 's' : ''}</p>
             </div>
           </div>
 
           {/* Items List */}
-          <div className="bg-white dark:bg-[#1a1a1a] rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden">
-            <div className="divide-y divide-gray-100 dark:divide-gray-800">
+          <div className="rounded-2xl overflow-hidden" style={{ border: "1px solid #E2DDD0", background: "#EFEADD" }}>
+            <div className="divide-y" style={{ borderColor: "#E2DDD0" }}>
               {items.length === 0 ? (
                 <div className="p-8 text-center flex flex-col items-center justify-center mt-8">
-                  <div className="w-24 h-24 mb-4 opacity-50 text-6xl">🛒</div>
+                  <div className="w-16 h-16 mb-4 rounded-2xl bg-gray-50 dark:bg-[#222] flex items-center justify-center">
+                    <ShoppingCart className="w-8 h-8 text-gray-300 dark:text-gray-600" />
+                  </div>
                   <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Your cart is empty</h3>
                   <p className="text-gray-500 text-sm">Add some items from your local Kirana store!</p>
                 </div>
-              ) : items.map((item) => (
+              ) : items.map((item: any) => (
                 <div key={item.id} className="p-4 flex gap-4">
                   <div className="w-[72px] h-[72px] bg-white rounded-xl p-2 border border-gray-100 dark:border-gray-800 flex-shrink-0 shadow-sm">
                     <img src={item.image} alt={item.name} className="w-full h-full object-contain rounded" />
@@ -102,21 +106,26 @@ export default function CartPanel({ isOpen, onClose, onLoginClick }: CartPanelPr
                         )}
                       </div>
 
-                      {/* Green Quantity Toggle */}
-                      <div className="flex items-center bg-[#19c74a] text-white rounded-lg h-8 shadow-sm">
+                      {/* Saffron Quantity Toggle */}
+                      <div className="flex items-center rounded-lg h-8" style={{ background: "#C1492E" }}>
                         <button
                           onClick={() => removeItem(item.id)}
-                          className="w-8 h-full flex items-center justify-center font-bold hover:bg-[#15a83e] rounded-l-lg transition-colors"
+                          className="w-8 h-full flex items-center justify-center font-bold rounded-l-lg transition-colors text-white"
+                          style={{ color: "#fff" }}
+                          onMouseEnter={e => (e.currentTarget.style.background = "#A63C25")}
+                          onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
                         >
                           <Minus className="w-4 h-4 stroke-[3]" />
                         </button>
-                        <span className="w-7 text-center text-[13px] font-bold">{item.quantity}</span>
+                        <span className="w-7 text-center text-[13px] font-bold text-white">{item.quantity}</span>
                         <button
                           onClick={() => {
                             const { quantity, ...itemWithoutQuantity } = item;
                             addItem(itemWithoutQuantity);
                           }}
-                          className="w-8 h-full flex items-center justify-center font-bold hover:bg-[#15a83e] rounded-r-lg transition-colors"
+                          className="w-8 h-full flex items-center justify-center font-bold rounded-r-lg transition-colors text-white"
+                          onMouseEnter={e => (e.currentTarget.style.background = "#A63C25")}
+                          onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
                         >
                           <Plus className="w-4 h-4 stroke-[3]" />
                         </button>
@@ -136,9 +145,9 @@ export default function CartPanel({ isOpen, onClose, onLoginClick }: CartPanelPr
               {/* Items total with savings */}
               <div className="flex items-center justify-between mb-3 text-[13px] font-medium">
                 <span className="text-gray-600 dark:text-gray-400 flex items-center gap-2">
-                  📄 Items total
+                  <FileText className="w-3.5 h-3.5" /> Items total
                   {savedAmount > 0 && (
-                    <span className="text-[11px] font-bold text-[#19c74a] bg-[#19c74a]/10 px-1.5 py-0.5 rounded-md">
+                    <span className="text-[11px] font-bold px-1.5 py-0.5 rounded-md" style={{ color: "#214A36", background: "#E6F2EC" }}>
                       Saved ₹{savedAmount}
                     </span>
                   )}
@@ -152,25 +161,25 @@ export default function CartPanel({ isOpen, onClose, onLoginClick }: CartPanelPr
               </div>
 
               <div className="flex items-center justify-between mb-3 text-[13px] font-medium">
-                <span className="text-gray-600 dark:text-gray-400 flex items-center gap-2">🛵 Delivery charge</span>
-                <span className="text-[#19c74a] font-bold">FREE</span>
+                <span className="text-gray-600 dark:text-gray-400 flex items-center gap-2"><Truck className="w-3.5 h-3.5" /> Delivery charge</span>
+                <span className="font-bold" style={{ color: "#214A36" }}>FREE</span>
               </div>
 
               <div className="flex items-center justify-between mb-4 text-[13px] font-medium">
-                <span className="text-gray-600 dark:text-gray-400 flex items-center gap-2">🛍️ Handling charge</span>
+                <span className="text-gray-600 dark:text-gray-400 flex items-center gap-2"><FileText className="w-3.5 h-3.5" /> Handling charge</span>
                 <span className="text-gray-900 dark:text-gray-300">₹{handlingCharge}</span>
               </div>
 
               {donationChecked && (
                 <div className="flex items-center justify-between mb-3 text-[13px] font-medium">
-                  <span className="text-gray-600 dark:text-gray-400 flex items-center gap-2">🍱 Feeding India donation</span>
+                  <span className="text-gray-600 dark:text-gray-400 flex items-center gap-2"><HeartHandshake className="w-3.5 h-3.5" /> Feeding India donation</span>
                   <span className="text-gray-900 dark:text-gray-300">₹1</span>
                 </div>
               )}
 
               {tipAmount > 0 && (
                 <div className="flex items-center justify-between mb-3 text-[13px] font-medium">
-                  <span className="text-gray-600 dark:text-gray-400 flex items-center gap-2">💝 Delivery partner tip</span>
+                  <span className="text-gray-600 dark:text-gray-400 flex items-center gap-2"><Heart className="w-3.5 h-3.5" /> Delivery partner tip</span>
                   <span className="text-gray-900 dark:text-gray-300">₹{tipAmount}</span>
                 </div>
               )}
@@ -189,8 +198,8 @@ export default function CartPanel({ isOpen, onClose, onLoginClick }: CartPanelPr
           {/* ─── Feeding India Donation ─── */}
           {items.length > 0 && (
             <div className="bg-white dark:bg-[#1a1a1a] rounded-2xl p-4 shadow-sm border border-gray-100 dark:border-gray-800 flex items-start gap-3">
-              <div className="w-12 h-12 rounded-xl flex-shrink-0 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-100 dark:border-yellow-900/30 flex items-center justify-center text-2xl">
-                🍱
+              <div className="w-12 h-12 rounded-xl flex-shrink-0 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-100 dark:border-yellow-900/30 flex items-center justify-center">
+                <HeartHandshake className="w-6 h-6 text-yellow-600 dark:text-yellow-400" />
               </div>
               <div className="flex-1">
                 <p className="font-bold text-gray-900 dark:text-white text-[14px]">Feeding India donation</p>
@@ -201,12 +210,10 @@ export default function CartPanel({ isOpen, onClose, onLoginClick }: CartPanelPr
               </div>
               <div className="flex items-center gap-2 flex-shrink-0 mt-1">
                 <span className="text-[13px] font-bold text-gray-700 dark:text-gray-300">₹1</span>
-                <input
+                <Checkbox
                   id="feeding-india-checkbox"
-                  type="checkbox"
                   checked={donationChecked}
-                  onChange={(e) => setDonationChecked(e.target.checked)}
-                  className="w-5 h-5 accent-[#19c74a] cursor-pointer rounded"
+                  onChange={setDonationChecked}
                 />
               </div>
             </div>
@@ -221,9 +228,9 @@ export default function CartPanel({ isOpen, onClose, onLoginClick }: CartPanelPr
               </p>
               <div className="flex gap-2 flex-wrap">
                 {[
-                  { amount: 20, label: '₹20', emoji: '😄' },
-                  { amount: 30, label: '₹30', emoji: '🤩' },
-                  { amount: 50, label: '₹50', emoji: '😍' },
+                  { amount: 20, label: '₹20' },
+                  { amount: 30, label: '₹30' },
+                  { amount: 50, label: '₹50' },
                 ].map((tip) => (
                   <button
                     key={tip.amount}
@@ -234,7 +241,7 @@ export default function CartPanel({ isOpen, onClose, onLoginClick }: CartPanelPr
                         : 'border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:border-[#19c74a] hover:text-[#19c74a] hover:bg-[#19c74a]/5'
                     }`}
                   >
-                    <span>{tip.emoji}</span> {tip.label}
+                    {tip.label}
                   </button>
                 ))}
                 <button
@@ -245,7 +252,7 @@ export default function CartPanel({ isOpen, onClose, onLoginClick }: CartPanelPr
                       : 'border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:border-[#19c74a] hover:text-[#19c74a] hover:bg-[#19c74a]/5'
                   }`}
                 >
-                  🔥 Custom
+                  Custom amount
                 </button>
               </div>
               {selectedTip === 'custom' && (
@@ -254,7 +261,7 @@ export default function CartPanel({ isOpen, onClose, onLoginClick }: CartPanelPr
                     type="number"
                     placeholder="Enter custom tip amount..."
                     value={customTip}
-                    onChange={(e) => setCustomTip(e.target.value)}
+                    onChange={(e: any) => setCustomTip(e.target.value)}
                     className="w-full border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-[#222] rounded-xl px-4 py-2.5 text-[13px] font-semibold text-gray-900 dark:text-white outline-none focus:border-[#19c74a] transition-colors"
                   />
                 </div>
@@ -267,7 +274,7 @@ export default function CartPanel({ isOpen, onClose, onLoginClick }: CartPanelPr
             <div className="bg-white dark:bg-[#1a1a1a] rounded-2xl p-4 shadow-sm border border-gray-100 dark:border-gray-800 flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-gray-50 dark:bg-[#222] flex items-center justify-center border border-gray-200 dark:border-gray-700">
-                  📍
+                  <MapPin className="w-4 h-4 text-[#19c74a]" />
                 </div>
                 <div>
                   <p className="text-sm font-bold text-gray-900 dark:text-white">Delivering to Home</p>
@@ -285,11 +292,14 @@ export default function CartPanel({ isOpen, onClose, onLoginClick }: CartPanelPr
 
         {/* Sticky Proceed Button */}
         {items.length > 0 && (
-          <div className="absolute bottom-0 left-0 right-0 bg-white dark:bg-[#1a1a1a] p-3 shadow-[0_-10px_30px_rgba(0,0,0,0.06)] border-t border-gray-100 dark:border-gray-800 z-10">
+          <div className="absolute bottom-0 left-0 right-0 p-3 z-10" style={{ background: "#EFEADD", borderTop: "1px solid #E2DDD0", boxShadow: "0 -10px 30px rgba(0,0,0,0.04)" }}>
             {!isLoggedIn ? (
               <button
                 onClick={onLoginClick}
-                className="w-full bg-[#19c74a] hover:bg-[#15a83e] text-white rounded-[14px] p-4 flex items-center justify-center font-bold text-[17px] transition-transform hover:-translate-y-0.5 shadow-lg shadow-[#19c74a]/20"
+                className="w-full text-white rounded-[14px] p-4 flex items-center justify-center font-bold text-[17px] transition-all hover:-translate-y-0.5"
+                style={{ background: "#C1492E", boxShadow: "0 4px 16px #C1492E33" }}
+                onMouseEnter={e => (e.currentTarget.style.background = "#A63C25")}
+                onMouseLeave={e => (e.currentTarget.style.background = "#C1492E")}
               >
                 Login to Proceed <ChevronRight className="w-5 h-5 ml-1 stroke-[3]" />
               </button>
@@ -299,7 +309,10 @@ export default function CartPanel({ isOpen, onClose, onLoginClick }: CartPanelPr
                   onClose();
                   router.push("/checkout");
                 }}
-                className="w-full bg-[#19c74a] hover:bg-[#15a83e] text-white rounded-[14px] p-4 flex items-center justify-between font-bold transition-transform hover:-translate-y-0.5 shadow-lg shadow-[#19c74a]/20"
+                className="w-full text-white rounded-[14px] p-4 flex items-center justify-between font-bold transition-all hover:-translate-y-0.5"
+                style={{ background: "#C1492E", boxShadow: "0 4px 16px #C1492E33" }}
+                onMouseEnter={e => (e.currentTarget.style.background = "#A63C25")}
+                onMouseLeave={e => (e.currentTarget.style.background = "#C1492E")}
               >
                 <div className="flex flex-col text-left">
                   <span className="text-[13px] text-white/95 font-semibold">₹{totalPay}</span>

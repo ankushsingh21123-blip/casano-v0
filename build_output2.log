@@ -1,0 +1,199 @@
+
+> casano-monorepo@1.0.0 build
+> npm run build --workspaces --if-present
+
+
+> @casano/frontend@1.0.0 build
+> next build
+
+   ▲ Next.js 15.5.12
+
+   Creating an optimized production build ...
+Failed to compile.
+
+./src/components/CartPanel.tsx
+Error:   [31mx[0m Expression expected
+    ,-[[36;1;4mC:\Users\HP\jatphatt\apps\frontend\src\components\CartPanel.tsx[0m:40:1]
+ [2m37[0m |     } else {
+ [2m38[0m |       document.body.style.overflow = "unset";
+ [2m39[0m |     }
+ [2m40[0m |     return () => { document.body.style.overflow = &quot;unset&quot;; };
+    : [35;1m                                                  ^[0m
+ [2m41[0m |   }, [isOpen]);
+ [2m42[0m | 
+ [2m43[0m |   return (
+    `----
+  [31mx[0m Expression expected
+    ,-[[36;1;4mC:\Users\HP\jatphatt\apps\frontend\src\components\CartPanel.tsx[0m:75:1]
+ [2m72[0m |             </div>
+ [2m73[0m |             <div>
+ [2m74[0m |               <p className="font-extrabold text-gray-900 dark:text-white text-[15px]">Free delivery in 15 minutes</p>
+ [2m75[0m |               <p className="text-xs text-gray-500 font-medium mt-0.5">Shipment of {items.length} item{items.length !== 1 ? &apos;s&apos; : &apos;&apos;}</p>
+    : [35;1m                                                                                                                           ^[0m
+ [2m76[0m |             </div>
+ [2m77[0m |           </div>
+    `----
+  [31mx[0m Expected '</', got ';'
+    ,-[[36;1;4mC:\Users\HP\jatphatt\apps\frontend\src\components\CartPanel.tsx[0m:75:1]
+ [2m72[0m |             </div>
+ [2m73[0m |             <div>
+ [2m74[0m |               <p className="font-extrabold text-gray-900 dark:text-white text-[15px]">Free delivery in 15 minutes</p>
+ [2m75[0m |               <p className="text-xs text-gray-500 font-medium mt-0.5">Shipment of {items.length} item{items.length !== 1 ? &apos;s&apos; : &apos;&apos;}</p>
+    : [35;1m                                                                                                                                ^[0m
+ [2m76[0m |             </div>
+ [2m77[0m |           </div>
+    `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/components/CartPanel.tsx
+./src/components/Header.tsx
+./src/components/CategoryPageTemplate.tsx
+
+./src/components/LoginModal.tsx
+Error:   [31mx[0m Expression expected
+    ,-[[36;1;4mC:\Users\HP\jatphatt\apps\frontend\src\components\LoginModal.tsx[0m:14:1]
+ [2m11[0m | 
+ [2m12[0m | export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
+ [2m13[0m |   const { login, setProfile } = useAuth();
+ [2m14[0m |   const [step, setStep] = useState<"phone" | "otp" | "profile">(&quot;phone&quot;);
+    : [35;1m                                                                ^[0m
+ [2m15[0m |   const [phoneNumber, setPhoneNumber] = useState(&quot;&quot;);
+ [2m16[0m |   const [otp, setOtp] = useState([&quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;]);
+ [2m17[0m |   const [timer, setTimer] = useState(30);
+    `----
+  [31mx[0m Expected ',', got ';'
+    ,-[[36;1;4mC:\Users\HP\jatphatt\apps\frontend\src\components\LoginModal.tsx[0m:14:1]
+ [2m11[0m | 
+ [2m12[0m | export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
+ [2m13[0m |   const { login, setProfile } = useAuth();
+ [2m14[0m |   const [step, setStep] = useState<"phone" | "otp" | "profile">(&quot;phone&quot;);
+    : [35;1m                                                                     ^[0m
+ [2m15[0m |   const [phoneNumber, setPhoneNumber] = useState(&quot;&quot;);
+ [2m16[0m |   const [otp, setOtp] = useState([&quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;]);
+ [2m17[0m |   const [timer, setTimer] = useState(30);
+    `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/components/LoginModal.tsx
+./src/components/Header.tsx
+./src/components/CategoryPageTemplate.tsx
+
+./src/components/SearchBar.tsx
+Error:   [31mx[0m Expression expected
+    ,-[[36;1;4mC:\Users\HP\jatphatt\apps\frontend\src\components\SearchBar.tsx[0m:34:1]
+ [2m31[0m |   placeholder = 'Search "milk", "medicines", "pens"...',
+ [2m32[0m |   onSearch,
+ [2m33[0m | }) => {
+ [2m34[0m |   const [query, setQuery] = useState(&quot;&quot;);
+    : [35;1m                                     ^[0m
+ [2m35[0m | 
+ [2m36[0m |   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+ [2m37[0m |     setQuery(e.target.value);
+    `----
+  [31mx[0m Expected ',', got ';'
+    ,-[[36;1;4mC:\Users\HP\jatphatt\apps\frontend\src\components\SearchBar.tsx[0m:34:1]
+ [2m31[0m |   placeholder = 'Search "milk", "medicines", "pens"...',
+ [2m32[0m |   onSearch,
+ [2m33[0m | }) => {
+ [2m34[0m |   const [query, setQuery] = useState(&quot;&quot;);
+    : [35;1m                                          ^[0m
+ [2m35[0m | 
+ [2m36[0m |   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+ [2m37[0m |     setQuery(e.target.value);
+    `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/components/SearchBar.tsx
+./src/components/Header.tsx
+./src/components/CategoryPageTemplate.tsx
+
+./src/app/admin/investor/page.tsx
+Error:   [31mx[0m Expression expected
+    ,-[[36;1;4mC:\Users\HP\jatphatt\apps\frontend\src\app\admin\investor\page.tsx[0m:92:1]
+ [2m89[0m |     const grossMargin = aov * (commission / 100);
+ [2m90[0m |     const contributionMargin = grossMargin - deliveryCost - marketing;
+ [2m91[0m |     const fixedCostPerNode = 4000; // Mock minimal server/ops cost per neighborhood
+ [2m92[0m |     const breakEvenOrders = contributionMargin > 0 ? Math.ceil(fixedCostPerNode / contributionMargin) : &apos;Never&apos;;
+    : [35;1m                                                                                                        ^[0m
+ [2m93[0m | 
+ [2m94[0m |     if (!kpis) return <div className="min-h-screen bg-neutral-950 text-white flex items-center justify-center">Loading Oversight Matrix...</div>;
+ [2m94[0m | 
+    `----
+  [31mx[0m Expression expected
+     ,-[[36;1;4mC:\Users\HP\jatphatt\apps\frontend\src\app\admin\investor\page.tsx[0m:330:1]
+ [2m327[0m |                         <div className="text-center relative z-10">
+ [2m328[0m |                             <p className="text-sm text-neutral-500 uppercase tracking-widest font-bold mb-2">Contribution Margin / Order</p>
+ [2m329[0m |                             <p className={`text-5xl font-black ${contributionMargin > 0 ? 'text-emerald-400' : 'text-red-500'}`}>
+ [2m330[0m |                                 {contributionMargin > 0 ? &apos;+&apos; : &apos;&apos;}₹{contributionMargin.toFixed(2)}
+     : [35;1m                                                          ^[0m
+ [2m331[0m |                             </p>
+ [2m332[0m | 
+ [2m332[0m |                             <div className="mt-8 pt-8 border-t border-neutral-800">
+     `----
+  [31mx[0m Expected '</', got ';'
+     ,-[[36;1;4mC:\Users\HP\jatphatt\apps\frontend\src\app\admin\investor\page.tsx[0m:330:1]
+ [2m327[0m |                         <div className="text-center relative z-10">
+ [2m328[0m |                             <p className="text-sm text-neutral-500 uppercase tracking-widest font-bold mb-2">Contribution Margin / Order</p>
+ [2m329[0m |                             <p className={`text-5xl font-black ${contributionMargin > 0 ? 'text-emerald-400' : 'text-red-500'}`}>
+ [2m330[0m |                                 {contributionMargin > 0 ? &apos;+&apos; : &apos;&apos;}₹{contributionMargin.toFixed(2)}
+     : [35;1m                                                               ^[0m
+ [2m331[0m |                             </p>
+ [2m332[0m | 
+ [2m332[0m |                             <div className="mt-8 pt-8 border-t border-neutral-800">
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/app/admin/investor/page.tsx
+
+./src/app/admin/ops/page.tsx
+Error:   [31mx[0m Expression expected
+    ,-[[36;1;4mC:\Users\HP\jatphatt\apps\frontend\src\app\admin\ops\page.tsx[0m:43:1]
+ [2m40[0m |     const toggleSurge = () => {
+ [2m41[0m |         setSurgeActive(!surgeActive);
+ [2m42[0m |         if (!surgeActive) {
+ [2m43[0m |             alert(&quot;SURGE PRICING ENGAGED. Node-wide delivery fees increased by +₹15 to manage demand.&quot;);
+    : [35;1m                  ^[0m
+ [2m44[0m |         } else {
+ [2m45[0m |             alert(&quot;Surge Pricing Disabled. Reverting to standard Shakti fleet rates.&quot;);
+ [2m45[0m |         }
+    `----
+  [31mx[0m Expected ',', got ';'
+    ,-[[36;1;4mC:\Users\HP\jatphatt\apps\frontend\src\app\admin\ops\page.tsx[0m:43:1]
+ [2m40[0m |     const toggleSurge = () => {
+ [2m41[0m |         setSurgeActive(!surgeActive);
+ [2m42[0m |         if (!surgeActive) {
+ [2m43[0m |             alert(&quot;SURGE PRICING ENGAGED. Node-wide delivery fees increased by +₹15 to manage demand.&quot;);
+    : [35;1m                       ^[0m
+ [2m44[0m |         } else {
+ [2m45[0m |             alert(&quot;Surge Pricing Disabled. Reverting to standard Shakti fleet rates.&quot;);
+ [2m45[0m |         }
+    `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/app/admin/ops/page.tsx
+
+
+> Build failed because of webpack errors
+npm error Lifecycle script `build` failed with error:
+npm error code 1
+npm error path C:\Users\HP\jatphatt\apps\frontend
+npm error workspace @casano/frontend@1.0.0
+npm error location C:\Users\HP\jatphatt\apps\frontend
+npm error command failed
+npm error command C:\WINDOWS\system32\cmd.exe /d /s /c next build
+

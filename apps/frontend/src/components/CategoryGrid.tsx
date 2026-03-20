@@ -1,76 +1,102 @@
 "use client";
 
 import Link from "next/link";
-import { PenTool, Cross, Egg, ChevronRight } from "lucide-react";
 
 export default function CategoryGrid() {
   const categories = [
     {
       id: "stationary",
-      title: "Stationary",
+      title: "Stationery",
       subtitle: "Pens, Paper & More",
-      color: "bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/20 dark:hover:bg-blue-900/40",
-      iconColor: "text-blue-600 dark:text-blue-400",
-      buttonColor: "bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600",
-      icon: <PenTool className="w-10 h-10" />,
-      link: "/category/stationary"
+      image: "/category_stationery.png",
+      link: "/category/stationary",
+      accent: "#B8962E", // Gold
+      bg: "linear-gradient(135deg, #FBF5E1, #EFEADD)",
     },
     {
       id: "pharmacy",
       title: "Pharmacy",
       subtitle: "Medicines & Health",
-      color: "bg-green-50 hover:bg-green-100 dark:bg-green-900/20 dark:hover:bg-green-900/40",
-      iconColor: "text-casano-green dark:text-[#19c74a]",
-      buttonColor: "bg-casano-green hover:bg-[#158233] dark:bg-[#19c74a] dark:hover:bg-[#14a33c]",
-      icon: <Cross className="w-10 h-10" />,
-      link: "/category/pharmacy"
+      image: "/category_pharmacy.png",
+      link: "/category/pharmacy",
+      accent: "#214A36", // Forest green
+      bg: "linear-gradient(135deg, #E6F2EC, #D0EAD9)",
     },
     {
       id: "groceries",
-      title: "Eggs & Groceries",
+      title: "Groceries",
       subtitle: "Daily Essentials",
-      color: "bg-orange-50 hover:bg-orange-100 dark:bg-orange-900/20 dark:hover:bg-orange-900/40",
-      iconColor: "text-casano-orange dark:text-orange-400",
-      buttonColor: "bg-casano-orange hover:bg-casano-orange-dark dark:bg-orange-500 dark:hover:bg-orange-600",
-      icon: <Egg className="w-10 h-10" />,
-      link: "/category/groceries"
-    }
+      image: "/category_groceries.png",
+      link: "/category/groceries",
+      accent: "#C1492E", // Saffron
+      bg: "linear-gradient(135deg, #FAE8E5, #F5D0C8)",
+    },
   ];
 
   return (
-    <div className="w-full max-w-[1400px] mx-auto px-4 py-12">
-      <div className="flex items-center justify-between mb-8">
-        <h2 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white tracking-tight transition-colors duration-300">Shop by Category</h2>
+    <div className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 py-10">
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h2
+            className="text-2xl sm:text-3xl font-black tracking-tight"
+            style={{ color: "#2A2B2A", fontFamily: "'Playfair Display', Georgia, serif" }}
+          >
+            Shop by Category
+          </h2>
+          <p className="text-sm mt-1" style={{ color: "#9A9B9A" }}>
+            From your local Kirana partner — delivered in 15 minutes
+          </p>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         {categories.map((category) => (
-          <div 
-            key={category.id} 
-            className={`${category.color} rounded-3xl p-6 sm:p-8 flex items-center justify-between transition-colors group cursor-pointer border border-transparent shadow-sm hover:shadow-md`}
-          >
-            <div className="flex-1">
-              <div className={`${category.iconColor} mb-4 bg-white dark:bg-[#2a2a2a] w-16 h-16 rounded-2xl flex items-center justify-center shadow-sm -rotate-3 group-hover:rotate-0 transition-all duration-300`}>
-                {category.icon}
-              </div>
-              <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-1 transition-colors duration-300">{category.title}</h3>
-              <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-6 transition-colors duration-300">{category.subtitle}</p>
-              
-              <Link href={category.link} className="inline-block">
-                <button className={`${category.buttonColor} text-white px-6 py-2.5 rounded-xl font-bold text-sm shadow-md transition-transform hover:-translate-y-0.5 flex items-center gap-1.5`}>
-                  Order Now <ChevronRight className="w-4 h-4" />
-                </button>
-              </Link>
-            </div>
-            
-            {/* Abstract Graphic Element right aligned */}
-            <div className="hidden sm:block opacity-20 group-hover:opacity-40 transition-opacity">
-                {/* Large blurred icon */}
-                <div className={`scale-[3] ${category.iconColor}`}>
-                    {category.icon}
+          <Link href={category.link} key={category.id}>
+            <div
+              className="group relative rounded-2xl overflow-hidden transition-all cursor-pointer"
+              style={{ border: "1px solid #E2DDD0", background: "#EFEADD" }}
+              onMouseEnter={e => {
+                (e.currentTarget as HTMLDivElement).style.borderColor = category.accent + "66";
+                (e.currentTarget as HTMLDivElement).style.boxShadow = `0 8px 32px ${category.accent}1A`;
+              }}
+              onMouseLeave={e => {
+                (e.currentTarget as HTMLDivElement).style.borderColor = "#E2DDD0";
+                (e.currentTarget as HTMLDivElement).style.boxShadow = "none";
+              }}
+            >
+              {/* Image */}
+              <div
+                className="relative h-[180px] sm:h-[200px] overflow-hidden"
+                style={{ background: category.bg }}
+              >
+                <img
+                  src={category.image}
+                  alt={category.title}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  onError={(e: any) => { (e.target as HTMLImageElement).style.display = "none"; }}
+                />
+                {/* Gradient overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent" />
+
+                {/* Label on image */}
+                <div className="absolute bottom-0 left-0 right-0 p-4">
+                  <h3 className="text-xl font-black text-white tracking-tight">{category.title}</h3>
+                  <p className="text-sm text-white/80 font-medium">{category.subtitle}</p>
                 </div>
+              </div>
+
+              {/* CTA Row */}
+              <div className="p-4 flex items-center justify-between">
+                <span className="text-sm font-medium" style={{ color: "#9A9B9A" }}>Delivered in 15 min</span>
+                <button
+                  className="text-white px-4 py-2 rounded-lg font-bold text-[13px] transition-all"
+                  style={{ background: category.accent }}
+                >
+                  Order Now
+                </button>
+              </div>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
     </div>

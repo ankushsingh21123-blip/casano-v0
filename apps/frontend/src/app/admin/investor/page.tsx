@@ -252,9 +252,9 @@ export default function InvestorDashboard() {
                     <div className="inline-block bg-rose-500/10 border border-rose-500/30 text-rose-400 font-bold text-xs uppercase tracking-widest px-3 py-1 rounded-full">
                         Proprietary Advantage
                     </div>
-                    <h2 className="text-2xl font-black text-white">The "Shakti" Logistics Engine</h2>
+                    <h2 className="text-2xl font-black text-white">The &quot;Shakti&quot; Logistics Engine</h2>
                     <p className="text-sm text-neutral-400 leading-relaxed">
-                        By tapping into the Karnataka "Shakti" scheme (free local bus travel for women) and building a specialized, safety-first all-female hyperlocal fleet, we bypass the aggressive pricing models of standard 3PL (Third Party Logistics) players like Dunzo or Shadowfax.
+                        By tapping into the Karnataka &quot;Shakti&quot; scheme (free local bus travel for women) and building a specialized, safety-first all-female hyperlocal fleet, we bypass the aggressive pricing models of standard 3PL (Third Party Logistics) players like Dunzo or Shadowfax.
                     </p>
                     <div className="flex gap-4 mt-4">
                         <div className="bg-neutral-800 p-4 rounded-xl flex-1 border border-neutral-700">

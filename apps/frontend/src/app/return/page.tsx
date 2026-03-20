@@ -109,7 +109,7 @@ export default function ReturnPortal() {
                                 }
                             }}
                         />
-                        <p className="text-[10px] text-neutral-400 mt-2 font-medium">Metadata will be cross-referenced with Rider's Delivery Photo location.</p>
+                        <p className="text-[10px] text-neutral-400 mt-2 font-medium">Metadata will be cross-referenced with Rider&apos;s Delivery Photo location.</p>
                     </div>
                 </div>
 

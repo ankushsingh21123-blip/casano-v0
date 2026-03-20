@@ -22,7 +22,7 @@ export default function RiderOnboarding() {
 
                 <div className="bg-rose-600 p-6 text-center">
                     <h1 className="text-2xl font-black text-white tracking-widest uppercase">Shakti Fleet</h1>
-                    <p className="text-rose-100 text-xs mt-1">Karnataka Women's Logistics Network</p>
+                    <p className="text-rose-100 text-xs mt-1">Karnataka Women&apos;s Logistics Network</p>
                 </div>
 
                 <div className="p-6">

@@ -22,7 +22,7 @@ const mockProduct = {
   description: 'Premium quality meticulously sourced california almonds, packed with crunch and perfect for your daily dose of healthy fats and protein. Enjoy the nutrient-dense profile that Casano guarantees.'
 };
 
-export default function ProductDetailPage({ params }: { params: { id: string } }) {
+export default function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { items, addItem, removeItem } = useCart();
   const [activeImage, setActiveImage] = useState(0);
 
@@ -50,6 +50,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
         
         {/* Breadcrumbs */}
         <nav className="flex items-center text-sm text-gray-500 dark:text-gray-400 mb-6">
+          {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
           <a href="/" className="hover:text-casano-orange transition-colors flex items-center gap-1">
             <Home className="w-4 h-4" />
             Home

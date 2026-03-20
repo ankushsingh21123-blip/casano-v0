@@ -15,6 +15,7 @@ interface ProductDetailsModalProps {
     description?: string;
     weight: string;
     deliveryTime: string;
+    stock?: number; // Added stock property
   }
 }
 
@@ -56,10 +57,10 @@ export default function ProductDetailsModal({ isOpen, onClose, product }: Produc
            {/* Carousel placeholders */}
            <div className="absolute bottom-6 flex gap-2">
               <div className="w-12 h-12 border-2 border-brand-green rounded-lg p-1 opacity-100">
-                  <img src={product.image} className="w-full h-full object-contain" />
+                  <img src={product.image} alt={product.name} className="w-full h-full object-contain" />
               </div>
               <div className="w-12 h-12 border border-gray-200 rounded-lg p-1 opacity-50">
-                  <img src={product.image} className="w-full h-full object-contain" />
+                  <img src={product.image} alt={product.name} className="w-full h-full object-contain" />
               </div>
            </div>
            
@@ -88,6 +89,9 @@ export default function ProductDetailsModal({ isOpen, onClose, product }: Produc
 
           <div className="flex items-center gap-4 mb-8">
             <div className="flex flex-col">
+               {product.stock !== undefined && product.stock > 0 && product.stock <= 5 && (
+                 <span className="text-[12px] text-[#e03131] font-bold mb-1 animate-pulse">Only {product.stock} left in stock! Hurry!</span>
+               )}
                <span className="text-xl font-bold text-gray-800">₹{product.price}</span>
                {product.originalPrice && (
                  <span className="text-[13px] text-gray-500 line-through">MRP ₹{product.originalPrice}</span>
@@ -95,8 +99,14 @@ export default function ProductDetailsModal({ isOpen, onClose, product }: Produc
                <span className="text-[10px] text-gray-500">(Inclusive of all taxes)</span>
             </div>
 
-            {/* Add Button Area */}
-            {quantity === 0 ? (
+            {/* Add Button Area / Out of Stock */}
+            {product.stock === 0 ? (
+              <button 
+                className="ml-auto bg-gray-100 text-gray-500 font-bold px-5 py-2 rounded-lg text-[13px] border border-gray-200 shadow-sm"
+              >
+                Notify Me
+              </button>
+            ) : quantity === 0 ? (
               <button 
                 onClick={() => setQuantity(1)}
                 className="ml-auto border border-brand-green text-brand-green bg-brand-light-green hover:bg-brand-green hover:text-white px-8 py-2 rounded-lg font-bold text-[14px] transition-colors shadow-sm"
@@ -122,26 +132,42 @@ export default function ProductDetailsModal({ isOpen, onClose, product }: Produc
             )}
           </div>
 
-          {/* Blinkit Guarantees */}
+          {/* Zepto Style: Coupons & Offers */}
+          <div className="mt-2 mb-6">
+            <h3 className="font-bold text-[14px] text-gray-800 mb-3 flex items-center gap-2">
+               <span className="text-brand-orange">%</span> Coupons & Offers
+            </h3>
+            <div className="bg-orange-50/50 border border-orange-100 p-3 rounded-xl flex items-start gap-3">
+               <div className="w-8 h-8 flex-shrink-0 bg-white rounded-full flex items-center justify-center border border-orange-100 p-1">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/UPI-Logo-vector.svg/1024px-UPI-Logo-vector.svg.png" alt="UPI" className="w-full h-full object-contain" />
+               </div>
+               <div>
+                 <div className="text-[13px] font-bold text-gray-800">Get up to ₹50 cashback</div>
+                 <div className="text-[11px] text-gray-500 mt-0.5 leading-snug">Pay using any UPI app. Minimum order value ₹299.</div>
+               </div>
+            </div>
+          </div>
+
+          {/* Why shop from Casano */}
           <div className="mt-4 border-t border-gray-100 pt-6">
-            <h3 className="font-bold text-[15px] text-gray-800 mb-4">Why shop from blinkit?</h3>
+            <h3 className="font-bold text-[15px] text-gray-800 mb-4">Why shop from Casano?</h3>
             <div className="flex flex-col gap-5">
               <div className="flex gap-4">
                  <div className="w-10 h-10 rounded-full bg-[#fcf2d3] flex items-center justify-center flex-shrink-0">
-                    <span className="text-xl">⏱️</span>
+                    <span className="text-xl">⚡</span>
                  </div>
                  <div>
-                    <div className="text-[13px] font-bold text-gray-800">Superfast Delivery</div>
-                    <div className="text-[12px] text-gray-500 leading-snug mt-1">Get your order delivered to your doorstep at the earliest from dark stores near you.</div>
+                    <div className="text-[13px] font-bold text-gray-800">Delivered from Your Neighbourhood</div>
+                    <div className="text-[12px] text-gray-500 leading-snug mt-1">We partner with local Kirana shops near you. Your order ships directly from your neighbourhood store — no warehouses, no waiting.</div>
                  </div>
               </div>
               <div className="flex gap-4">
                  <div className="w-10 h-10 rounded-full bg-[#fcf2d3] flex items-center justify-center flex-shrink-0">
-                    <span className="text-xl">💰</span>
+                    <span className="text-xl">🤝</span>
                  </div>
                  <div>
-                    <div className="text-[13px] font-bold text-gray-800">Best Prices & Offers</div>
-                    <div className="text-[12px] text-gray-500 leading-snug mt-1">Best price destination with offers directly from the manufacturers.</div>
+                    <div className="text-[13px] font-bold text-gray-800">Support Local Businesses</div>
+                    <div className="text-[12px] text-gray-500 leading-snug mt-1">Every order you place supports a local shopkeeper in your area — not a large corporation.</div>
                  </div>
               </div>
               <div className="flex gap-4">
@@ -149,8 +175,8 @@ export default function ProductDetailsModal({ isOpen, onClose, product }: Produc
                     <span className="text-xl">📦</span>
                  </div>
                  <div>
-                    <div className="text-[13px] font-bold text-gray-800">Wide Assortment</div>
-                    <div className="text-[12px] text-gray-500 leading-snug mt-1">Choose from 5000+ products across food, personal care, household & other categories.</div>
+                    <div className="text-[13px] font-bold text-gray-800">Verified Local Inventory</div>
+                    <div className="text-[12px] text-gray-500 leading-snug mt-1">Products are sourced directly from partner stores in your locality — fresh, local, and trusted by your community.</div>
                  </div>
               </div>
             </div>

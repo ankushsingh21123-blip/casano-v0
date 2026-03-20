@@ -2,12 +2,14 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Search, ShoppingCart, User, MapPin, ChevronDown } from "lucide-react";
+import { ShoppingCart, User, MapPin, ChevronDown } from "lucide-react";
 import ThemeToggle from "./ThemeToggle";
 import LocationModal from "./LocationModal";
 import LoginModal from "./LoginModal";
 import CartPanel from "./CartPanel";
+import SearchBar from "./SearchBar";
 import { useCart } from "@/context/CartContext";
+import { useAuth } from "@/context/AuthContext";
 
 export default function Header() {
   const [isLocationOpen, setIsLocationOpen] = useState(false);
@@ -15,94 +17,189 @@ export default function Header() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const { cartCount, cartTotal } = useCart();
+  const { isLoggedIn, user } = useAuth();
 
   useEffect(() => {
     if (isDarkMode) {
-      document.documentElement.classList.add('dark');
+      document.documentElement.classList.add("dark");
     } else {
-      document.documentElement.classList.remove('dark');
+      document.documentElement.classList.remove("dark");
     }
   }, [isDarkMode]);
 
   return (
     <>
-      <header className="sticky top-0 z-40 w-full bg-white dark:bg-[#1a1a1a] shadow-sm border-b border-gray-100 dark:border-gray-800 transition-colors duration-300">
-        <div className="flex flex-col sm:flex-row items-center justify-between h-auto sm:h-[80px] w-full max-w-[1400px] mx-auto px-4 py-3 sm:py-0 gap-3 sm:gap-6">
-          
-          {/* Logo & Location Group */}
-          <div className="flex items-center w-full sm:w-auto justify-between sm:justify-start gap-4 sm:gap-8">
-            {/* Logo */}
-            <Link href="/" className="flex-shrink-0 flex items-center">
-              <h1 className="text-2xl sm:text-3xl font-black tracking-tighter text-casano-orange">
-                Casano<span className="text-gray-900 dark:text-white transition-colors duration-300">.in</span>
-              </h1>
-            </Link>
+      {/* ── Header: Jaisalmer Sand Beige surface over Pearl White page ── */}
+      <header
+        className="sticky top-0 z-40 w-full border-b transition-colors duration-300"
+        style={{ background: "var(--surface-card)", borderColor: "var(--surface-border)" }}
+      >
+        <div className="flex items-center h-[68px] w-full max-w-[1440px] mx-auto px-4 sm:px-6 gap-4 sm:gap-6">
 
-            {/* Location Selector */}
-            <div 
-              className="group flex flex-col cursor-pointer sm:pl-8 sm:border-l sm:border-gray-100 dark:border-gray-800 transition-colors duration-300"
-              onClick={() => setIsLocationOpen(true)}
+          {/* Logo */}
+          <Link href="/" className="flex-shrink-0 flex items-center">
+            <h1 className="text-2xl font-black tracking-tight">
+              <span style={{ color: "#C1492E" }}>Casano</span>
+              <span style={{ color: "var(--text-primary)" }}>.in</span>
+            </h1>
+          </Link>
+
+          {/* Decorative vertical divider */}
+          <div className="hidden sm:block h-8 w-px" style={{ background: "var(--surface-border)" }} />
+
+          {/* Location Selector */}
+          <button
+            className="hidden sm:flex flex-col cursor-pointer group"
+            onClick={() => setIsLocationOpen(true)}
+          >
+            <div
+              className="text-[13px] font-black flex items-center gap-2 transition-colors"
+              style={{ color: "var(--text-primary)" }}
             >
-              <div className="text-sm font-black text-gray-900 dark:text-white flex items-center group-hover:text-casano-orange dark:group-hover:text-casano-orange transition-colors">
-                Delivery in 15 mins
+              {/* Animated clock loader */}
+              <div className="header-clock-loader">
+                <span className="hour" />
+                <span className="min" />
+                <span className="circel" />
               </div>
-              <div className="flex items-center text-xs text-gray-500 font-medium mt-0.5">
-                <MapPin className="w-3.5 h-3.5 mr-1 text-casano-green" />
-                <span className="truncate max-w-[120px] sm:max-w-[200px] dark:text-gray-400">Select Location</span>
-                <ChevronDown className="w-4 h-4 ml-0.5 group-hover:-translate-y-0.5 transition-transform dark:text-gray-400" />
-              </div>
+              Delivery in 15 mins
             </div>
-          </div>
+            <div className="flex items-center gap-1 mt-0.5">
+              <MapPin className="w-3 h-3" style={{ color: "#214A36" }} />
+              <span className="text-xs font-medium truncate max-w-[180px]" style={{ color: "var(--text-secondary)" }}>
+                {user?.address ? user.address.slice(0, 30) + "..." : "Select Location"}
+              </span>
+              <ChevronDown className="w-3.5 h-3.5" style={{ color: "#9A9B9A" }} />
+            </div>
+          </button>
 
-          {/* Center: Search Bar */}
-          <div className="flex-1 w-full max-w-[600px] xl:max-w-[800px] mx-auto order-3 sm:order-2">
-            <div className="relative group/search">
-              <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
-                <Search className="w-5 h-5 text-gray-400 group-focus-within/search:text-casano-orange transition-colors" />
-              </div>
-              <input
-                type="text"
-                className="block w-full p-3.5 pl-12 text-[15px] font-medium text-gray-900 dark:text-gray-200 bg-gray-50 dark:bg-[#2a2a2a] rounded-2xl outline-none focus:bg-white dark:focus:bg-[#333] focus:ring-2 focus:ring-casano-orange/20 border border-transparent focus:border-casano-orange transition-all placeholder:text-gray-400 dark:placeholder:text-gray-500 placeholder:font-normal"
-                placeholder='Search "milk", "medicines", "pens"...'
-              />
-              <div className="absolute inset-y-0 right-2 flex items-center">
-                 <button className="bg-white dark:bg-[#444] border border-gray-200 dark:border-[#555] px-3 py-1.5 rounded-xl text-xs font-bold text-gray-600 dark:text-gray-300 shadow-sm hidden sm:block transition-colors duration-300">Search</button>
-              </div>
-            </div>
+          <style dangerouslySetInnerHTML={{ __html: `
+            .header-clock-loader {
+              width: 22px;
+              height: 22px;
+              border: 2.5px solid #ee9b00a6;
+              border-radius: 50px;
+              position: relative;
+              flex-shrink: 0;
+            }
+            .header-clock-loader span {
+              display: block;
+              background: #ee9b00;
+            }
+            .header-clock-loader .hour,
+            .header-clock-loader .min {
+              width: 2px;
+              height: 7px;
+              border-radius: 50px;
+              position: absolute;
+              top: 8px;
+              left: 7px;
+              animation: clock-spin-hour 1.2s linear infinite;
+              transform-origin: top center;
+            }
+            .header-clock-loader .min {
+              height: 5.5px;
+              animation: clock-spin-min 4s linear infinite;
+            }
+            .header-clock-loader .circel {
+              width: 3px;
+              height: 3px;
+              border-radius: 50px;
+              position: absolute;
+              top: 6.5px;
+              left: 6.5px;
+              background: #ee9b00;
+            }
+            @keyframes clock-spin-hour {
+              0% { transform: rotate(0deg); }
+              100% { transform: rotate(360deg); }
+            }
+            @keyframes clock-spin-min {
+              0% { transform: rotate(0deg); }
+              100% { transform: rotate(360deg); }
+            }
+          `}} />
+
+
+          {/* Search Bar */}
+          <div className="flex-1 min-w-0 max-w-[640px] mx-auto">
+            <SearchBar placeholder='Search "milk", "medicines", "pens"...' />
           </div>
 
           {/* Right Actions */}
-          <div className="flex flex-shrink-0 items-center gap-4 sm:gap-6 order-2 sm:order-3">
-            <div className="hidden sm:block scale-75 origin-right">
-                <ThemeToggle isDarkMode={isDarkMode} toggle={() => setIsDarkMode(!isDarkMode)} />
+          <div className="flex flex-shrink-0 items-center gap-3 sm:gap-5">
+            {/* Add Your Store Link */}
+            <div className="hidden lg:flex items-center">
+              <Link
+                href="https://form.typeform.com/to/lQOu4edG#user_id=xxxxx&first_name=xxxxx&last_name=xxxxx&email=xxxxx&phone_number=xxxxx&product_id=xxxxx&auth_code=xxxxx"
+                target="_blank"
+                className="flex items-center gap-2 text-[13px] font-bold transition-transform hover:scale-105 px-3 py-1.5 rounded-full border shadow-sm"
+                style={{ color: "var(--accent-trust)", borderColor: "var(--surface-border)", background: "var(--background)" }}
+              >
+                {/* REPLACE src WITH YOUR UPLOADED SHOP IMAGE PATH */}
+                <img src="https://images.unsplash.com/photo-1604719312566-8fa2065b70d5?q=80&w=100&auto=format&fit=crop" alt="Store" className="w-5 h-5 rounded-full object-cover border" style={{ borderColor: "#E2DDD0" }} />
+                Add Your Store
+                <span className="text-xs">→</span>
+              </Link>
             </div>
-            
-            <button 
-              className="flex items-center gap-2 text-[15px] text-gray-700 dark:text-gray-300 hover:text-casano-orange dark:hover:text-casano-orange font-bold transition-colors"
-              onClick={() => setIsLoginOpen(true)}
+
+            <div className="hidden sm:block scale-75 origin-right">
+              <ThemeToggle isDarkMode={isDarkMode} toggle={() => setIsDarkMode(!isDarkMode)} />
+            </div>
+
+            {/* Account */}
+            <button
+              className="flex items-center gap-1.5 text-[14px] font-bold transition-colors"
+              style={{ color: "var(--text-primary)" }}
+              onClick={() => (isLoggedIn ? (window.location.href = "/account") : setIsLoginOpen(true))}
             >
-              <User className="w-5 h-5" />
-              <span className="hidden md:block">Account</span>
+              <div className="relative">
+                <User className="w-5 h-5" />
+                {isLoggedIn && (
+                  <span
+                    className="absolute -top-1 -right-1 w-2 h-2 rounded-full border-2"
+                    style={{ background: "#214A36", borderColor: "#EFEADD" }}
+                  />
+                )}
+              </div>
+              <span className="hidden md:block">
+                {isLoggedIn && user?.name ? user.name.split(" ")[0] : "Account"}
+              </span>
             </button>
-            <button 
+
+            {/* Cart — Saffron CTA */}
+            <button
               onClick={() => setIsCartOpen(true)}
-              className="flex items-center gap-2 bg-casano-green hover:bg-[#158233] text-white px-5 py-3 rounded-2xl font-bold text-[15px] transition-transform hover:scale-105 shadow-md shadow-casano-green/20"
+              className="relative flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl font-bold text-[14px] text-white transition-all hover:shadow-lg"
+              style={{ background: "#C1492E", boxShadow: "0 2px 8px #C1492E33" }}
+              onMouseEnter={e => (e.currentTarget.style.background = "#A63C25")}
+              onMouseLeave={e => (e.currentTarget.style.background = "#C1492E")}
             >
               <ShoppingCart className="w-5 h-5" />
               <span className="hidden sm:block">
-                {cartCount > 0 ? `${cartCount} item${cartCount > 1 ? 's' : ''} • ₹${cartTotal}` : 'My Cart'}
+                {cartCount > 0 ? `${cartCount} item${cartCount > 1 ? "s" : ""} • ₹${cartTotal}` : "My Cart"}
               </span>
+              {cartCount > 0 && (
+                <span
+                  className="sm:hidden absolute -top-1.5 -right-1.5 w-5 h-5 text-white text-[10px] font-black rounded-full flex items-center justify-center"
+                  style={{ background: "#214A36" }}
+                >
+                  {cartCount}
+                </span>
+              )}
             </button>
           </div>
         </div>
+
+        {/* Gold shimmer bottom border */}
+        <div style={{ height: "2px", background: "linear-gradient(90deg, transparent, #B8962E55, transparent)" }} />
       </header>
 
-      {/* Shared Modals */}
       <LocationModal isOpen={isLocationOpen} onClose={() => setIsLocationOpen(false)} />
       <LoginModal isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)} />
-      <CartPanel 
-        isOpen={isCartOpen} 
-        onClose={() => setIsCartOpen(false)} 
+      <CartPanel
+        isOpen={isCartOpen}
+        onClose={() => setIsCartOpen(false)}
         onLoginClick={() => { setIsCartOpen(false); setIsLoginOpen(true); }}
       />
     </>

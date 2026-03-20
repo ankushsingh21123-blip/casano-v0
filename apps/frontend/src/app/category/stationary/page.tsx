@@ -31,6 +31,7 @@ export default function StationaryPage() {
       price: 200,
       image: "https://m.media-amazon.com/images/I/61U+lSj9rZL._AC_UF1000,1000_QL80_.jpg",
       deliveryTime: "15 MINS",
+      stock: 4,
     },
     {
       id: "s4",
@@ -55,30 +56,31 @@ export default function StationaryPage() {
       price: 125,
       image: "https://m.media-amazon.com/images/I/51A4zYtGqpL._AC_UF1000,1000_QL80_.jpg",
       deliveryTime: "15 MINS",
+      stock: 2,
     }
   ];
 
   return (
-    <div className="min-h-screen bg-[#F5F5F5] font-sans">
+    <div className="min-h-screen font-sans" style={{ background: "#FDFBF7" }}>
       <Header />
       
-      <div className="bg-blue-600 text-white w-full py-12 px-4 shadow-sm relative overflow-hidden">
+      <div className="text-white w-full py-12 px-4 relative overflow-hidden" style={{ background: "linear-gradient(135deg, #B8962E, #7D6219)" }}>
          <div className="absolute right-10 bottom-0 opacity-10">
             <PenTool className="w-64 h-64 -mb-10 -mr-10" />
          </div>
          <div className="max-w-[1400px] mx-auto relative z-10 flex items-center gap-4">
-             <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur-sm">
+             <div className="w-16 h-16 rounded-2xl flex items-center justify-center" style={{ background: "rgba(255,255,255,0.2)" }}>
                  <PenTool className="w-8 h-8 text-white" />
              </div>
              <div>
-                 <h1 className="text-3xl sm:text-4xl font-black">Stationary</h1>
-                 <p className="text-blue-100 font-medium">Pens, Notebooks, Arts & Crafts</p>
+                 <h1 className="text-3xl sm:text-4xl font-black">Stationery</h1>
+                 <p className="font-medium" style={{ color: "rgba(255,255,255,0.8)" }}>Pens, Notebooks, Arts &amp; Crafts</p>
              </div>
          </div>
       </div>
 
       <main className="max-w-[1400px] mx-auto px-4 py-8 pb-24">
-        <h2 className="text-xl font-bold text-gray-900 mb-6">Explore Products</h2>
+        <h2 className="text-xl font-bold mb-6" style={{ color: "#2A2B2A" }}>Explore Products</h2>
         
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
           {products.map(product => (

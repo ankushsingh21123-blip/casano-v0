@@ -1,47 +1,229 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 @import "tailwindcss";
 
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  /* Casano Brand Colors */
-  --color-casano-orange: #FF6B2B;
-  --color-casano-orange-dark: #e05820;
-  --color-casano-orange-light: #FFF0E8;
-  --color-casano-yellow: #FFD700;
-  --color-casano-green: #1A9E3F;
-  --color-casano-green-light: #E8F7EC;
-  --color-casano-blue: #2B5FFF;
-  --color-casano-pink: #FF2D6B;
+  /* ═══════════════════════════════════════════
+     Modern Royal Rajputana Palette
+     ─────────────────────────────────────────── */
 
-  /* Neutral Colors */
-  --color-text-dark: #111111;
-  --color-text-mid: #444444;
-  --color-text-muted: #888888;
-  --color-bg-page: #F5F5F5;
-  --color-bg-card: #FFFFFF;
+  /* Backgrounds */
+  --color-raj-pearl:       #FDFBF7; /* Makrana Pearl White — main canvas */
+  --color-raj-sand:        #EFEADD; /* Jaisalmer Sand Beige — cards & surfaces */
+  --color-raj-sand-dark:   #E2DDD0; /* Deeper sand — hover states */
 
-  /* Font */
-  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  /* Primary text */
+  --color-raj-surma:       #2A2B2A; /* Surma Grey — all main text */
+  --color-raj-surma-mid:   #5A5B5A; /* Muted body text */
+  --color-raj-surma-light: #9A9B9A; /* Placeholder / subtle labels */
+
+  /* Primary CTA */
+  --color-raj-saffron:     #C1492E; /* Royal Saffron / Terracotta — buttons */
+  --color-raj-saffron-dark:#A63C25; /* Saffron hover */
+  --color-raj-saffron-light:#FAE8E5; /* Saffron tint background */
+
+  /* Trust & Success accent */
+  --color-raj-forest:      #214A36; /* Pichwai Forest Green — prices, verified */
+  --color-raj-forest-mid:  #2E6649; /* Lighter forest green */
+  --color-raj-forest-light:#E6F2EC; /* Forest tint background */
+
+  /* Gold accent for premium shimmer */
+  --color-raj-gold:        #B8962E; /* Royal Gold — optional decorative */
+  --color-raj-gold-light:  #FBF5E1; /* Gold tint */
+
+  /* Legacy Casano brand (keep for gradual migration) */
+  --color-brand-orange:    #C1492E;   /* mapped to saffron */
+  --color-casano-green:    #214A36;   /* mapped to forest */
+
+  /* Typography */
+  --font-heading: 'Playfair Display', Georgia, serif;
+  --font-ui:      'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+
+  /* Legacy alias */
+  --font-sans:    'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-display: 'Playfair Display', Georgia, serif;
 }
 
 :root {
-  --background: #F5F5F5;
-  --foreground: #111111;
+  --background:      #FDFBF7;
+  --foreground:      #2A2B2A;
+
+  /* Mapped CSS custom props for quick access */
+  --bg-main:         #FDFBF7;
+  --surface-card:    #EFEADD;
+  --surface-border:  #E2DDD0;
+  --text-primary:    #2A2B2A;
+  --text-secondary:  #5A5B5A;
+  --text-muted:      #9A9B9A;
+  --action-primary:  #C1492E;
+  --action-hover:    #A63C25;
+  --accent-trust:    #214A36;
+}
+
+/* ── Dark Mode (Stitch-designed warm dark palette) ── */
+.dark {
+  --background:      #121110;
+  --foreground:      #F1EFEA;
+
+  --bg-main:         #121110;
+  --surface-card:    #1C1B19;
+  --surface-border:  #2E2D2A;
+  --text-primary:    #F1EFEA;
+  --text-secondary:  #A09D96;
+  --text-muted:      #6B6865;
+  --action-primary:  #D15B42;
+  --action-hover:    #C1492E;
+  --accent-trust:    #2D6349;
+}
+
+.dark body {
+  background: #121110;
+  color: #F1EFEA;
+}
+
+.dark h1, .dark h2, .dark h3,
+.dark .brand-title, .dark .raj-heading {
+  color: #F1EFEA;
+}
+
+.dark .raj-surface,
+.dark .raj-card {
+  background: #1C1B19;
+  border-color: #2E2D2A;
+}
+
+.dark .raj-card:hover {
+  border-color: #D15B4266;
+  box-shadow: 0 4px 20px #D15B4215;
+}
+
+.dark .raj-price {
+  color: #2D6349;
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: #1C1B19;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #D15B4266;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #D15B42;
 }
 
 * {
   box-sizing: border-box;
 }
 
+/* ── Global heading font ── */
+h1, h2, h3,
+.brand-title, .raj-heading {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 700;
+  color: #2A2B2A;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+/* ── Body / UI / number font ── */
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans);
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background 0.3s ease, color 0.2s ease;
 }
 
-/* Scrollbar hiding utility */
+/* ── Price & inventory tags — Plus Jakarta Sans, slightly larger ── */
+.price-tag, .inventory-count {
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+/* ── Primary saffron button typography ── */
+.btn-primary, .raj-btn {
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+/* ── Ensure buttons, inputs, selects inherit UI font ── */
+button, input, select, textarea {
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+}
+
+/* ── Scrollbar hiding utility ── */
 .hide-scrollbar::-webkit-scrollbar { display: none; }
 .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* ── Rajputana scrollbar for main content ── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #EFEADD; }
+::-webkit-scrollbar-thumb { background: #C1492E66; border-radius: 8px; }
+::-webkit-scrollbar-thumb:hover { background: #C1492E; }
+
+/* ── Royal surface utility ── */
+.raj-surface {
+  background: #EFEADD;
+  border: 1px solid #E2DDD0;
+}
+.raj-card {
+  background: #EFEADD;
+  border: 1px solid #E2DDD0;
+  border-radius: 1rem;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.raj-card:hover {
+  border-color: #C1492E44;
+  box-shadow: 0 4px 20px #C1492E0F;
+}
+
+/* ── Price tag green ── */
+.raj-price {
+  color: #214A36;
+  font-weight: 800;
+}
+
+/* ── Primary CTA button ── */
+.raj-btn {
+  background: #C1492E;
+  color: #fff;
+  font-weight: 700;
+  border-radius: 0.5rem;
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+.raj-btn:hover {
+  background: #A63C25;
+  transform: translateY(-1px);
+}
+.raj-btn:active {
+  transform: translateY(0);
+}
+
+/* ── Gold shimmer separator ── */
+.raj-divider {
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #B8962E44, transparent);
+}
+
+/* ── Section heading with decorative underline ── */
+.raj-heading {
+  font-family: var(--font-display);
+  color: #2A2B2A;
+  position: relative;
+  display: inline-block;
+}
+.raj-heading::after {
+  content: '';
+  position: absolute;
+  bottom: -4px; left: 0;
+  width: 40%; height: 3px;
+  background: linear-gradient(90deg, #C1492E, #B8962E);
+  border-radius: 2px;
+}

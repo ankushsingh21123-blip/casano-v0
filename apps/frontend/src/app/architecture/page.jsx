@@ -188,7 +188,7 @@ function CustomerApp() {
             { step: 1, label: "Shopkeeper Verified", sublabel: "Krishna Store confirmed your order", status: "done", icon: "🏪" },
             { step: 2, label: "Delivery Partner Assigned", sublabel: "Ravi Kumar accepted — on the way to shop", status: "active", icon: "🛵" },
             { step: 3, label: "Customer Confirmation", sublabel: "You'll receive OTP on delivery", status: "pending", icon: "✅" },
-          ].map(v => (
+          ].map((v) => (
             <div key={v.step} style={{ display: "flex", gap: 16, marginBottom: 20, alignItems: "flex-start" }}>
               <div style={{
                 width: 48, height: 48, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center",
@@ -332,7 +332,7 @@ Response:
             { name: "Dove Soap 75g", qty: 12, price: 44, status: "medium", extra: false },
             { name: "Parachute Coconut Oil 500ml", qty: 3, price: 125, status: "low", extra: false },
             { name: "Amul Milk 500ml", qty: 0, price: 27, status: "out", extra: false },
-          ].map(item => (
+          ].map((item) => (
             <Card key={item.name} style={{ marginBottom: 8, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <div>
                 <div style={{ color: colors.text, fontSize: 14, fontWeight: 600 }}>{item.name}</div>
@@ -415,7 +415,7 @@ const dist = haversineDistance(12.9716, 77.5946, 12.9780, 77.5900);
 
       <Card style={{ marginBottom: 16 }}>
         <div style={{ color: colors.yellow, fontWeight: 700, marginBottom: 8 }}>2. Shop Ranking Score Algorithm</div>
-        <div style={{ color: colors.muted, fontSize: 13, marginBottom: 8 }}>Composite score to rank shops for a user's search</div>
+        <div style={{ color: colors.muted, fontSize: 13, marginBottom: 8 }}>Composite score to rank shops for a user&apos;s search</div>
         <CodeBlock code={`// shopRanking.js
 function calculateShopScore(shop, user, product) {
   const distance = haversineDistance(

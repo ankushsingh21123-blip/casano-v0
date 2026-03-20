@@ -1,0 +1,157 @@
+
+> @casano/frontend@1.0.0 build
+> next build
+
+   ▲ Next.js 15.5.12
+
+   Creating an optimized production build ...
+Failed to compile.
+
+./src/app/architecture/page.jsx
+Error:   [31mx[0m Expected '</', got ':'
+     ,-[[36;1;4mC:\Users\HP\jatphatt\apps\frontend\src\app\architecture\page.jsx[0m:191:1]
+ [2m188[0m |             { step: 1, label: "Shopkeeper Verified", sublabel: "Krishna Store confirmed your order", status: "done", icon: "🏪" },
+ [2m189[0m |             { step: 2, label: "Delivery Partner Assigned", sublabel: "Ravi Kumar accepted — on the way to shop", status: "active", icon: "🛵" },
+ [2m190[0m |             { step: 3, label: "Customer Confirmation", sublabel: "You'll receive OTP on delivery", status: "pending", icon: "✅" },
+ [2m191[0m |           ].map((v: any) => (
+     : [35;1m                  ^[0m
+ [2m192[0m |             <div key={v.step} style={{ display: "flex", gap: 16, marginBottom: 20, alignItems: "flex-start" }}>
+ [2m193[0m |               <div style={{
+ [2m194[0m |                 width: 48, height: 48, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center",
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/app/architecture/page.jsx
+
+./src/app/merchant/scanner/page.tsx
+Error:   [31mx[0m Expression expected
+    ,-[[36;1;4mC:\Users\HP\jatphatt\apps\frontend\src\app\merchant\scanner\page.tsx[0m:31:1]
+ [2m28[0m |     };
+ [2m29[0m | 
+ [2m30[0m |     const pushLive = () => {
+ [2m31[0m |         alert(&apos;Items bulk uploaded and pushed LIVE to the Hyperlocal App!&apos;);
+    : [35;1m              ^[0m
+ [2m32[0m |         router.push(&apos;/merchant&apos;);
+ [2m33[0m |     };
+ [2m33[0m | 
+    `----
+  [31mx[0m Expected ',', got ';'
+    ,-[[36;1;4mC:\Users\HP\jatphatt\apps\frontend\src\app\merchant\scanner\page.tsx[0m:31:1]
+ [2m28[0m |     };
+ [2m29[0m | 
+ [2m30[0m |     const pushLive = () => {
+ [2m31[0m |         alert(&apos;Items bulk uploaded and pushed LIVE to the Hyperlocal App!&apos;);
+    : [35;1m                   ^[0m
+ [2m32[0m |         router.push(&apos;/merchant&apos;);
+ [2m33[0m |     };
+ [2m33[0m | 
+    `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/app/merchant/scanner/page.tsx
+
+./src/app/page.jsx
+Error:   [31mx[0m Expression expected
+    ,-[[36;1;4mC:\Users\HP\jatphatt\apps\frontend\src\app\page.jsx[0m:19:1]
+ [2m16[0m |     };
+ [2m17[0m |     handleResize();
+ [2m18[0m |     window.addEventListener("resize", handleResize);
+ [2m19[0m |     return () => window.removeEventListener(&quot;resize&quot;, handleResize);
+    : [35;1m                                            ^[0m
+ [2m20[0m |   }, []);
+ [2m21[0m | 
+ [2m22[0m |   if (isMobile) {
+    `----
+  [31mx[0m Expected ',', got ';'
+    ,-[[36;1;4mC:\Users\HP\jatphatt\apps\frontend\src\app\page.jsx[0m:19:1]
+ [2m16[0m |     };
+ [2m17[0m |     handleResize();
+ [2m18[0m |     window.addEventListener("resize", handleResize);
+ [2m19[0m |     return () => window.removeEventListener(&quot;resize&quot;, handleResize);
+    : [35;1m                                                 ^[0m
+ [2m20[0m |   }, []);
+ [2m21[0m | 
+ [2m22[0m |   if (isMobile) {
+    `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/app/page.jsx
+
+./src/app/products/page.tsx
+Error:   [31mx[0m Expression expected
+    ,-[[36;1;4mC:\Users\HP\jatphatt\apps\frontend\src\app\products\page.tsx[0m:87:1]
+ [2m84[0m |   const [search, setSearch] = useState("");
+ [2m85[0m | 
+ [2m86[0m |   const filtered = allProducts.filter((p: any) => {
+ [2m87[0m |     const matchCat = activeCategory === &quot;All&quot; || p.category === activeCategory;
+    : [35;1m                                        ^[0m
+ [2m88[0m |     const matchSearch = p.name.toLowerCase().includes(search.toLowerCase());
+ [2m89[0m |     return matchCat && matchSearch;
+ [2m90[0m |   });
+    `----
+  [31mx[0m Expected ',', got ';'
+    ,-[[36;1;4mC:\Users\HP\jatphatt\apps\frontend\src\app\products\page.tsx[0m:87:1]
+ [2m84[0m |   const [search, setSearch] = useState("");
+ [2m85[0m | 
+ [2m86[0m |   const filtered = allProducts.filter((p: any) => {
+ [2m87[0m |     const matchCat = activeCategory === &quot;All&quot; || p.category === activeCategory;
+    : [35;1m                                             ^[0m
+ [2m88[0m |     const matchSearch = p.name.toLowerCase().includes(search.toLowerCase());
+ [2m89[0m |     return matchCat && matchSearch;
+ [2m90[0m |   });
+    `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/app/products/page.tsx
+
+./src/app/return/page.tsx
+Error:   [31mx[0m Expression expected
+    ,-[[36;1;4mC:\Users\HP\jatphatt\apps\frontend\src\app\return\page.tsx[0m:24:1]
+ [2m21[0m | 
+ [2m22[0m |         setTimeout(async () => {
+ [2m23[0m |             try {
+ [2m24[0m |                 const res = await fetch(&apos;/api/returns&apos;, {
+    : [35;1m                                        ^[0m
+ [2m25[0m |                     method: &apos;POST&apos;,
+ [2m26[0m |                     headers: { &apos;Content-Type&apos;: &apos;application/json&apos; },
+ [2m26[0m |                     body: JSON.stringify({
+    `----
+  [31mx[0m Expected ',', got ';'
+    ,-[[36;1;4mC:\Users\HP\jatphatt\apps\frontend\src\app\return\page.tsx[0m:24:1]
+ [2m21[0m | 
+ [2m22[0m |         setTimeout(async () => {
+ [2m23[0m |             try {
+ [2m24[0m |                 const res = await fetch(&apos;/api/returns&apos;, {
+    : [35;1m                                             ^[0m
+ [2m25[0m |                     method: &apos;POST&apos;,
+ [2m26[0m |                     headers: { &apos;Content-Type&apos;: &apos;application/json&apos; },
+ [2m26[0m |                     body: JSON.stringify({
+    `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/app/return/page.tsx
+
+
+> Build failed because of webpack errors
+npm error Lifecycle script `build` failed with error:
+npm error code 1
+npm error path C:\Users\HP\jatphatt\apps\frontend
+npm error workspace @casano/frontend@1.0.0
+npm error location C:\Users\HP\jatphatt\apps\frontend
+npm error command failed
+npm error command C:\WINDOWS\system32\cmd.exe /d /s /c next build

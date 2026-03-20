@@ -80,6 +80,7 @@ export default function MerchantDashboard() {
             source.close();
             clearInterval(reconInterval);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [merchant]);
 
     const runReconciliation = async () => {
@@ -102,7 +103,7 @@ export default function MerchantDashboard() {
         if (!reconciliation || !merchant) return;
 
         if (!stillHaveStock) {
-            // The merchant admits they don&apos;t have the stock. Heal the inventory.
+            // The merchant admits they don't have the stock. Heal the inventory.
             await handleUpdate(reconciliation.id, {
                 is_live: false,
                 app_reserved_stock: 0,

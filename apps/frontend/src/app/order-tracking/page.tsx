@@ -90,7 +90,7 @@ export default function OrderTrackingPage() {
             <div className="bg-gray-50 dark:bg-[#252525] rounded-2xl p-5 text-center border border-gray-200 dark:border-gray-800">
               <div className="w-10 h-10 border-4 border-gray-300 border-t-[#19c74a] rounded-full animate-spin mx-auto mb-3" />
               <h3 className="font-bold text-gray-900 dark:text-white text-sm mb-1">Assigning delivery partner</h3>
-              <p className="text-xs text-gray-500">We'll assign one as soon as your order is packed.</p>
+              <p className="text-xs text-gray-500">We&apos;ll assign one as soon as your order is packed.</p>
             </div>
           ) : (
             <div className="flex items-center gap-4">

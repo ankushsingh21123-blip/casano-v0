@@ -84,7 +84,7 @@ export default function InvestorLanding() {
                             <div className="absolute top-0 right-0 p-4 opacity-10 text-6xl group-hover:scale-110 transition-transform">🛵</div>
                             <p className="text-sm font-mono text-neutral-500 mb-2 uppercase">Logistics Advantage</p>
                             <h3 className="text-4xl font-black text-white mb-4">₹15 <span className="text-xl text-neutral-600 font-medium">/trip</span></h3>
-                            <p className="text-neutral-400">Leveraging the 'Shakti' scheme for an all-female fleet, reducing 3PL costs by 66%.</p>
+                            <p className="text-neutral-400">Leveraging the &apos;Shakti&apos; scheme for an all-female fleet, reducing 3PL costs by 66%.</p>
                         </div>
                     </div>
                 </div>
