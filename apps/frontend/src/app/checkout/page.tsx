@@ -7,6 +7,7 @@ import {
   Building2, Smartphone, Banknote, Clock, QrCode, CheckCircle2
 } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
+import AuthGuard from '@/components/AuthGuard';
 
 type PaymentMethod = 'wallets' | 'cards' | 'netbanking' | 'upi' | 'cash' | 'paylater';
 
@@ -105,6 +106,18 @@ export default function CheckoutPage() {
             // All done!
             setProcessingStep('done');
             setPaymentSuccess(true);
+            
+            const newOrderEvent = {
+              id: `#ORD_${Math.floor(1000 + Math.random() * 9000)}`,
+              item: `${items.length} item(s)`,
+              status: "new",
+              customer: "0.5km",
+              amount: totalPay,
+              timestamp: Date.now()
+            };
+            localStorage.setItem('casano_new_order', JSON.stringify(newOrderEvent));
+            if (typeof window !== 'undefined') window.dispatchEvent(new Event('storage'));
+
             setTimeout(() => {
               clearCart();
               router.push('/order-tracking');
@@ -129,6 +142,7 @@ export default function CheckoutPage() {
     : ALL_BANKS;
 
   return (
+    <AuthGuard>
     <>
       <div className="min-h-screen bg-gray-50 dark:bg-[#121212] py-8 transition-colors duration-300">
         <div className="max-w-[1000px] mx-auto px-4 sm:px-6">
@@ -676,5 +690,6 @@ export default function CheckoutPage() {
         </div>
       )}
     </>
+    </AuthGuard>
   );
 }

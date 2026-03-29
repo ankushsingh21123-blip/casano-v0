@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: casano-backend
+    env: node
+    rootDir: packages/backend
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      # Add database URI and other secrets in the Render dashboard
+      - key: PORT
+        value: 10000
