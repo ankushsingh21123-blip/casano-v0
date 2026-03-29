@@ -15,12 +15,18 @@ let app;
 let auth: any;
 let googleProvider: any;
 
-try {
-  app = getApps().length ? getApp() : initializeApp(firebaseConfig);
-  auth = getAuth(app);
-  googleProvider = new GoogleAuthProvider();
-} catch (e) {
-  console.warn("Firebase init skipped (expected during build or if API keys are missing)", e);
+if (typeof window !== "undefined") {
+  try {
+    app = getApps().length ? getApp() : initializeApp(firebaseConfig);
+    auth = getAuth(app);
+    googleProvider = new GoogleAuthProvider();
+  } catch (e) {
+    console.warn("Firebase init failed", e);
+  }
+} else {
+  // Server-side (SSR / Next.js Build) mock
+  auth = {};
+  googleProvider = {};
 }
 
 export { auth, googleProvider };
