@@ -11,11 +11,19 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID!,
 };
 
-// Prevent duplicate app initialisation in Next.js hot-reload
-const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
+let app;
+let auth: any;
+let googleProvider: any;
 
-export const auth = getAuth(app);
-export const googleProvider = new GoogleAuthProvider();
+try {
+  app = getApps().length ? getApp() : initializeApp(firebaseConfig);
+  auth = getAuth(app);
+  googleProvider = new GoogleAuthProvider();
+} catch (e) {
+  console.warn("Firebase init skipped (expected during build or if API keys are missing)", e);
+}
+
+export { auth, googleProvider };
 
 /**
  * Manages a single invisible reCAPTCHA verifier instance.
