@@ -1,3 +1,4 @@
+"use client";
 import { CategoryPageTemplate } from "@/components/CategoryPageTemplate";
 
 const products = [

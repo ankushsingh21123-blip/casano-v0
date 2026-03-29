@@ -35,12 +35,13 @@
     "twilio": "^5.12.2"
   },
   "devDependencies": {
+    "@netlify/plugin-nextjs": "^5.15.9",
     "@prisma/client": "^5.0.0",
     "@tailwindcss/postcss": "^4.2.1",
     "@types/node": "^25.4.0",
     "@types/react": "^19.2.14",
     "eslint": "^8.57.0",
-    "eslint-config-next": "15.5.12",
+    "eslint-config-next": "15.1.0",
     "prisma": "^5.0.0",
     "tailwindcss": "^4.2.1",
     "ts-node": "^10.9.2",
