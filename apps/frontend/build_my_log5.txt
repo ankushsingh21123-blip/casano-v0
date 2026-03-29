@@ -1,0 +1,105 @@
+
+> @casano/frontend@1.0.0 build
+> next build
+
+   ▲ Next.js 15.5.12
+   - Environments: .env.local
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully in 3.7s
+   Skipping validation of types
+   Skipping linting
+   Collecting page data ...
+   Generating static pages (0/41) ...
+Firebase init skipped (expected during build or if API keys are missing) Error [FirebaseError]: Firebase: Error (auth/invalid-api-key).
+    at p (C:\Users\HP\jatphatt\apps\frontend\.next\server\chunks\9156.js:4:2785)
+    at q (C:\Users\HP\jatphatt\apps\frontend\.next\server\chunks\9156.js:4:2833)
+    at e.instanceFactory (C:\Users\HP\jatphatt\apps\frontend\.next\server\chunks\9156.js:4:54431)
+    at g.getOrInitializeService (C:\Users\HP\jatphatt\apps\frontend\.next\server\chunks\9156.js:1:7342)
+    at g.initialize (C:\Users\HP\jatphatt\apps\frontend\.next\server\chunks\9156.js:1:6744)
+    at <unknown> (C:\Users\HP\jatphatt\apps\frontend\.next\server\chunks\9156.js:4:52497)
+    at a1 (C:\Users\HP\jatphatt\apps\frontend\.next\server\chunks\9156.js:4:52526)
+    at 16414 (C:\Users\HP\jatphatt\apps\frontend\.next\server\chunks\6763.js:1:1059)
+    at c (C:\Users\HP\jatphatt\apps\frontend\.next\server\webpack-runtime.js:1:127)
+    at 66872 (C:\Users\HP\jatphatt\apps\frontend\.next\server\chunks\6763.js:65:112) {
+  code: 'auth/invalid-api-key',
+  customData: [Object]
+}
+Firebase init skipped (expected during build or if API keys are missing) Error [FirebaseError]: Firebase: Error (auth/invalid-api-key).
+    at p (C:\Users\HP\jatphatt\apps\frontend\.next\server\chunks\9156.js:4:2785)
+    at q (C:\Users\HP\jatphatt\apps\frontend\.next\server\chunks\9156.js:4:2833)
+    at e.instanceFactory (C:\Users\HP\jatphatt\apps\frontend\.next\server\chunks\9156.js:4:54431)
+    at g.getOrInitializeService (C:\Users\HP\jatphatt\apps\frontend\.next\server\chunks\9156.js:1:7342)
+    at g.initialize (C:\Users\HP\jatphatt\apps\frontend\.next\server\chunks\9156.js:1:6744)
+    at <unknown> (C:\Users\HP\jatphatt\apps\frontend\.next\server\chunks\9156.js:4:52497)
+    at a1 (C:\Users\HP\jatphatt\apps\frontend\.next\server\chunks\9156.js:4:52526)
+    at 16414 (C:\Users\HP\jatphatt\apps\frontend\.next\server\chunks\6763.js:1:1059)
+    at c (C:\Users\HP\jatphatt\apps\frontend\.next\server\webpack-runtime.js:1:127)
+    at 66872 (C:\Users\HP\jatphatt\apps\frontend\.next\server\chunks\6763.js:65:112) {
+  code: 'auth/invalid-api-key',
+  customData: [Object]
+}
+   Generating static pages (10/41) 
+   Generating static pages (20/41) 
+   Generating static pages (30/41) 
+ ✓ Generating static pages (41/41)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                                      Size  First Load JS
+┌ ○ /                                         56.5 kB         215 kB
+├ ○ /_not-found                                 185 B         102 kB
+├ ○ /about                                     7.4 kB         166 kB
+├ ○ /account                                    185 B         102 kB
+├ ○ /account/addresses                         4.7 kB         142 kB
+├ ○ /account/orders                           3.49 kB         106 kB
+├ ○ /account/support                           2.7 kB         105 kB
+├ ○ /admin/investor                           4.15 kB         172 kB
+├ ○ /admin/ops                                2.75 kB         105 kB
+├ ○ /admin/wizard                             2.22 kB         104 kB
+├ ƒ /api/admin/kpis                             185 B         102 kB
+├ ƒ /api/inventory/reconcile                    185 B         102 kB
+├ ƒ /api/marts/inventory                        185 B         102 kB
+├ ƒ /api/merchants/[id]/analytics               185 B         102 kB
+├ ƒ /api/merchants/[id]/orders                  185 B         102 kB
+├ ƒ /api/merchants/[id]/predictions             185 B         102 kB
+├ ƒ /api/merchants/[id]/products                185 B         102 kB
+├ ƒ /api/merchants/[id]/products/[productId]    185 B         102 kB
+├ ƒ /api/merchants/nearby                       185 B         102 kB
+├ ƒ /api/ondc/webhook                           185 B         102 kB
+├ ƒ /api/orders/[id]/deliver                    185 B         102 kB
+├ ƒ /api/orders/[id]/verify-handover            185 B         102 kB
+├ ƒ /api/orders/checkout                        185 B         102 kB
+├ ƒ /api/returns                                185 B         102 kB
+├ ƒ /api/stream                                 185 B         102 kB
+├ ƒ /api/vision/parse                           185 B         102 kB
+├ ƒ /api/webhooks/walk-in                       185 B         102 kB
+├ ○ /architecture                             14.1 kB         116 kB
+├ ○ /category/fashion                           145 B         159 kB
+├ ○ /category/gadgets                           146 B         159 kB
+├ ○ /category/groceries                         146 B         159 kB
+├ ○ /category/gym                               145 B         159 kB
+├ ○ /category/pharmacy                        4.71 kB         166 kB
+├ ○ /category/stationary                      1.35 kB         163 kB
+├ ○ /category/stationery                        146 B         159 kB
+├ ○ /checkout                                    9 kB         152 kB
+├ ○ /dunkandar                                4.71 kB         163 kB
+├ ○ /investors                                2.77 kB         105 kB
+├ ○ /merchant                                 11.4 kB         180 kB
+├ ○ /merchant/scanner                         1.84 kB         104 kB
+├ ○ /order-success                            3.58 kB         159 kB
+├ ○ /order-tracking                           4.52 kB         107 kB
+├ ƒ /product/[id]                              3.6 kB         106 kB
+├ ○ /products                                 4.92 kB         161 kB
+├ ○ /return                                   2.03 kB         104 kB
+├ ○ /rider                                    2.15 kB         104 kB
+└ ○ /rider/onboarding                          1.5 kB         104 kB
++ First Load JS shared by all                  102 kB
+  ├ chunks/1255-40d94dfe15c52dbe.js             46 kB
+  ├ chunks/4bd1b696-f785427dddbba9fb.js       54.2 kB
+  └ other shared chunks (total)               2.01 kB
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
