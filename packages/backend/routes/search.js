@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { db, auth, security } = require('../server');
-const { getTopShops } = require('../utils/algorithms');
+const { getTopShops } = require('../../../utils/algorithms');
 
 // ── Product & Shop Search ──
 router.post('/nearby', auth, security.searchLimiter, async (req, res) => {
