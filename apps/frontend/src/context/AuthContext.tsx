@@ -18,7 +18,7 @@ import {
   signInWithPhoneNumber,
   ConfirmationResult,
 } from "firebase/auth";
-import { auth, googleProvider, getRecaptchaVerifier, clearRecaptchaVerifier } from "@/lib/firebase";
+import { auth, googleProvider, getRecaptchaVerifier, clearRecaptchaVerifier, isFirebaseReady } from "@/lib/firebase";
 
 // ─── Profile (stored locally alongside Firebase UID) ─────────────────────────
 type LocalProfile = {
@@ -83,6 +83,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // Listen to Firebase auth state
   useEffect(() => {
+    if (!isFirebaseReady) {
+      // Firebase not configured — skip auth listener, allow app to load
+      setLoading(false);
+      return;
+    }
     const unsub = onAuthStateChanged(auth, (fbUser) => {
       setFirebaseUser(fbUser);
       if (fbUser) setProfileState(loadProfile());
@@ -94,6 +99,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // ── Google ──────────────────────────────────────────────────────────────────
   const loginWithGoogle = async () => {
     setAuthError(null);
+    if (!isFirebaseReady) { setAuthError("Auth is not configured. Please add Firebase credentials."); return; }
     try {
       await signInWithPopup(auth, googleProvider);
     } catch (e: any) {
