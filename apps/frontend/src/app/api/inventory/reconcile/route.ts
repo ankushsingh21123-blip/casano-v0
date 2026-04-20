@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
 import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 
@@ -44,3 +46,4 @@ export async function POST(req: Request) {
         return NextResponse.json({ error: 'Failed to run reconciliation' }, { status: 500 });
     }
 }
+

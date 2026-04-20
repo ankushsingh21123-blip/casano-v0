@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 
@@ -16,3 +18,4 @@ export async function GET(request: Request) {
         return NextResponse.json({ error: 'Failed to fetch merchants' }, { status: 500 });
     }
 }
+

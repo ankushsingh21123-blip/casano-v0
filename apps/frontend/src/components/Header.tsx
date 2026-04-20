@@ -16,6 +16,7 @@ export default function Header() {
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const { cartCount, cartTotal } = useCart();
   const { isLoggedIn, user } = useAuth();
 
@@ -27,17 +28,24 @@ export default function Header() {
     }
   }, [isDarkMode]);
 
+  useEffect(() => {
+    const onScroll = () => setIsScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
     <>
       {/* ── Header: Jaisalmer Sand Beige surface over Pearl White page ── */}
       <header
-        className="sticky top-0 z-40 w-full border-b transition-colors duration-300"
-        style={{ background: "var(--surface-card)", borderColor: "var(--surface-border)" }}
+        id="main-header"
+        className={`sticky top-0 z-40 w-full border-b transition-all duration-300 ${isScrolled ? "header-frosted shadow-sm" : "glass"}`}
+        style={{ borderColor: "var(--surface-border)" }}
       >
         <div className="flex items-center h-[68px] w-full max-w-[1440px] mx-auto px-4 sm:px-6 gap-4 sm:gap-6">
 
           {/* Logo */}
-          <Link href="/" className="flex-shrink-0 flex items-center">
+          <Link href="/" id="header-logo" className="flex-shrink-0 flex items-center">
             <h1 className="text-2xl font-black tracking-tight">
               <span style={{ color: "#C1492E" }}>Casano</span>
               <span style={{ color: "var(--text-primary)" }}>.in</span>
@@ -49,6 +57,7 @@ export default function Header() {
 
           {/* Location Selector */}
           <button
+            id="btn-location-selector"
             className="hidden sm:flex flex-col cursor-pointer group"
             onClick={() => setIsLocationOpen(true)}
           >
@@ -72,55 +81,6 @@ export default function Header() {
               <ChevronDown className="w-3.5 h-3.5" style={{ color: "#9A9B9A" }} />
             </div>
           </button>
-
-          <style dangerouslySetInnerHTML={{ __html: `
-            .header-clock-loader {
-              width: 22px;
-              height: 22px;
-              border: 2.5px solid #ee9b00a6;
-              border-radius: 50px;
-              position: relative;
-              flex-shrink: 0;
-            }
-            .header-clock-loader span {
-              display: block;
-              background: #ee9b00;
-            }
-            .header-clock-loader .hour,
-            .header-clock-loader .min {
-              width: 2px;
-              height: 7px;
-              border-radius: 50px;
-              position: absolute;
-              top: 8px;
-              left: 7px;
-              animation: clock-spin-hour 1.2s linear infinite;
-              transform-origin: top center;
-            }
-            .header-clock-loader .min {
-              height: 5.5px;
-              animation: clock-spin-min 4s linear infinite;
-            }
-            .header-clock-loader .circel {
-              width: 3px;
-              height: 3px;
-              border-radius: 50px;
-              position: absolute;
-              top: 6.5px;
-              left: 6.5px;
-              background: #ee9b00;
-            }
-            @keyframes clock-spin-hour {
-              0% { transform: rotate(0deg); }
-              100% { transform: rotate(360deg); }
-            }
-            @keyframes clock-spin-min {
-              0% { transform: rotate(0deg); }
-              100% { transform: rotate(360deg); }
-            }
-          `}} />
-
-
           {/* Search Bar */}
           <div className="flex-1 min-w-0 max-w-[640px] mx-auto">
             <SearchBar placeholder='Search "milk", "medicines", "pens"...' />
@@ -132,6 +92,7 @@ export default function Header() {
             <div className="hidden lg:flex items-center">
               <Link
                 href="https://form.typeform.com/to/lQOu4edG#user_id=xxxxx&first_name=xxxxx&last_name=xxxxx&email=xxxxx&phone_number=xxxxx&product_id=xxxxx&auth_code=xxxxx"
+                id="link-add-store"
                 target="_blank"
                 className="flex items-center gap-2 text-[13px] font-bold transition-transform hover:scale-105 px-3 py-1.5 rounded-full border shadow-sm"
                 style={{ color: "var(--accent-trust)", borderColor: "var(--surface-border)", background: "var(--background)" }}
@@ -149,6 +110,7 @@ export default function Header() {
 
             {/* Account */}
             <button
+              id="btn-account"
               className="flex items-center gap-1.5 text-[14px] font-bold transition-colors"
               style={{ color: "var(--text-primary)" }}
               onClick={() => (isLoggedIn ? (window.location.href = "/account") : setIsLoginOpen(true))}
@@ -169,6 +131,7 @@ export default function Header() {
 
             {/* Cart — Saffron CTA */}
             <button
+              id="btn-cart-toggle"
               onClick={() => setIsCartOpen(true)}
               className="relative flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl font-bold text-[14px] text-white transition-all hover:shadow-lg"
               style={{ background: "#C1492E", boxShadow: "0 2px 8px #C1492E33" }}

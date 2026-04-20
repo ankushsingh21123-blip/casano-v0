@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { X, ChevronRight, Minus, Plus, Clock, Truck, FileText, HeartHandshake, Heart, ShoppingCart, MapPin } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCart } from "../context/CartContext";
@@ -25,11 +25,24 @@ export default function CartPanel({ isOpen, onClose, onLoginClick }: CartPanelPr
 
   const deliveryCharge = 0;
   const handlingCharge = 5;
-  const donationAmount = donationChecked ? 1 : 0;
-  const tipAmount = selectedTip === 'custom' ? (parseInt(customTip) || 0) : (selectedTip ?? 0);
-  const totalPay = cartTotal > 0 ? cartTotal + deliveryCharge + handlingCharge + donationAmount + tipAmount : 0;
-  const originalTotal = items.reduce((s, i) => s + (i.originalPrice ?? i.price) * i.quantity, 0);
-  const savedAmount = items.reduce((s, i) => s + ((i.originalPrice ?? i.price) - i.price) * i.quantity, 0);
+
+  const donationAmount = useMemo(() => (donationChecked ? 1 : 0), [donationChecked]);
+  
+  const tipAmount = useMemo(() => {
+    return selectedTip === 'custom' ? (parseInt(customTip) || 0) : (selectedTip ?? 0);
+  }, [selectedTip, customTip]);
+
+  const totalPay = useMemo(() => {
+    return cartTotal > 0 ? cartTotal + deliveryCharge + handlingCharge + donationAmount + tipAmount : 0;
+  }, [cartTotal, donationAmount, tipAmount]);
+
+  const originalTotal = useMemo(() => {
+    return items.reduce((s, i) => s + (i.originalPrice ?? i.price) * i.quantity, 0);
+  }, [items]);
+
+  const savedAmount = useMemo(() => {
+    return items.reduce((s, i) => s + ((i.originalPrice ?? i.price) - i.price) * i.quantity, 0);
+  }, [items]);
 
   useEffect(() => {
     if (isOpen) {

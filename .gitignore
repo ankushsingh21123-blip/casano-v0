@@ -46,4 +46,24 @@ next-env.d.ts
 # Local Netlify folder
 .netlify
 
-.vercel
+# Local dumps / logs (do not commit)
+ALL_CODE.txt
+.git-filter-remove-paths*.txt
+apps/frontend/out/
+/build_output*.log
+apps/frontend/build.log
+apps/frontend/lint.log
+apps/frontend/vercel_*.log
+apps/frontend/build_output*.log
+apps/frontend/build_my_log*.txt
+apps/frontend/build_output.txt
+apps/frontend/frontend_lint.txt
+apps/frontend/lint_*.txt
+apps/frontend/npm_ls.txt
+apps/frontend/vercel_*.txt
+apps/frontend/eslint.json
+casano/lint_output.txt
+/ip.txt
+/ip_utf8.txt
+/ports.txt
+/ports_utf8.txt
