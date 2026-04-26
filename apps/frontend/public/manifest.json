@@ -1,16 +1,50 @@
 {
-    "name": "Hyperlocal OS",
-    "short_name": "Hyperlocal",
-    "description": "Zero-CapEx Hyperlocal Quick Commerce",
-    "start_url": "/merchant",
-    "display": "standalone",
-    "background_color": "#ffffff",
-    "theme_color": "#e11d48",
-    "icons": [
-        {
-            "src": "/favicon.ico",
-            "sizes": "64x64 32x32 24x24 16x16",
-            "type": "image/x-icon"
-        }
-    ]
+  "name": "Casano — India's Last Minute App",
+  "short_name": "Casano",
+  "description": "Get groceries, stationery, medicines and more delivered in 15 minutes from your local Kirana store.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FDFBF7",
+  "theme_color": "#C1492E",
+  "categories": ["shopping", "food", "lifestyle"],
+  "lang": "en-IN",
+  "dir": "ltr",
+  "prefer_related_applications": false,
+  "icons": [
+    {
+      "src": "/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Browse Groceries",
+      "short_name": "Groceries",
+      "url": "/category/groceries",
+      "icons": [{ "src": "/icons/icon-512x512.png", "sizes": "512x512" }]
+    },
+    {
+      "name": "My Orders",
+      "short_name": "Orders",
+      "url": "/account/orders",
+      "icons": [{ "src": "/icons/icon-512x512.png", "sizes": "512x512" }]
+    },
+    {
+      "name": "Search Products",
+      "short_name": "Search",
+      "url": "/products",
+      "icons": [{ "src": "/icons/icon-512x512.png", "sizes": "512x512" }]
+    }
+  ]
 }
