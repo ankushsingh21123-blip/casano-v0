@@ -4,20 +4,21 @@ import { useState, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   ChevronDown, ChevronUp, Lock, CreditCard, Wallet,
-  Building2, Smartphone, Banknote, Clock, QrCode, CheckCircle2
+  Building2, Smartphone, Banknote, Clock, QrCode, CheckCircle2,
+  Store, Truck, MapPin
 } from 'lucide-react';
+import { ReactNode } from 'react';
 import { useCart } from '../../context/CartContext';
-import AuthGuard from '@/components/AuthGuard';
 
 type PaymentMethod = 'wallets' | 'cards' | 'netbanking' | 'upi' | 'cash' | 'paylater';
 
 /* ── Bank data ── */
 const TOP_BANKS = [
-  { id: 'hdfc', name: 'HDFC Bank', color: '#004C8F', emoji: '🏦' },
-  { id: 'kotak', name: 'Kotak', color: '#EF3E33', emoji: '🏧' },
-  { id: 'icici', name: 'ICICI', color: '#F07B1A', emoji: '🏛️' },
-  { id: 'sbi', name: 'SBI', color: '#22408B', emoji: '🏗️' },
-  { id: 'axis', name: 'Axis Bank', color: '#97144C', emoji: '💳' },
+  { id: 'hdfc', name: 'HDFC Bank', color: '#004C8F', initial: 'H' },
+  { id: 'kotak', name: 'Kotak', color: '#EF3E33', initial: 'K' },
+  { id: 'icici', name: 'ICICI', color: '#F07B1A', initial: 'I' },
+  { id: 'sbi', name: 'SBI', color: '#22408B', initial: 'S' },
+  { id: 'axis', name: 'Axis Bank', color: '#97144C', initial: 'A' },
 ];
 
 const ALL_BANKS = [
@@ -28,9 +29,9 @@ const ALL_BANKS = [
 
 /* ── UPI Apps ── */
 const UPI_APPS = [
-  { id: 'gpay', name: 'G Pay', emoji: 'G', bg: '#4285F4', fg: '#fff' },
-  { id: 'phonepe', name: 'PhonePe', emoji: 'Pe', bg: '#5f259f', fg: '#fff' },
-  { id: 'paytm', name: 'Paytm', emoji: 'P', bg: '#00B9F1', fg: '#fff' },
+  { id: 'gpay', name: 'G Pay', initial: 'G', bg: '#4285F4', fg: '#fff' },
+  { id: 'phonepe', name: 'PhonePe', initial: 'Pe', bg: '#5f259f', fg: '#fff' },
+  { id: 'paytm', name: 'Paytm', initial: 'P', bg: '#00B9F1', fg: '#fff' },
 ];
 
 export default function CheckoutPage() {
@@ -106,18 +107,6 @@ export default function CheckoutPage() {
             // All done!
             setProcessingStep('done');
             setPaymentSuccess(true);
-            
-            const newOrderEvent = {
-              id: `#ORD_${Math.floor(1000 + Math.random() * 9000)}`,
-              item: `${items.length} item(s)`,
-              status: "new",
-              customer: "0.5km",
-              amount: totalPay,
-              timestamp: Date.now()
-            };
-            localStorage.setItem('casano_new_order', JSON.stringify(newOrderEvent));
-            if (typeof window !== 'undefined') window.dispatchEvent(new Event('storage'));
-
             setTimeout(() => {
               clearCart();
               router.push('/order-tracking');
@@ -142,7 +131,6 @@ export default function CheckoutPage() {
     : ALL_BANKS;
 
   return (
-    <AuthGuard>
     <>
       <div className="min-h-screen bg-gray-50 dark:bg-[#121212] py-8 transition-colors duration-300">
         <div className="max-w-[1000px] mx-auto px-4 sm:px-6">
@@ -281,8 +269,8 @@ export default function CheckoutPage() {
                               : 'border-gray-100 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-600'
                           }`}
                         >
-                          <div style={{ background: bank.color }} className="w-9 h-9 rounded-full flex items-center justify-center text-white text-lg">
-                            {bank.emoji}
+                          <div style={{ background: bank.color }} className="w-9 h-9 rounded-full flex items-center justify-center text-white text-sm font-black">
+                            {bank.initial}
                           </div>
                           <span className="text-[10px] font-bold text-gray-700 dark:text-gray-300 leading-tight">{bank.name}</span>
                           {selectedBank === bank.id && (
@@ -352,7 +340,7 @@ export default function CheckoutPage() {
                           }`}
                         >
                           <div style={{ background: app.bg, color: app.fg }} className="w-12 h-12 rounded-2xl flex items-center justify-center font-black text-sm shadow-md">
-                            {app.emoji}
+                            {app.initial}
                           </div>
                           <span className="text-[11px] font-bold text-gray-700 dark:text-gray-300">{app.name}</span>
                         </button>
@@ -436,7 +424,7 @@ export default function CheckoutPage() {
                 {activeAccordion === 'cash' && (
                   <div className="px-5 pb-5 pt-2">
                     <div className="bg-amber-50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-800/30 rounded-xl p-4 flex items-start gap-3">
-                      <span className="text-xl flex-shrink-0">💵</span>
+                      <Banknote className="w-6 h-6 text-amber-600 flex-shrink-0" />
                       <p className="text-sm font-medium text-amber-800 dark:text-amber-300 leading-relaxed">
                         Please keep exact change handy to help us serve you better.
                       </p>
@@ -475,7 +463,7 @@ export default function CheckoutPage() {
                 {/* Delivery Address */}
                 <div className="bg-white dark:bg-[#1a1a1a] rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-gray-800">
                   <h3 className="font-bold text-gray-900 dark:text-white mb-3 text-sm uppercase tracking-wide flex items-center gap-2">
-                    📍 Delivery Address
+                    <MapPin className="w-4 h-4 text-[#19c74a]" /> Delivery Address
                   </h3>
                   <p className="text-[13px] text-gray-500 dark:text-gray-400 leading-relaxed">
                     <span className="font-semibold text-[#19c74a]">Home: </span>
@@ -494,7 +482,11 @@ export default function CheckoutPage() {
                     {items.map(item => (
                       <div key={item.id} className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-lg bg-gray-50 dark:bg-[#252525] border border-gray-100 dark:border-gray-800 flex-shrink-0 overflow-hidden">
-                          <img src={item.image} alt={item.name} className="w-full h-full object-contain p-1" />
+                          {item.image ? (
+                            <img src={item.image} alt={item.name} className="w-full h-full object-contain p-1" />
+                          ) : (
+                            <div className="w-full h-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center text-[10px] text-gray-400">img</div>
+                          )}
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className="text-xs font-semibold text-gray-800 dark:text-gray-200 truncate">{item.size}</p>
@@ -543,11 +535,11 @@ export default function CheckoutPage() {
 
       {/* ── Async Pipeline Processing Overlay (Stripe → Kafka → Rider) ── */}
       {isProcessing && (() => {
-        const steps = [
-          { id: 'initializing', icon: '🔐', label: 'Securing Connection', sub: 'Encrypting your payment details...' },
-          { id: 'stripe',       icon: '💳', label: 'Contacting Payment Gateway', sub: 'Verifying with Stripe...' },
-          { id: 'kafka',        icon: '🏪', label: 'Requesting Nearby Store', sub: 'Sending order request to your local Kirana partner...' },
-          { id: 'rider',        icon: '🛵', label: 'Dispatching Your Rider', sub: 'Matching nearest delivery partner...' },
+        const steps: { id: string; icon: ReactNode; label: string; sub: string }[] = [
+          { id: 'initializing', icon: <Lock className="w-5 h-5" />, label: 'Securing Connection', sub: 'Encrypting your payment details...' },
+          { id: 'stripe',       icon: <CreditCard className="w-5 h-5" />, label: 'Contacting Payment Gateway', sub: 'Verifying with Stripe...' },
+          { id: 'kafka',        icon: <Store className="w-5 h-5" />, label: 'Requesting Nearby Store', sub: 'Sending order request to your local Kirana partner...' },
+          { id: 'rider',        icon: <Truck className="w-5 h-5" />, label: 'Dispatching Your Rider', sub: 'Matching nearest delivery partner...' },
         ];
         const currentIdx = steps.findIndex(s => s.id === processingStep);
         const current = steps[currentIdx] ?? steps[0];
@@ -557,7 +549,7 @@ export default function CheckoutPage() {
             <div className="relative w-20 h-20 flex items-center justify-center">
               <div className="absolute inset-0 border-4 border-gray-100 dark:border-gray-800 rounded-full" />
               <div className="absolute inset-0 border-4 border-transparent border-t-[#19c74a] rounded-full animate-spin" />
-              <span className="text-3xl">{current.icon}</span>
+              <span className="text-[#19c74a]">{current.icon}</span>
             </div>
 
             <div className="text-center">
@@ -574,7 +566,7 @@ export default function CheckoutPage() {
                     i === currentIdx ? 'border-[#19c74a] text-[#19c74a] bg-[#e8f9ee] dark:bg-[#19c74a]/10 scale-110' :
                                        'border-gray-200 dark:border-gray-700 text-gray-300 dark:text-gray-600'
                   }`}>
-                    {i < currentIdx ? '✓' : step.icon}
+                    {i < currentIdx ? <CheckCircle2 className="w-4 h-4" /> : step.icon}
                   </div>
                   {i < steps.length - 1 && (
                     <div className={`w-8 h-0.5 rounded-full transition-all duration-500 ${
@@ -690,6 +682,5 @@ export default function CheckoutPage() {
         </div>
       )}
     </>
-    </AuthGuard>
   );
 }

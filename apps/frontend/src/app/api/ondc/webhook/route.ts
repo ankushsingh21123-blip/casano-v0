@@ -1,5 +1,3 @@
-export const dynamic = 'force-dynamic';
-export const runtime = 'nodejs';
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { eventBus } from '@/lib/eventBus';
@@ -59,4 +57,3 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: 'Internal Server Error processing network request' }, { status: 500 });
     }
 }
-

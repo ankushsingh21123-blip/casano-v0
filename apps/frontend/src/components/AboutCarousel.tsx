@@ -8,6 +8,7 @@ const AboutCarousel = () => {
   return (
     <div className="carousel-wrapper py-24 w-full overflow-hidden" style={{ background: '#FDFBF7' }}>
       <div className="max-w-[1200px] mx-auto text-center mb-16 px-4">
+        <span className="inline-block bg-[#FAE8E5] text-[#C1492E] text-[11px] font-extrabold uppercase tracking-[0.1em] px-4 py-1.5 rounded-full mb-4">Our Ecosystem</span>
         <h2 className="text-3xl sm:text-4xl font-bold mb-4" style={{ color: '#2A2B2A', fontFamily: "'Playfair Display', serif" }}>
           The Heart of Casano
         </h2>
@@ -21,7 +22,6 @@ const AboutCarousel = () => {
           
           {/* Card 1: Local Shop */}
           <Link href="/products" className="card-item group">
-            {/* REPLACE WITH YOUR UPLOADED SHOP IMAGE (e.g. src="/images/your_shop_image.jpg") */}
             <div className="card-image bg-cover bg-center h-32 w-full" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1604719312566-8fa2065b70d5?q=80&w=500&auto=format&fit=crop')" }} />
             <div className="p-5 flex flex-col flex-1 justify-between">
               <div>
@@ -96,7 +96,7 @@ const AboutCarousel = () => {
             </div>
           </div>
 
-          {/* Cards 5-10: Rest of the 10-card 3D circle */}
+          {/* Cards 5-10 */}
           <Link href="/products" className="card-item group">
             <div className="card-image bg-cover bg-center h-32 w-full" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=500&auto=format&fit=crop')" }} />
             <div className="p-5 flex flex-col flex-1 justify-between">
@@ -116,7 +116,6 @@ const AboutCarousel = () => {
           </div>
 
           <div className="card-item group">
-            {/* Update the filename to match whatever you save your photo as in the public folder */}
             <div className="card-image bg-cover bg-center h-full w-full opacity-80" style={{ backgroundImage: "url('/city-coverage.jpg')" }} />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent p-5 flex flex-col justify-end">
               <h3 className="font-bold text-lg text-white mb-1" style={{ fontFamily: "'Playfair Display', serif" }}>City Coverage</h3>
@@ -192,15 +191,16 @@ const AboutCarousel = () => {
         .founder-details { display: flex; flex-direction: column; gap: 1px; color: #fff; }
         .founder-about { color: #ccc; padding-top: 4px; font-size: 10px; }
 
+        /* ── 3D Carousel Scene ── */
         .card-3d-scene {
           position: relative;
           width: 100%;
-          height: 480px;
+          height: 520px;
           display: flex;
           align-items: center;
           justify-content: center;
-          overflow: hidden;
-          perspective: 1200px;
+          overflow: visible;
+          perspective: 1400px;
         }
 
         .card-3d-container {
@@ -208,11 +208,11 @@ const AboutCarousel = () => {
           width: 260px;
           height: 360px;
           transform-style: preserve-3d;
-          animation: autoRun3d 30s linear infinite;
+          animation: autoRun3d 50s linear infinite;
           will-change: transform;
         }
 
-        /* Hover pauses the rotation */
+        /* Hover pauses the rotation smoothly */
         .card-3d-container:hover {
           animation-play-state: paused !important;
         }
@@ -235,6 +235,7 @@ const AboutCarousel = () => {
           will-change: transform;
           cursor: pointer;
           text-decoration: none;
+          backface-visibility: hidden;
         }
 
         .card-item:hover {
@@ -243,7 +244,7 @@ const AboutCarousel = () => {
         }
 
         .card-item:hover .card-image {
-          transform: scale(1.05); /* inner image scales up slightly */
+          transform: scale(1.05);
         }
         
         .card-image {
@@ -255,31 +256,50 @@ const AboutCarousel = () => {
           to { transform: rotateY(-360deg); }
         }
 
-        .card-item:nth-child(1) { transform: translate(-50%, -50%) rotateY(0deg) translateZ(400px); }
-        .card-item:nth-child(2) { transform: translate(-50%, -50%) rotateY(36deg) translateZ(400px); }
-        .card-item:nth-child(3) { transform: translate(-50%, -50%) rotateY(72deg) translateZ(400px); }
-        .card-item:nth-child(4) { transform: translate(-50%, -50%) rotateY(108deg) translateZ(400px); }
-        .card-item:nth-child(5) { transform: translate(-50%, -50%) rotateY(144deg) translateZ(400px); }
-        .card-item:nth-child(6) { transform: translate(-50%, -50%) rotateY(180deg) translateZ(400px); }
-        .card-item:nth-child(7) { transform: translate(-50%, -50%) rotateY(216deg) translateZ(400px); }
-        .card-item:nth-child(8) { transform: translate(-50%, -50%) rotateY(252deg) translateZ(400px); }
-        .card-item:nth-child(9) { transform: translate(-50%, -50%) rotateY(288deg) translateZ(400px); }
-        .card-item:nth-child(10){ transform: translate(-50%, -50%) rotateY(324deg) translateZ(400px); }
+        /* Desktop: larger radius to prevent clipping */
+        .card-item:nth-child(1) { transform: translate(-50%, -50%) rotateY(0deg) translateZ(480px); }
+        .card-item:nth-child(2) { transform: translate(-50%, -50%) rotateY(36deg) translateZ(480px); }
+        .card-item:nth-child(3) { transform: translate(-50%, -50%) rotateY(72deg) translateZ(480px); }
+        .card-item:nth-child(4) { transform: translate(-50%, -50%) rotateY(108deg) translateZ(480px); }
+        .card-item:nth-child(5) { transform: translate(-50%, -50%) rotateY(144deg) translateZ(480px); }
+        .card-item:nth-child(6) { transform: translate(-50%, -50%) rotateY(180deg) translateZ(480px); }
+        .card-item:nth-child(7) { transform: translate(-50%, -50%) rotateY(216deg) translateZ(480px); }
+        .card-item:nth-child(8) { transform: translate(-50%, -50%) rotateY(252deg) translateZ(480px); }
+        .card-item:nth-child(9) { transform: translate(-50%, -50%) rotateY(288deg) translateZ(480px); }
+        .card-item:nth-child(10){ transform: translate(-50%, -50%) rotateY(324deg) translateZ(480px); }
         
+        /* Mobile responsive: smaller cards, tighter radius */
         @media (max-width: 768px) {
-          .card-3d-scene { perspective: 800px; height: 400px; }
-          .card-3d-container { width: 180px; height: 260px; }
-          .card-item { width: 180px; height: 260px; }
-          .card-item:nth-child(1) { transform: translate(-50%, -50%) rotateY(0deg) translateZ(280px); }
-          .card-item:nth-child(2) { transform: translate(-50%, -50%) rotateY(36deg) translateZ(280px); }
-          .card-item:nth-child(3) { transform: translate(-50%, -50%) rotateY(72deg) translateZ(280px); }
-          .card-item:nth-child(4) { transform: translate(-50%, -50%) rotateY(108deg) translateZ(280px); }
-          .card-item:nth-child(5) { transform: translate(-50%, -50%) rotateY(144deg) translateZ(280px); }
-          .card-item:nth-child(6) { transform: translate(-50%, -50%) rotateY(180deg) translateZ(280px); }
-          .card-item:nth-child(7) { transform: translate(-50%, -50%) rotateY(216deg) translateZ(280px); }
-          .card-item:nth-child(8) { transform: translate(-50%, -50%) rotateY(252deg) translateZ(280px); }
-          .card-item:nth-child(9) { transform: translate(-50%, -50%) rotateY(288deg) translateZ(280px); }
-          .card-item:nth-child(10){ transform: translate(-50%, -50%) rotateY(324deg) translateZ(280px); }
+          .card-3d-scene { perspective: 900px; height: 420px; overflow: visible; }
+          .card-3d-container { width: 180px; height: 260px; animation-duration: 60s; }
+          .card-item { width: 170px; height: 250px; }
+          .card-item:nth-child(1) { transform: translate(-50%, -50%) rotateY(0deg) translateZ(300px); }
+          .card-item:nth-child(2) { transform: translate(-50%, -50%) rotateY(36deg) translateZ(300px); }
+          .card-item:nth-child(3) { transform: translate(-50%, -50%) rotateY(72deg) translateZ(300px); }
+          .card-item:nth-child(4) { transform: translate(-50%, -50%) rotateY(108deg) translateZ(300px); }
+          .card-item:nth-child(5) { transform: translate(-50%, -50%) rotateY(144deg) translateZ(300px); }
+          .card-item:nth-child(6) { transform: translate(-50%, -50%) rotateY(180deg) translateZ(300px); }
+          .card-item:nth-child(7) { transform: translate(-50%, -50%) rotateY(216deg) translateZ(300px); }
+          .card-item:nth-child(8) { transform: translate(-50%, -50%) rotateY(252deg) translateZ(300px); }
+          .card-item:nth-child(9) { transform: translate(-50%, -50%) rotateY(288deg) translateZ(300px); }
+          .card-item:nth-child(10){ transform: translate(-50%, -50%) rotateY(324deg) translateZ(300px); }
+        }
+
+        /* Very small screens */
+        @media (max-width: 480px) {
+          .card-3d-scene { perspective: 700px; height: 380px; }
+          .card-3d-container { width: 160px; height: 240px; animation-duration: 65s; }
+          .card-item { width: 150px; height: 230px; }
+          .card-item:nth-child(1) { transform: translate(-50%, -50%) rotateY(0deg) translateZ(240px); }
+          .card-item:nth-child(2) { transform: translate(-50%, -50%) rotateY(36deg) translateZ(240px); }
+          .card-item:nth-child(3) { transform: translate(-50%, -50%) rotateY(72deg) translateZ(240px); }
+          .card-item:nth-child(4) { transform: translate(-50%, -50%) rotateY(108deg) translateZ(240px); }
+          .card-item:nth-child(5) { transform: translate(-50%, -50%) rotateY(144deg) translateZ(240px); }
+          .card-item:nth-child(6) { transform: translate(-50%, -50%) rotateY(180deg) translateZ(240px); }
+          .card-item:nth-child(7) { transform: translate(-50%, -50%) rotateY(216deg) translateZ(240px); }
+          .card-item:nth-child(8) { transform: translate(-50%, -50%) rotateY(252deg) translateZ(240px); }
+          .card-item:nth-child(9) { transform: translate(-50%, -50%) rotateY(288deg) translateZ(240px); }
+          .card-item:nth-child(10){ transform: translate(-50%, -50%) rotateY(324deg) translateZ(240px); }
         }
       `}} />
     </div>

@@ -1,22 +1,23 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, ReactNode } from "react";
+import { Package, Zap, Store, Star, Users } from "lucide-react";
 
 interface Stat {
   value: number;
   suffix: string;
   label: string;
   prefix?: string;
-  icon: string;
+  icon: ReactNode;
   color: string;
 }
 
 const STATS: Stat[] = [
-  { value: 50000, suffix: "+", label: "Products Listed", icon: "📦", color: "#C1492E", prefix: "" },
-  { value: 15, suffix: " min", label: "Avg. Delivery Time", icon: "⚡", color: "#214A36", prefix: "" },
-  { value: 500, suffix: "+", label: "Partner Stores", icon: "🏪", color: "#B8962E", prefix: "" },
-  { value: 4.9, suffix: "★", label: "Customer Rating", icon: "⭐", color: "#C1492E", prefix: "" },
-  { value: 10000, suffix: "+", label: "Happy Customers", icon: "🧡", color: "#214A36", prefix: "" },
+  { value: 50000, suffix: "+", label: "Products Listed", icon: <Package className="w-6 h-6" />, color: "#C1492E", prefix: "" },
+  { value: 15, suffix: " min", label: "Avg. Delivery Time", icon: <Zap className="w-6 h-6" />, color: "#214A36", prefix: "" },
+  { value: 500, suffix: "+", label: "Partner Stores", icon: <Store className="w-6 h-6" />, color: "#B8962E", prefix: "" },
+  { value: 4.9, suffix: "★", label: "Customer Rating", icon: <Star className="w-6 h-6" />, color: "#C1492E", prefix: "" },
+  { value: 10000, suffix: "+", label: "Happy Customers", icon: <Users className="w-6 h-6" />, color: "#214A36", prefix: "" },
 ];
 
 function useCountUp(target: number, isVisible: boolean, duration = 1800) {
@@ -51,7 +52,7 @@ function StatCard({ stat, isVisible }: { stat: Stat; isVisible: boolean }) {
       className="casano-stat-card"
       style={{ borderTop: `3px solid ${stat.color}` }}
     >
-      <div className="casano-stat-icon">{stat.icon}</div>
+      <div className="casano-stat-icon" style={{ color: stat.color }}>{stat.icon}</div>
       <div className="casano-stat-number" style={{ color: stat.color }}>
         {stat.prefix}
         {stat.value % 1 !== 0
@@ -109,17 +110,20 @@ export default function CounterSection() {
           background: var(--bg-main);
           overflow: hidden;
           position: relative;
+          border-top: 1px solid var(--surface-border);
         }
         .casano-counter-section::before {
           content: '';
           position: absolute;
           inset: 0;
-          background: radial-gradient(ellipse at 50% 0%, #C1492E0A 0%, transparent 70%);
+          background: radial-gradient(ellipse at 50% 0%, rgba(193,73,46,0.06) 0%, transparent 70%);
           pointer-events: none;
         }
         .casano-counter-inner {
           max-width: 1200px;
           margin: 0 auto;
+          position: relative;
+          z-index: 1;
         }
         .casano-counter-header {
           text-align: center;
@@ -127,60 +131,69 @@ export default function CounterSection() {
         }
         .casano-counter-badge {
           display: inline-block;
-          background: #FAE8E5;
+          background: rgba(193,73,46,0.08);
+          border: 1px solid rgba(193,73,46,0.15);
           color: #C1492E;
-          font-size: 12px;
-          font-weight: 700;
-          letter-spacing: 0.08em;
+          font-size: 11px;
+          font-weight: 800;
+          letter-spacing: 0.12em;
           text-transform: uppercase;
           padding: 6px 16px;
           border-radius: 999px;
-          margin-bottom: 16px;
+          margin-bottom: 20px;
         }
         .casano-counter-title {
-          font-family: 'Playfair Display', Georgia, serif;
-          font-size: clamp(28px, 4vw, 48px);
-          font-weight: 800;
+          font-family: var(--font-heading);
+          font-size: clamp(32px, 4vw, 52px);
+          font-weight: 900;
           color: var(--text-primary);
-          line-height: 1.15;
+          line-height: 1.1;
+          letter-spacing: -0.01em;
         }
         .casano-counter-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-          gap: 20px;
+          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+          gap: 24px;
         }
         .casano-stat-card {
           background: var(--surface-card);
-          border-radius: 16px;
+          border-radius: 20px;
           border: 1px solid var(--surface-border);
-          padding: 28px 20px 24px;
+          padding: 32px 20px 24px;
           text-align: center;
-          transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
-                      box-shadow 0.3s ease;
+          transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
           cursor: default;
+          box-shadow: 0 4px 15px rgba(0,0,0,0.02);
         }
         .casano-stat-card:hover {
           transform: translateY(-6px);
           box-shadow: 0 20px 40px rgba(0,0,0,0.08);
         }
+        .dark .casano-stat-card:hover {
+          box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
         .casano-stat-icon {
-          font-size: 28px;
-          margin-bottom: 12px;
-          display: block;
+          margin-bottom: 16px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: rgba(255,255,255,0.05);
+          width: 48px; height: 48px;
+          border-radius: 12px;
+          margin-left: auto; margin-right: auto;
         }
         .casano-stat-number {
-          font-family: 'Playfair Display', Georgia, serif;
-          font-size: 36px;
+          font-family: var(--font-heading);
+          font-size: 40px;
           font-weight: 900;
           line-height: 1;
-          margin-bottom: 8px;
+          margin-bottom: 12px;
           transition: color 0.3s;
         }
         .casano-stat-label {
-          font-size: 13px;
+          font-size: 14px;
           font-weight: 600;
           color: var(--text-secondary);
-          letter-spacing: 0.01em;
         }
       `}</style>
     </section>

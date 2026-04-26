@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { X, ChevronRight, ChevronLeft } from "lucide-react";
+import { X, ChevronRight, ChevronLeft, Zap, Heart, Package } from "lucide-react";
 
 interface ProductDetailsModalProps {
   isOpen: boolean;
@@ -154,7 +154,7 @@ export default function ProductDetailsModal({ isOpen, onClose, product }: Produc
             <div className="flex flex-col gap-5">
               <div className="flex gap-4">
                  <div className="w-10 h-10 rounded-full bg-[#fcf2d3] flex items-center justify-center flex-shrink-0">
-                    <span className="text-xl">⚡</span>
+                    <Zap className="w-5 h-5 text-[#B8962E]" />
                  </div>
                  <div>
                     <div className="text-[13px] font-bold text-gray-800">Delivered from Your Neighbourhood</div>
@@ -163,7 +163,7 @@ export default function ProductDetailsModal({ isOpen, onClose, product }: Produc
               </div>
               <div className="flex gap-4">
                  <div className="w-10 h-10 rounded-full bg-[#fcf2d3] flex items-center justify-center flex-shrink-0">
-                    <span className="text-xl">🤝</span>
+                    <Heart className="w-5 h-5 text-[#B8962E]" />
                  </div>
                  <div>
                     <div className="text-[13px] font-bold text-gray-800">Support Local Businesses</div>
@@ -172,7 +172,7 @@ export default function ProductDetailsModal({ isOpen, onClose, product }: Produc
               </div>
               <div className="flex gap-4">
                  <div className="w-10 h-10 rounded-full bg-[#fcf2d3] flex items-center justify-center flex-shrink-0">
-                    <span className="text-xl">📦</span>
+                    <Package className="w-5 h-5 text-[#B8962E]" />
                  </div>
                  <div>
                     <div className="text-[13px] font-bold text-gray-800">Verified Local Inventory</div>

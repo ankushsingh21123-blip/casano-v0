@@ -4,6 +4,8 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Link from "next/link";
 import AboutCarousel from "@/components/AboutCarousel";
+import { Store, Zap, Heart, Smartphone, ShoppingBag, Bike } from "lucide-react";
+import { ReactNode } from "react";
 
 const stats = [
   { value: "15 min", label: "Average Delivery Time" },
@@ -12,33 +14,85 @@ const stats = [
   { value: "100%", label: "Local, Neighbourhood Sourced" },
 ];
 
-const values = [
+interface ValueItem {
+  icon: ReactNode;
+  title: string;
+  desc: string;
+  color: string;
+  bg: string;
+}
+
+const values: ValueItem[] = [
   {
-    icon: "🏪",
+    icon: <Store className="w-6 h-6" />,
     title: "Empowering Local Shopkeepers",
     desc: "We believe every Kirana owner deserves digital tools. Our vendor app lets any local store go online in minutes — no tech skills needed.",
+    color: "#214A36",
+    bg: "#E6F2EC",
   },
   {
-    icon: "⚡",
+    icon: <Zap className="w-6 h-6" />,
     title: "Speed Without Warehouses",
-    desc: "We don&apos;t use dark warehouses or fulfilment centres. Orders go directly from your local shop to your door — faster, fresher, and more personal.",
+    desc: "We don\u0027t use dark warehouses or fulfilment centres. Orders go directly from your local shop to your door — faster, fresher, and more personal.",
+    color: "#B8962E",
+    bg: "#FBF5E1",
   },
   {
-    icon: "🤝",
+    icon: <Heart className="w-6 h-6" />,
     title: "Community First",
     desc: "Every Casano order directly benefits a shopkeeper in your neighbourhood, not a distant corporation. Spend local, grow local.",
+    color: "#C1492E",
+    bg: "#FAE8E5",
   },
   {
-    icon: "📱",
+    icon: <Smartphone className="w-6 h-6" />,
     title: "Technology for Bharat",
     desc: "Built specifically for Indian hyperlocal commerce — GST-ready, UPI-native, and designed around the real workflow of street-level retail.",
+    color: "#214A36",
+    bg: "#E6F2EC",
+  },
+];
+
+interface StepItem {
+  step: string;
+  icon: ReactNode;
+  title: string;
+  desc: string;
+  color: string;
+  bg: string;
+}
+
+const steps: StepItem[] = [
+  {
+    step: "01",
+    icon: <Smartphone className="w-7 h-7" />,
+    title: "Customer Orders",
+    desc: "You browse and order on Casano in seconds — groceries, medicines, stationery, anything from local shops.",
+    color: "#C1492E",
+    bg: "#FAE8E5",
+  },
+  {
+    step: "02",
+    icon: <Store className="w-7 h-7" />,
+    title: "Kirana Partner Accepts",
+    desc: "The order pings the nearby partner store via our Vendor App. The shopkeeper accepts and packs within minutes.",
+    color: "#214A36",
+    bg: "#E6F2EC",
+  },
+  {
+    step: "03",
+    icon: <Bike className="w-7 h-7" />,
+    title: "Rider Delivers",
+    desc: "A delivery partner picks up from the store and brings it straight to your door — typically in under 15 minutes.",
+    color: "#B8962E",
+    bg: "#FBF5E1",
   },
 ];
 
 const team = [
-  { name: "Ankush Singh", role: "Founder & CEO", initial: "A" },
-  { name: "Vendor Partners", role: "Local Kirana Stores", initial: "🏪" },
-  { name: "Delivery Partners", role: "Neighbourhood Riders", initial: "🛵" },
+  { name: "Ankush Singh", role: "Founder & CEO", initial: "A", color: "#C1492E" },
+  { name: "Vendor Partners", role: "Local Kirana Stores", initial: "VP", color: "#214A36" },
+  { name: "Delivery Partners", role: "Neighbourhood Riders", initial: "DP", color: "#B8962E" },
 ];
 
 export default function AboutPage() {
@@ -58,7 +112,7 @@ export default function AboutPage() {
           {stats.map(s => (
             <div
               key={s.label}
-              className="text-center py-8 px-4 rounded-2xl"
+              className="text-center py-8 px-4 rounded-2xl transition-transform hover:-translate-y-1 hover:shadow-lg"
               style={{ background: "#FDFBF7", border: "1px solid #E2DDD0" }}
             >
               <div
@@ -107,23 +161,24 @@ export default function AboutPage() {
             How Casano Works
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-            {[
-              { step: "01", icon: "📱", title: "Customer Orders", desc: "You browse and order on Casano in seconds — groceries, medicines, stationery, anything from local shops." },
-              { step: "02", icon: "🏪", title: "Kirana Partner Accepts", desc: "The order pings the nearby partner store via our Vendor App. The shopkeeper accepts and packs within minutes." },
-              { step: "03", icon: "🛵", title: "Rider Delivers", desc: "A delivery partner picks up from the store and brings it straight to your door — typically in under 15 minutes." },
-            ].map(s => (
+            {steps.map(s => (
               <div
                 key={s.step}
-                className="rounded-2xl p-6 relative overflow-hidden"
+                className="rounded-2xl p-6 relative overflow-hidden transition-transform hover:-translate-y-1 hover:shadow-lg"
                 style={{ background: "#FDFBF7", border: "1px solid #E2DDD0" }}
               >
                 <div
                   className="absolute top-4 right-4 text-5xl font-black opacity-10"
-                  style={{ color: "#C1492E", fontFamily: "'Playfair Display', serif" }}
+                  style={{ color: s.color, fontFamily: "'Playfair Display', serif" }}
                 >
                   {s.step}
                 </div>
-                <div className="text-3xl mb-4">{s.icon}</div>
+                <div
+                  className="w-12 h-12 rounded-xl flex items-center justify-center mb-4"
+                  style={{ background: s.bg, color: s.color }}
+                >
+                  {s.icon}
+                </div>
                 <h3
                   className="text-lg font-bold mb-2"
                   style={{ color: "#2A2B2A", fontFamily: "'Playfair Display', serif" }}
@@ -149,10 +204,15 @@ export default function AboutPage() {
           {values.map(v => (
             <div
               key={v.title}
-              className="flex gap-4 p-6 rounded-2xl"
+              className="flex gap-4 p-6 rounded-2xl transition-transform hover:-translate-y-1 hover:shadow-lg"
               style={{ background: "#EFEADD", border: "1px solid #E2DDD0" }}
             >
-              <div className="text-3xl flex-shrink-0 mt-0.5">{v.icon}</div>
+              <div
+                className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
+                style={{ background: v.bg, color: v.color }}
+              >
+                {v.icon}
+              </div>
               <div>
                 <h3
                   className="text-base font-bold mb-1.5"
@@ -167,8 +227,43 @@ export default function AboutPage() {
         </div>
       </section>
 
+      {/* ── Team ── */}
+      <section className="w-full py-16 px-4" style={{ background: "#EFEADD" }}>
+        <div className="max-w-[1100px] mx-auto">
+          <h2
+            className="text-3xl font-bold text-center mb-10"
+            style={{ color: "#2A2B2A", fontFamily: "'Playfair Display', serif" }}
+          >
+            The People Behind Casano
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            {team.map(t => (
+              <div
+                key={t.name}
+                className="rounded-2xl p-8 text-center transition-transform hover:-translate-y-2 hover:shadow-xl"
+                style={{ background: "#FDFBF7", border: "1px solid #E2DDD0" }}
+              >
+                <div
+                  className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-white text-lg font-black"
+                  style={{ background: t.color }}
+                >
+                  {t.initial}
+                </div>
+                <h3
+                  className="text-lg font-bold mb-1"
+                  style={{ color: "#2A2B2A", fontFamily: "'Playfair Display', serif" }}
+                >
+                  {t.name}
+                </h3>
+                <p className="text-sm" style={{ color: "#5A5B5A" }}>{t.role}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ── CTA Banner ── */}
-      <section className="w-full px-4 pb-16">
+      <section className="w-full px-4 py-16">
         <div
           className="max-w-[1100px] mx-auto rounded-3xl p-10 sm:p-14 text-center relative overflow-hidden"
           style={{ background: "linear-gradient(135deg, #C1492E, #8B2A18)" }}

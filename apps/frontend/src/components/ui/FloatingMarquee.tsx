@@ -1,18 +1,24 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { Zap, ShoppingBag, Store, BadgeCheck, Rocket, PartyPopper, Package, Lock, Heart, Star } from "lucide-react";
+import { ReactNode } from "react";
 
-const ITEMS = [
-  "⚡ Delivered in 15 mins",
-  "🛍️ 50,000+ Products",
-  "🏪 Local Kirana Partners",
-  "💯 100% Fresh Guaranteed",
-  "🚀 Casano.in — India's Last-Minute App",
-  "🎉 Free Delivery on First 3 Orders · Code: FIRST3",
-  "📦 Track Your Order Live",
-  "🔒 100% Secure Checkout",
-  "💚 Support Local Businesses",
-  "⭐ Rated 4.9 by 10,000+ Customers",
+interface MarqueeItem {
+  icon: ReactNode;
+  text: string;
+}
+
+const ITEMS: MarqueeItem[] = [
+  { icon: <Zap className="w-3 h-3 inline-block mr-1 text-amber-400" />, text: "Delivered in 15 mins" },
+  { icon: <ShoppingBag className="w-3 h-3 inline-block mr-1 text-amber-400" />, text: "50,000+ Products" },
+  { icon: <Store className="w-3 h-3 inline-block mr-1 text-amber-400" />, text: "Local Kirana Partners" },
+  { icon: <BadgeCheck className="w-3 h-3 inline-block mr-1 text-amber-400" />, text: "100% Fresh Guaranteed" },
+  { icon: <Rocket className="w-3 h-3 inline-block mr-1 text-amber-400" />, text: "Casano.in — India's Last-Minute App" },
+  { icon: <PartyPopper className="w-3 h-3 inline-block mr-1 text-amber-400" />, text: "Free Delivery on First 3 Orders · Code: FIRST3" },
+  { icon: <Package className="w-3 h-3 inline-block mr-1 text-amber-400" />, text: "Track Your Order Live" },
+  { icon: <Lock className="w-3 h-3 inline-block mr-1 text-amber-400" />, text: "100% Secure Checkout" },
+  { icon: <Heart className="w-3 h-3 inline-block mr-1 text-amber-400" />, text: "Support Local Businesses" },
+  { icon: <Star className="w-3 h-3 inline-block mr-1 text-amber-400" />, text: "Rated 4.9 by 10,000+ Customers" },
 ];
 
 export default function FloatingMarquee() {
@@ -61,7 +67,7 @@ export default function FloatingMarquee() {
         {/* Triple the items for seamless loop */}
         {[...ITEMS, ...ITEMS, ...ITEMS].map((item, i) => (
           <span key={i} className="casano-marquee-item">
-            {item}
+            {item.icon}{item.text}
             <span className="casano-marquee-sep">✦</span>
           </span>
         ))}
@@ -86,6 +92,8 @@ export default function FloatingMarquee() {
           padding: 0 6px;
           letter-spacing: 0.02em;
           flex-shrink: 0;
+          display: inline-flex;
+          align-items: center;
         }
         .casano-marquee-sep {
           color: #C1492E;

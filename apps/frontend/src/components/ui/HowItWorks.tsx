@@ -2,31 +2,32 @@
 
 import Link from "next/link";
 import { useRef, useEffect, useState } from "react";
+import { MapPin, ShoppingCart, Zap } from "lucide-react";
 
 const STEPS = [
   {
     num: "01",
-    icon: "📍",
+    Icon: MapPin,
     title: "Set Your Location",
     desc: "Tell us where you are. We'll show you products from your nearest Kirana partner.",
     color: "#C1492E",
-    bg: "#FAE8E5",
+    bg: "rgba(193,73,46,0.1)",
   },
   {
     num: "02",
-    icon: "🛒",
+    Icon: ShoppingCart,
     title: "Pick Your Products",
     desc: "Browse thousands of items — groceries, medicines, stationery, and more.",
     color: "#214A36",
-    bg: "#E6F2EC",
+    bg: "rgba(33,74,54,0.15)",
   },
   {
     num: "03",
-    icon: "⚡",
+    Icon: Zap,
     title: "Delivered in 15 Min",
     desc: "Your local store packs and dispatches. Our rider brings it straight to your door.",
     color: "#B8962E",
-    bg: "#FBF5E1",
+    bg: "rgba(184,150,46,0.1)",
   },
 ];
 
@@ -73,7 +74,7 @@ export default function HowItWorks() {
 
               {/* Icon circle */}
               <div className="hiw-icon-circle" style={{ background: step.bg }}>
-                <span className="hiw-icon">{step.icon}</span>
+                <step.Icon className="hiw-icon" style={{ color: step.color }} />
               </div>
 
               <h3 className="hiw-card-title" style={{ color: "var(--text-primary)" }}>
@@ -104,19 +105,22 @@ export default function HowItWorks() {
 
       <style jsx global>{`
         .hiw-section {
-          padding: 80px 16px;
+          padding: 60px 16px;
           position: relative;
           overflow: hidden;
-          background: var(--surface-card);
+          background: linear-gradient(180deg, #EAE0CD 0%, #DBCAA9 100%);
           border-top: 1px solid var(--surface-border);
           border-bottom: 1px solid var(--surface-border);
+        }
+        .dark .hiw-section {
+          background: linear-gradient(180deg, #2A2118 0%, #1A130C 100%);
         }
         .hiw-bg-deco {
           position: absolute;
           inset: 0;
           background:
-            radial-gradient(ellipse at 0% 100%, #C1492E07 0%, transparent 60%),
-            radial-gradient(ellipse at 100% 0%, #214A3607 0%, transparent 60%);
+            radial-gradient(ellipse at 0% 100%, rgba(193,73,46,0.06) 0%, transparent 60%),
+            radial-gradient(ellipse at 100% 0%, rgba(184,150,46,0.06) 0%, transparent 60%);
           pointer-events: none;
         }
         .hiw-inner {
@@ -127,87 +131,98 @@ export default function HowItWorks() {
         }
         .hiw-header {
           text-align: center;
-          margin-bottom: 64px;
+          margin-bottom: 40px;
         }
         .hiw-badge {
           display: inline-block;
-          background: #E6F2EC;
-          color: #214A36;
+          background: rgba(184,150,46,0.1);
+          color: #B8962E;
           font-size: 11px;
           font-weight: 800;
           letter-spacing: 0.1em;
           text-transform: uppercase;
-          padding: 5px 14px;
+          padding: 6px 16px;
           border-radius: 999px;
-          margin-bottom: 14px;
+          margin-bottom: 16px;
+          border: 1px solid rgba(184,150,46,0.2);
         }
         .hiw-title {
-          font-family: 'Playfair Display', Georgia, serif;
-          font-size: clamp(28px, 4vw, 48px);
+          font-family: var(--font-heading);
+          font-size: clamp(32px, 5vw, 56px);
           font-weight: 900;
           color: var(--text-primary);
           line-height: 1.15;
-          margin: 0 0 12px;
+          margin: 0 0 16px;
         }
         .hiw-subtitle {
-          font-size: 16px;
+          font-size: 18px;
           color: var(--text-secondary);
           font-weight: 500;
         }
         .hiw-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
           gap: 32px;
           position: relative;
         }
         .hiw-card {
           position: relative;
           text-align: center;
-          padding: 0 16px;
+          padding: 32px 24px;
+          background: var(--surface-card);
+          border-radius: 32px;
+          border: 1px solid var(--surface-border);
+          box-shadow: 0 20px 60px rgba(0,0,0,0.03);
           opacity: 0;
           transform: translateY(32px);
           transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
-                      transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+                      transform 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+                      box-shadow 0.3s ease;
+        }
+        .hiw-card:hover {
+          box-shadow: 0 30px 80px rgba(0,0,0,0.06);
+          transform: translateY(-8px) !important; /* overrides entrance animation translation after it completes */
         }
         .hiw-visible {
           opacity: 1 !important;
           transform: translateY(0) !important;
         }
         .hiw-num {
-          font-family: 'Playfair Display', Georgia, serif;
-          font-size: 56px;
+          font-family: var(--font-heading);
+          font-size: 24px;
           font-weight: 900;
           line-height: 1;
-          opacity: 0.12;
-          margin-bottom: -12px;
-          letter-spacing: -0.03em;
+          opacity: 0.9;
+          margin-bottom: 24px;
+          letter-spacing: 0.05em;
         }
         .hiw-icon-circle {
-          width: 72px;
-          height: 72px;
-          border-radius: 20px;
+          width: 80px;
+          height: 80px;
+          border-radius: 24px;
           display: flex;
           align-items: center;
           justify-content: center;
-          margin: 0 auto 20px;
-          transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+          margin: 0 auto 24px;
+          transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
         .hiw-card:hover .hiw-icon-circle {
-          transform: scale(1.1) rotate(-4deg);
+          transform: scale(1.15) rotate(-6deg);
         }
         .hiw-icon {
-          font-size: 30px;
+          width: 36px;
+          height: 36px;
           display: block;
         }
         .hiw-card-title {
-          font-family: 'Playfair Display', Georgia, serif;
-          font-size: 20px;
+          font-family: var(--font-heading);
+          font-size: 22px;
           font-weight: 800;
-          margin: 0 0 10px;
+          margin: 0 0 12px;
           line-height: 1.2;
         }
         .hiw-card-desc {
-          font-size: 14px;
+          font-size: 15px;
           color: var(--text-secondary);
           line-height: 1.7;
           max-width: 280px;
@@ -215,14 +230,14 @@ export default function HowItWorks() {
         }
         .hiw-connector {
           position: absolute;
-          top: 80px;
+          top: 50%;
           right: -16px;
           width: 32px;
           height: 2px;
-          background: linear-gradient(90deg, #E2DDD0, transparent);
+          background: linear-gradient(90deg, var(--surface-border), transparent);
           display: none;
         }
-        @media (min-width: 768px) {
+        @media (min-width: 1024px) {
           .hiw-connector { display: block; }
         }
         .hiw-cta-row {
@@ -254,7 +269,7 @@ export default function HowItWorks() {
         }
         .hiw-cta-note {
           font-size: 13px;
-          color: var(--text-muted);
+          color: #6b6560;
           font-weight: 500;
         }
       `}</style>

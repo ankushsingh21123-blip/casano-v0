@@ -1,33 +1,29 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Providers } from "../context/Providers";
-import GlobalUI from "@/components/ui/GlobalUI";
+import CustomCursor from "@/components/ui/CustomCursor";
+import ScrollProgress from "@/components/ui/ScrollProgress";
+import FloatingMarquee from "@/components/ui/FloatingMarquee";
 
 export const metadata: Metadata = {
   title: "Casano | India's Last Minute App",
-  description:
-    "Get groceries, stationery, medicines and more delivered in 15 minutes. Casano — shop cheap from your local Kirana store.",
-  keywords:
-    "quick commerce, groceries, stationary, pharmacy, instant delivery, India, hyperlocal, kirana",
-  openGraph: {
-    title: "Casano | India's Last Minute App",
-    description: "Delivered from your Kirana store in 15 minutes.",
-    type: "website",
-  },
+  description: "Get groceries, stationery, medicines and more delivered in 15 minutes. Casano — shop cheap from your local Kirana store.",
+  keywords: "quick commerce, groceries, stationary, pharmacy, instant delivery, India",
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{ children: React.ReactNode }>) {
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   return (
-    <html lang="en">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-      </head>
+    <html lang="en" suppressHydrationWarning>
       <body className="antialiased">
-        <GlobalUI />
-        <Providers>{children}</Providers>
+        <ScrollProgress />
+        <FloatingMarquee />
+        <Providers>
+          {children}
+        </Providers>
       </body>
     </html>
   );

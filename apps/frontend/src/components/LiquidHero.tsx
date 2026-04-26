@@ -170,15 +170,15 @@ export default function LiquidHero() {
             style={{ transitionDelay: "320ms" }}
           >
             {[
-              { icon: "✓", label: "100% Fresh", bg: "#E6F2EC", color: "#214A36" },
-              { icon: "🛡", label: "Safe & Hygienic", bg: "#FAE8E5", color: "#C1492E" },
-              { icon: "⚡", label: "15 min delivery", bg: "#FBF5E1", color: "#B8962E" },
+              { icon: "✓", label: "100% Fresh", bg: "rgba(184,150,46,0.1)", color: "#B8962E" },
+              { icon: "✓", label: "Safe & Hygienic", bg: "rgba(193,73,46,0.1)", color: "#C1492E" },
+              { icon: "✓", label: "15 min delivery", bg: "rgba(184,150,46,0.1)", color: "#B8962E" },
             ].map((b) => (
               <div key={b.label} className="casano-trust-badge">
                 <div className="casano-trust-icon" style={{ background: b.bg, color: b.color }}>
                   {b.icon}
                 </div>
-                <span style={{ color: "#5A5B5A", fontSize: "12px", fontWeight: 600 }}>{b.label}</span>
+                <span style={{ color: "#8a8580", fontSize: "12px", fontWeight: 600 }}>{b.label}</span>
               </div>
             ))}
           </div>
@@ -208,7 +208,7 @@ export default function LiquidHero() {
               <button className="casano-promo-cta">Shop Now →</button>
             </Link>
             {/* Inner floating badge */}
-            <div className="casano-promo-float-badge">🔥 HOT</div>
+            <div className="casano-promo-float-badge">HOT</div>
           </div>
 
           {/* Two smaller cards */}
@@ -239,10 +239,10 @@ export default function LiquidHero() {
           <div className="casano-promo-eta">
             <div className="casano-eta-dot" />
             <div>
-              <p style={{ fontSize: "12px", fontWeight: 700, color: "#214A36" }}>
-                ⚡ Lightning Fast
+              <p style={{ fontSize: "12px", fontWeight: 700, color: "#B8962E" }}>
+                Lightning Fast
               </p>
-              <p style={{ fontSize: "11px", color: "#5A5B5A", marginTop: "2px" }}>
+              <p style={{ fontSize: "11px", color: "#6b6560", marginTop: "2px" }}>
                 Average delivery: 12–15 min
               </p>
             </div>
@@ -255,8 +255,8 @@ export default function LiquidHero() {
         /* ─── Hero wrapper ─── */
         .casano-liquid-hero {
           width: 100%;
-          background: var(--bg-main);
-          border-bottom: 1px solid var(--surface-border);
+          background: linear-gradient(180deg, #0f0d0a 0%, #1a1510 60%, #0f0d0a 100%);
+          border-bottom: 1px solid #2e2a2522;
           position: relative;
           overflow: hidden;
           padding-bottom: 24px;
@@ -272,20 +272,20 @@ export default function LiquidHero() {
         }
         .casano-orb-1 {
           width: 400px; height: 400px;
-          background: radial-gradient(circle, #C1492E18, transparent);
+          background: radial-gradient(circle, #B8962E15, transparent);
           top: -120px; right: -80px;
           animation-duration: 9s;
         }
         .casano-orb-2 {
           width: 300px; height: 300px;
-          background: radial-gradient(circle, #214A3618, transparent);
+          background: radial-gradient(circle, #C1492E10, transparent);
           bottom: -80px; left: -60px;
           animation-duration: 12s;
           animation-delay: -4s;
         }
         .casano-orb-3 {
           width: 200px; height: 200px;
-          background: radial-gradient(circle, #B8962E18, transparent);
+          background: radial-gradient(circle, #B8962E12, transparent);
           top: 60%; right: 30%;
           animation-duration: 7s;
           animation-delay: -2s;
@@ -334,20 +334,20 @@ export default function LiquidHero() {
           display: inline-flex;
           align-items: center;
           gap: 8px;
-          background: #E6F2EC;
-          color: #214A36;
+          background: rgba(184,150,46,0.1);
+          color: #B8962E;
           font-size: 12px;
           font-weight: 700;
           padding: 6px 14px;
           border-radius: 999px;
           margin-bottom: 24px;
           letter-spacing: 0.01em;
-          border: 1px solid #214A3622;
+          border: 1px solid rgba(184,150,46,0.25);
         }
         .casano-badge-dot {
           width: 8px; height: 8px;
           border-radius: 50%;
-          background: #214A36;
+          background: #B8962E;
           display: inline-block;
           animation: casano-pulse 2s ease-in-out infinite;
         }
@@ -359,7 +359,7 @@ export default function LiquidHero() {
           font-family: 'Playfair Display', Georgia, serif;
           font-size: clamp(36px, 5vw, 68px);
           font-weight: 900;
-          color: var(--text-primary);
+          color: #f5f0e8;
           line-height: 1.05;
           letter-spacing: -0.02em;
           margin-bottom: 20px;
@@ -373,7 +373,7 @@ export default function LiquidHero() {
         }
         .casano-hero-body {
           font-size: 17px;
-          color: var(--text-secondary);
+          color: #a09d96;
           line-height: 1.65;
           max-width: 480px;
           margin-bottom: 32px;
@@ -408,18 +408,18 @@ export default function LiquidHero() {
           display: inline-flex;
           align-items: center;
           background: transparent;
-          color: var(--text-primary);
+          color: #f5f0e8;
           font-weight: 700;
           font-size: 15px;
           padding: 13px 24px;
           border-radius: 14px;
-          border: 2px solid var(--surface-border);
+          border: 2px solid #2e2a25;
           transition: border-color 0.2s, color 0.2s, background 0.2s;
         }
         .casano-btn-outline:hover {
-          border-color: #214A36;
-          color: #214A36;
-          background: #E6F2EC;
+          border-color: #B8962E;
+          color: #B8962E;
+          background: rgba(184,150,46,0.08);
         }
 
         /* ─── Trust badges ─── */
@@ -572,8 +572,8 @@ export default function LiquidHero() {
 
         /* ─── ETA card ─── */
         .casano-promo-eta {
-          background: var(--surface-card);
-          border: 1px solid var(--surface-border);
+          background: #1a1714;
+          border: 1px solid #2e2a25;
           border-radius: 14px;
           padding: 14px 16px;
           display: flex;
@@ -584,15 +584,15 @@ export default function LiquidHero() {
         .casano-eta-dot {
           width: 10px; height: 10px;
           border-radius: 50%;
-          background: #214A36;
+          background: #B8962E;
           flex-shrink: 0;
-          box-shadow: 0 0 0 4px #214A3622;
+          box-shadow: 0 0 0 4px rgba(184,150,46,0.15);
           animation: casano-pulse 2s infinite;
         }
         .casano-promo-eta-live {
           margin-left: auto;
-          background: #E6F2EC;
-          color: #214A36;
+          background: rgba(184,150,46,0.12);
+          color: #B8962E;
           font-size: 10px;
           font-weight: 800;
           letter-spacing: 0.1em;
@@ -619,13 +619,14 @@ export default function LiquidHero() {
 
         /* ─── Promo strip ─── */
         .casano-promo-strip {
-          background: #214A36;
-          color: white;
+          background: linear-gradient(90deg, #1a1510, #2a1f15, #1a1510);
+          color: #B8962E;
           text-align: center;
           padding: 10px 16px;
           font-size: 12px;
           font-weight: 700;
           letter-spacing: 0.02em;
+          border-bottom: 1px solid #2e2a25;
         }
         .casano-promo-strip span {
           text-decoration: underline;

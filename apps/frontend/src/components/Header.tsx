@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { ShoppingCart, User, MapPin, ChevronDown } from "lucide-react";
+import { ShoppingCart, User, MapPin, ChevronDown, Tag, Crown, Store } from "lucide-react";
 import ThemeToggle from "./ThemeToggle";
 import LocationModal from "./LocationModal";
 import LoginModal from "./LoginModal";
@@ -16,9 +16,8 @@ export default function Header() {
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
   const { cartCount, cartTotal } = useCart();
-  const { isLoggedIn, user } = useAuth();
+  const { isLoggedIn, user, deliveryLocation } = useAuth();
 
   useEffect(() => {
     if (isDarkMode) {
@@ -28,28 +27,36 @@ export default function Header() {
     }
   }, [isDarkMode]);
 
-  useEffect(() => {
-    const onScroll = () => setIsScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
   return (
     <>
       {/* ── Header: Jaisalmer Sand Beige surface over Pearl White page ── */}
       <header
-        id="main-header"
-        className={`sticky top-0 z-40 w-full border-b transition-all duration-300 ${isScrolled ? "header-frosted shadow-sm" : "glass"}`}
-        style={{ borderColor: "var(--surface-border)" }}
+        className="sticky top-0 z-40 w-full border-b transition-colors duration-300"
+        style={{
+          background: isDarkMode ? "#151210" : "#52201C",
+          borderColor: isDarkMode ? "#2e2a2544" : "#6b2923",
+        }}
       >
         <div className="flex items-center h-[68px] w-full max-w-[1440px] mx-auto px-4 sm:px-6 gap-4 sm:gap-6">
 
           {/* Logo */}
-          <Link href="/" id="header-logo" className="flex-shrink-0 flex items-center">
+          <Link href="/" className="flex-shrink-0 flex items-center">
             <h1 className="text-2xl font-black tracking-tight">
               <span style={{ color: "#C1492E" }}>Casano</span>
-              <span style={{ color: "var(--text-primary)" }}>.in</span>
+              <span style={{ color: "#f5f0e8" }}>.in</span>
             </h1>
+          </Link>
+
+          {/* Offers Link */}
+          <Link href="/offers" className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-colors hover:bg-[var(--surface-border)]">
+            <Tag className="w-4 h-4 text-[#C1492E]" />
+            <span className="text-[14px] font-bold" style={{ color: "#f5f0e8" }}>Offers</span>
+          </Link>
+
+          {/* Gold Link */}
+          <Link href="/gold" className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-colors hover:bg-[#B8962E22] group">
+            <Crown className="w-4 h-4 text-[#B8962E] transition-transform group-hover:scale-110" />
+            <span className="text-[14px] font-bold" style={{ color: "#B8962E" }}>Casano Gold</span>
           </Link>
 
           {/* Decorative vertical divider */}
@@ -57,13 +64,12 @@ export default function Header() {
 
           {/* Location Selector */}
           <button
-            id="btn-location-selector"
             className="hidden sm:flex flex-col cursor-pointer group"
             onClick={() => setIsLocationOpen(true)}
           >
             <div
               className="text-[13px] font-black flex items-center gap-2 transition-colors"
-              style={{ color: "var(--text-primary)" }}
+              style={{ color: "#f5f0e8" }}
             >
               {/* Animated clock loader */}
               <div className="header-clock-loader">
@@ -75,12 +81,61 @@ export default function Header() {
             </div>
             <div className="flex items-center gap-1 mt-0.5">
               <MapPin className="w-3 h-3" style={{ color: "#214A36" }} />
-              <span className="text-xs font-medium truncate max-w-[180px]" style={{ color: "var(--text-secondary)" }}>
-                {user?.address ? user.address.slice(0, 30) + "..." : "Select Location"}
+              <span className="text-xs font-medium truncate max-w-[180px]" style={{ color: "#8a8580" }}>
+                {user?.address ? user.address.slice(0, 30) + "..." : (deliveryLocation ? deliveryLocation.slice(0, 30) + (deliveryLocation.length > 30 ? "..." : "") : "Select Location")}
               </span>
               <ChevronDown className="w-3.5 h-3.5" style={{ color: "#9A9B9A" }} />
             </div>
           </button>
+
+          <style dangerouslySetInnerHTML={{ __html: `
+            .header-clock-loader {
+              width: 22px;
+              height: 22px;
+              border: 2.5px solid #ee9b00a6;
+              border-radius: 50px;
+              position: relative;
+              flex-shrink: 0;
+            }
+            .header-clock-loader span {
+              display: block;
+              background: #ee9b00;
+            }
+            .header-clock-loader .hour,
+            .header-clock-loader .min {
+              width: 2px;
+              height: 7px;
+              border-radius: 50px;
+              position: absolute;
+              top: 8px;
+              left: 7px;
+              animation: clock-spin-hour 1.2s linear infinite;
+              transform-origin: top center;
+            }
+            .header-clock-loader .min {
+              height: 5.5px;
+              animation: clock-spin-min 4s linear infinite;
+            }
+            .header-clock-loader .circel {
+              width: 3px;
+              height: 3px;
+              border-radius: 50px;
+              position: absolute;
+              top: 6.5px;
+              left: 6.5px;
+              background: #ee9b00;
+            }
+            @keyframes clock-spin-hour {
+              0% { transform: rotate(0deg); }
+              100% { transform: rotate(360deg); }
+            }
+            @keyframes clock-spin-min {
+              0% { transform: rotate(0deg); }
+              100% { transform: rotate(360deg); }
+            }
+          `}} />
+
+
           {/* Search Bar */}
           <div className="flex-1 min-w-0 max-w-[640px] mx-auto">
             <SearchBar placeholder='Search "milk", "medicines", "pens"...' />
@@ -89,18 +144,15 @@ export default function Header() {
           {/* Right Actions */}
           <div className="flex flex-shrink-0 items-center gap-3 sm:gap-5">
             {/* Add Your Store Link */}
-            <div className="hidden lg:flex items-center">
+            <div className="hidden lg:flex flex-col items-center">
               <Link
-                href="https://form.typeform.com/to/lQOu4edG#user_id=xxxxx&first_name=xxxxx&last_name=xxxxx&email=xxxxx&phone_number=xxxxx&product_id=xxxxx&auth_code=xxxxx"
-                id="link-add-store"
+                href="https://form.typeform.com/to/lQOu4edG"
                 target="_blank"
-                className="flex items-center gap-2 text-[13px] font-bold transition-transform hover:scale-105 px-3 py-1.5 rounded-full border shadow-sm"
-                style={{ color: "var(--accent-trust)", borderColor: "var(--surface-border)", background: "var(--background)" }}
+                className="flex items-center gap-2 text-[14px] font-bold transition-all hover:scale-105 hover:shadow-[0_4px_15px_#B8962E44] px-4 py-2 rounded-xl"
+                style={{ background: "#B8962E", color: "#0f0d0a" }}
               >
-                {/* REPLACE src WITH YOUR UPLOADED SHOP IMAGE PATH */}
-                <img src="https://images.unsplash.com/photo-1604719312566-8fa2065b70d5?q=80&w=100&auto=format&fit=crop" alt="Store" className="w-5 h-5 rounded-full object-cover border" style={{ borderColor: "#E2DDD0" }} />
+                <Store className="w-4 h-4" />
                 Add Your Store
-                <span className="text-xs">→</span>
               </Link>
             </div>
 
@@ -110,9 +162,8 @@ export default function Header() {
 
             {/* Account */}
             <button
-              id="btn-account"
               className="flex items-center gap-1.5 text-[14px] font-bold transition-colors"
-              style={{ color: "var(--text-primary)" }}
+              style={{ color: "#f5f0e8" }}
               onClick={() => (isLoggedIn ? (window.location.href = "/account") : setIsLoginOpen(true))}
             >
               <div className="relative">
@@ -131,7 +182,6 @@ export default function Header() {
 
             {/* Cart — Saffron CTA */}
             <button
-              id="btn-cart-toggle"
               onClick={() => setIsCartOpen(true)}
               className="relative flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl font-bold text-[14px] text-white transition-all hover:shadow-lg"
               style={{ background: "#C1492E", boxShadow: "0 2px 8px #C1492E33" }}
@@ -155,7 +205,7 @@ export default function Header() {
         </div>
 
         {/* Gold shimmer bottom border */}
-        <div style={{ height: "2px", background: "linear-gradient(90deg, transparent, #B8962E55, transparent)" }} />
+        <div style={{ height: "2px", background: "linear-gradient(90deg, transparent, #B8962E33, transparent)" }} />
       </header>
 
       <LocationModal isOpen={isLocationOpen} onClose={() => setIsLocationOpen(false)} />

@@ -1,12 +1,13 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
+import { useRef, useState } from "react";
+import { Star } from "lucide-react";
 
 const TESTIMONIALS = [
   {
     name: "Priya S.",
     city: "Jaipur",
-    avatar: "🧕",
+    initials: "PS",
     rating: 5,
     text: "Got my medicines within 12 minutes! This is unreal. My local medical store is now just a tap away.",
     tag: "Pharmacy",
@@ -14,7 +15,7 @@ const TESTIMONIALS = [
   {
     name: "Rohan M.",
     city: "Delhi",
-    avatar: "👨‍💼",
+    initials: "RM",
     rating: 5,
     text: "Casano saved my hostel life. Late-night Maggi, stationery for deadlines — all here in minutes.",
     tag: "Stationery",
@@ -22,7 +23,7 @@ const TESTIMONIALS = [
   {
     name: "Ananya K.",
     city: "Bengaluru",
-    avatar: "👩",
+    initials: "AK",
     rating: 5,
     text: "The app is so clean compared to big players, and the prices from local stores are actually cheaper!",
     tag: "Groceries",
@@ -30,7 +31,7 @@ const TESTIMONIALS = [
   {
     name: "Arjun T.",
     city: "Mumbai",
-    avatar: "🧑",
+    initials: "AT",
     rating: 5,
     text: "15 minutes is not a joke — they actually do it. Placed order at 11pm, rider was at door by 11:14.",
     tag: "Groceries",
@@ -38,7 +39,7 @@ const TESTIMONIALS = [
   {
     name: "Sneha R.",
     city: "Pune",
-    avatar: "👩‍🎓",
+    initials: "SR",
     rating: 5,
     text: "Love that I'm supporting my neighbourhood kirana uncle. Modern app, local heart.",
     tag: "Pharmacy",
@@ -47,9 +48,9 @@ const TESTIMONIALS = [
 
 function StarRow({ count }: { count: number }) {
   return (
-    <div style={{ display: "flex", gap: "2px", marginBottom: "10px" }}>
+    <div style={{ display: "flex", gap: "3px", marginBottom: "10px" }}>
       {Array.from({ length: count }).map((_, i) => (
-        <span key={i} style={{ color: "#B8962E", fontSize: "14px" }}>★</span>
+        <Star key={i} className="w-3.5 h-3.5 fill-[#B8962E] text-[#B8962E]" />
       ))}
     </div>
   );
@@ -78,7 +79,7 @@ export default function Testimonials() {
     <section className="testi-section">
       <div className="testi-inner">
         <div className="testi-header">
-          <span className="testi-badge">Customer Love ❤️</span>
+          <span className="testi-badge">Customer Love</span>
           <h2 className="testi-title">
             Thousands of Happy<br />
             <span style={{ color: "#C1492E" }}>Neighbours</span>
@@ -99,9 +100,9 @@ export default function Testimonials() {
           {TESTIMONIALS.map((t, i) => (
             <div key={i} className="testi-card">
               <StarRow count={t.rating} />
-              <p className="testi-text">"{t.text}"</p>
+              <p className="testi-text">&ldquo;{t.text}&rdquo;</p>
               <div className="testi-footer">
-                <div className="testi-avatar">{t.avatar}</div>
+                <div className="testi-avatar">{t.initials}</div>
                 <div>
                   <div className="testi-name">{t.name}</div>
                   <div className="testi-meta">{t.city} · {t.tag}</div>
@@ -111,13 +112,13 @@ export default function Testimonials() {
           ))}
         </div>
 
-        <p className="testi-drag-hint">← Drag to explore →</p>
+        <p className="testi-drag-hint">&larr; Drag to explore &rarr;</p>
       </div>
 
       <style jsx global>{`
         .testi-section {
           padding: 80px 0 60px;
-          background: var(--bg-main);
+          background: #0f0d0a;
           overflow: hidden;
           position: relative;
         }
@@ -139,7 +140,8 @@ export default function Testimonials() {
         }
         .testi-badge {
           display: inline-block;
-          background: #FAE8E5;
+          background: rgba(193,73,46,0.1);
+          border: 1px solid rgba(193,73,46,0.2);
           color: #C1492E;
           font-size: 11px;
           font-weight: 800;
@@ -153,7 +155,7 @@ export default function Testimonials() {
           font-family: 'Playfair Display', Georgia, serif;
           font-size: clamp(26px, 4vw, 44px);
           font-weight: 900;
-          color: var(--text-primary);
+          color: #f5f0e8;
           line-height: 1.2;
           margin: 0;
         }
@@ -171,8 +173,8 @@ export default function Testimonials() {
         .testi-card {
           flex-shrink: 0;
           width: 300px;
-          background: var(--surface-card);
-          border: 1px solid var(--surface-border);
+          background: #1a1714;
+          border: 1px solid #2e2a25;
           border-radius: 20px;
           padding: 24px;
           transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
@@ -181,13 +183,13 @@ export default function Testimonials() {
         }
         .testi-card:hover {
           transform: translateY(-6px);
-          box-shadow: 0 20px 48px rgba(0,0,0,0.08);
+          box-shadow: 0 20px 48px rgba(0,0,0,0.3);
           border-color: #C1492E44;
         }
         .testi-text {
           font-size: 14px;
           line-height: 1.7;
-          color: var(--text-secondary);
+          color: #8a8580;
           margin-bottom: 20px;
           font-style: italic;
         }
@@ -199,27 +201,30 @@ export default function Testimonials() {
         .testi-avatar {
           width: 40px; height: 40px;
           border-radius: 50%;
-          background: #FAE8E5;
+          background: linear-gradient(135deg, #C1492E, #214A36);
           display: flex;
           align-items: center;
           justify-content: center;
-          font-size: 20px;
+          font-size: 13px;
+          font-weight: 800;
+          color: white;
           flex-shrink: 0;
+          letter-spacing: 0.03em;
         }
         .testi-name {
           font-size: 14px;
           font-weight: 700;
-          color: var(--text-primary);
+          color: #f5f0e8;
         }
         .testi-meta {
           font-size: 12px;
-          color: var(--text-muted);
+          color: #6b6560;
           margin-top: 2px;
         }
         .testi-drag-hint {
           text-align: center;
           font-size: 12px;
-          color: var(--text-muted);
+          color: #6b6560;
           font-weight: 500;
           margin-top: 8px;
           letter-spacing: 0.05em;

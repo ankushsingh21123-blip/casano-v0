@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect } from "react";
-import { MapPin } from "lucide-react";
+import { useState, useEffect } from "react";
+import { MapPin, Loader2 } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
 
 interface LocationModalProps {
   isOpen: boolean;
@@ -9,6 +10,9 @@ interface LocationModalProps {
 }
 
 export default function LocationModal({ isOpen, onClose }: LocationModalProps) {
+  const { setDeliveryLocation } = useAuth();
+  const [isDetecting, setIsDetecting] = useState(false);
+
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
@@ -29,32 +33,73 @@ export default function LocationModal({ isOpen, onClose }: LocationModalProps) {
       />
       
       {/* Modal Content */}
-      <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-[500px] p-6 animate-in fade-in zoom-in-95 duration-200 mt-2">
-        <h2 className="text-[17px] font-bold text-gray-800 mb-6">
-          Welcome to <span className="text-brand-yellow font-black">blink<span className="text-brand-green">it</span></span>
+      <div className="relative rounded-2xl shadow-2xl w-full max-w-[500px] p-8 animate-in fade-in zoom-in-95 duration-200 mt-2 mx-4 sm:mx-0 border"
+           style={{ background: "var(--surface-card)", borderColor: "var(--surface-border)" }}>
+        <h2 className="text-[20px] font-bold mb-6 font-['Playfair_Display'] flex items-center gap-2" style={{ color: "var(--text-primary)" }}>
+          Welcome to <span style={{ color: "#C1492E", fontStyle: "italic" }}>Casano</span>
         </h2>
         
         <div className="flex items-start gap-4 mb-6">
-          <MapPin className="w-8 h-8 text-gray-700 mt-1 flex-shrink-0" />
-          <p className="text-[14px] text-gray-600 leading-snug">
-            Please provide your delivery location to see products at nearby store
+          <MapPin className="w-8 h-8 mt-1 flex-shrink-0" style={{ color: "#B8962E" }} />
+          <p className="text-[14px] leading-snug" style={{ color: "var(--text-secondary)" }}>
+            Please provide your delivery location to see products at nearby stores.
           </p>
         </div>
 
-        <div className="flex flex-col sm:flex-row items-center gap-3">
-          <button className="w-full sm:w-auto bg-brand-green hover:bg-[#0b721b] text-white px-6 py-3 rounded-lg font-medium text-[14px] transition-colors whitespace-nowrap">
-            Detect my location
+        <div className="flex flex-col sm:flex-row items-center gap-4">
+          <button 
+            disabled={isDetecting}
+            className="w-full sm:w-auto px-6 py-3 rounded-xl font-bold text-[14px] transition-all hover:scale-105 whitespace-nowrap shadow-lg flex-shrink-0 flex items-center justify-center gap-2 disabled:opacity-70 disabled:hover:scale-100"
+            style={{ background: "linear-gradient(135deg, #C1492E, #a03a22)", color: "#fff", boxShadow: "0 4px 15px rgba(193,73,46,0.3)" }}
+            onClick={() => {
+              if (navigator.geolocation) {
+                setIsDetecting(true);
+                navigator.geolocation.getCurrentPosition(
+                  async (pos) => { 
+                    try {
+                      // Fetch real address from nominatim
+                      const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${pos.coords.latitude}&lon=${pos.coords.longitude}`);
+                      const data = await res.json();
+                      const address = data.display_name || 'Detected Location';
+                      setDeliveryLocation(address.split(',').slice(0, 3).join(', '));
+                    } catch (e) {
+                      setDeliveryLocation("Detected Location");
+                    }
+                    setIsDetecting(false);
+                    onClose(); 
+                  },
+                  (err) => {
+                    alert('Location access denied. Please search manually.');
+                    setIsDetecting(false);
+                  }
+                );
+              } else {
+                alert('Geolocation is not supported by your browser.');
+              }
+            }}
+          >
+            {isDetecting ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+            {isDetecting ? "Detecting..." : "Detect my location"}
           </button>
           
-          <div className="flex items-center justify-center w-full sm:w-8 py-2 sm:py-0 text-gray-400 text-sm font-medium">
-            <span className="bg-white px-2">OR</span>
+          <div className="flex items-center justify-center w-full sm:w-auto py-2 sm:py-0 text-sm font-medium" style={{ color: "var(--text-muted)" }}>
+            <span className="px-2 uppercase tracking-wider text-xs">or</span>
           </div>
 
           <div className="w-full relative">
             <input 
               type="text" 
-              placeholder="search delivery location"
-              className="w-full border border-gray-300 rounded-lg px-4 py-3 text-[14px] outline-none focus:border-brand-green focus:shadow-sm"
+              placeholder="Search delivery location..."
+              className="w-full border rounded-xl px-4 py-3 text-[14px] outline-none transition-colors"
+              style={{ background: "transparent", borderColor: "var(--surface-border)", color: "var(--text-primary)" }}
+              onFocus={(e) => e.target.style.borderColor = "#C1492E"}
+              onBlur={(e) => e.target.style.borderColor = "var(--surface-border)"}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && e.currentTarget.value.trim()) {
+                  setDeliveryLocation(e.currentTarget.value.trim());
+                  onClose();
+                }
+              }}
               autoFocus
             />
           </div>

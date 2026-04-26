@@ -3,13 +3,14 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { ShoppingCart, Shirt, Smartphone, Pencil, Dumbbell } from "lucide-react";
 import styles from "./CategorySlider.module.css";
 
 const categories = [
   {
     id: "groceries",
     label: "Groceries",
-    emoji: "🛒",
+    Icon: ShoppingCart,
     image: "/category_groceries.png",
     gradient: "linear-gradient(135deg, #56ab2f, #a8e063)",
     path: "/category/groceries",
@@ -17,7 +18,7 @@ const categories = [
   {
     id: "fashion",
     label: "Fashion",
-    emoji: "👗",
+    Icon: Shirt,
     image: "/category_fashion.png",
     gradient: "linear-gradient(135deg, #f953c6, #b91d73)",
     path: "/category/fashion",
@@ -25,7 +26,7 @@ const categories = [
   {
     id: "gadgets",
     label: "Gadgets",
-    emoji: "📱",
+    Icon: Smartphone,
     image: "/category_gadgets.png",
     gradient: "linear-gradient(135deg, #1a1a2e, #16213e)",
     path: "/category/gadgets",
@@ -33,7 +34,7 @@ const categories = [
   {
     id: "stationery",
     label: "Stationery",
-    emoji: "✏️",
+    Icon: Pencil,
     image: "/category_stationery.png",
     gradient: "linear-gradient(135deg, #f7971e, #ffd200)",
     path: "/category/stationery",
@@ -41,7 +42,7 @@ const categories = [
   {
     id: "gym",
     label: "Gym & Fitness",
-    emoji: "💪",
+    Icon: Dumbbell,
     image: "/category_gym.png",
     gradient: "linear-gradient(135deg, #fc4a1a, #f7b733)",
     path: "/category/gym",
@@ -125,7 +126,9 @@ export default function CategorySlider() {
                   />
                 </div>
                 <div className={styles.cardLabel}>
-                  <span className={styles.cardEmoji}>{cat.emoji}</span>
+                  <span className={styles.cardEmoji}>
+                    <cat.Icon className="w-4 h-4" />
+                  </span>
                   <span className={styles.cardText}>{cat.label}</span>
                 </div>
               </div>

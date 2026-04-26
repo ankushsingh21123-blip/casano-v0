@@ -1,5 +1,3 @@
-export const dynamic = 'force-dynamic';
-export const runtime = 'nodejs';
 import { NextResponse } from 'next/server';
 
 export async function POST(req: Request) {
@@ -54,4 +52,3 @@ export async function POST(req: Request) {
         return NextResponse.json({ error: 'Failed to process image' }, { status: 500 });
     }
 }
-

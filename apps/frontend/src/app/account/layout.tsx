@@ -4,7 +4,6 @@ import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Home, ShoppingBag, MapPin, Headphones, ShieldAlert, LogOut, ChevronRight, User } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
-import AuthGuard from '@/components/AuthGuard';
 
 const navItems = [
   { name: 'My Orders', href: '/account/orders', icon: ShoppingBag },
@@ -24,7 +23,6 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
   };
 
   return (
-    <AuthGuard>
     <div className="min-h-[calc(100vh-68px)] bg-gray-50 dark:bg-[#0f0f0f] py-8 transition-colors duration-300">
       <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
 
@@ -100,6 +98,5 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
         </div>
       </div>
     </div>
-    </AuthGuard>
   );
 }

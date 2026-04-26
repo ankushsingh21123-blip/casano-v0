@@ -1,5 +1,3 @@
-export const dynamic = 'force-dynamic';
-export const runtime = 'nodejs';
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 
@@ -83,4 +81,3 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: 'Return processing failed' }, { status: 500 });
     }
 }
-

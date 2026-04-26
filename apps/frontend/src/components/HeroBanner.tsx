@@ -1,66 +1,69 @@
 "use client";
 
 import Link from "next/link";
+import { CheckCircle } from "lucide-react";
 
 export default function HeroBanner() {
   return (
-    <div className="w-full border-b transition-colors duration-300" style={{ background: "#FDFBF7", borderColor: "#E2DDD0" }}>
+    <div className="w-full transition-colors duration-300" style={{ background: "var(--bg-hero)", borderBottom: "1px solid var(--surface-border)" }}>
 
-      {/* Promo Strip — Forest Green */}
-      <div className="text-white text-center py-2.5 text-xs font-bold tracking-wide" style={{ background: "#214A36" }}>
-        🎉 Free delivery on your first 3 orders — Use code&nbsp;
-        <span className="underline underline-offset-2 cursor-pointer">FIRST3</span>
+      {/* Promo Strip — Gold Accent */}
+      <div className="text-center py-2.5 text-xs font-bold tracking-widest uppercase transition-colors" 
+           style={{ background: "var(--surface-card)", color: "#B8962E", borderBottom: "1px solid var(--surface-border)" }}>
+        Free delivery on your first 3 orders — Use code&nbsp;
+        <span className="underline underline-offset-4 cursor-pointer hover:text-opacity-80">FIRST3</span>
       </div>
 
       {/* Hero Section */}
-      <div className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 py-10 sm:py-16">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+      <div className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 py-12 sm:py-20 relative">
+        {/* Subtle ambient luxury glow */}
+        <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse at 20% 50%, rgba(193,73,46,0.06), transparent 60%), radial-gradient(ellipse at 80% 30%, rgba(184,150,46,0.05), transparent 50%)" }} />
+
+        <div className="flex flex-col md:flex-row items-center justify-between gap-10 relative z-10">
 
           {/* Left: Copy */}
           <div className="flex-1 max-w-2xl">
             {/* Trusted badge */}
             <div
-              className="inline-flex items-center gap-2 text-xs font-bold px-3 py-1.5 rounded-full mb-5"
-              style={{ background: "#E6F2EC", color: "#214A36" }}
+              className="inline-flex items-center gap-2 text-[11px] font-bold px-4 py-1.5 rounded-full mb-6 uppercase tracking-wider transition-all hover:bg-opacity-80 cursor-default"
+              style={{ background: "rgba(184,150,46,0.1)", color: "#B8962E", border: "1px solid rgba(184,150,46,0.2)" }}
             >
-              <span className="w-2 h-2 rounded-full" style={{ background: "#214A36" }} />
-              Delivered from your local Kirana store
+              <span className="w-1.5 h-1.5 rounded-full" style={{ background: "#B8962E", boxShadow: "0 0 8px #B8962E" }} />
+              Delivered from your premium Kirana
             </div>
 
             <h1
-              className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight leading-[1.1] mb-5"
-              style={{ color: "#2A2B2A", fontFamily: "'Playfair Display', Georgia, serif" }}
+              className="text-4xl sm:text-5xl md:text-[56px] font-black tracking-tight leading-[1.05] mb-6"
+              style={{ color: "var(--text-primary)", fontFamily: "var(--font-heading)" }}
             >
               Everything you need,<br />
-              <span style={{ color: "#C1492E" }}>delivered in minutes.</span>
+              <span style={{ color: "#AD4531", fontStyle: "italic" }}>delivered in minutes.</span>
             </h1>
 
-            <p className="text-base sm:text-lg max-w-xl mb-8 leading-relaxed" style={{ color: "#5A5B5A" }}>
-              Groceries, medicines, stationery and more — from your local Kirana store to your door in 15 minutes.
+            <p className="text-lg sm:text-xl max-w-lg mb-10 leading-relaxed font-medium" style={{ color: "var(--text-secondary)" }}>
+              Groceries, medicines, and luxury essentials — curated and delivered to your door in <strong style={{ color: "#B8962E" }}>15 minutes</strong>.
             </p>
 
             <div className="flex items-center gap-4 flex-wrap">
               <Link href="/products">
                 <button
-                  className="px-6 py-3.5 rounded-xl font-bold text-base text-white transition-all hover:shadow-lg"
-                  style={{ background: "#C1492E" }}
-                  onMouseEnter={e => (e.currentTarget.style.background = "#A63C25")}
-                  onMouseLeave={e => (e.currentTarget.style.background = "#C1492E")}
+                  className="px-8 py-4 rounded-xl font-bold text-[15px] text-white transition-all hover:shadow-lg hover:-translate-y-0.5"
+                  style={{ background: "linear-gradient(135deg, #AD4531, #8E3424)", boxShadow: "0 8px 30px rgba(173,69,49,0.3)" }}
                 >
                   Browse Products
                 </button>
               </Link>
               <Link href="/category/groceries">
                 <button
-                  className="px-6 py-3.5 rounded-xl font-bold text-base transition-all"
-                  style={{ border: "2px solid #E2DDD0", color: "#2A2B2A", background: "transparent" }}
+                  className="px-8 py-4 rounded-xl font-bold text-[15px] transition-all hover:-translate-y-0.5"
+                  style={{ border: "1px solid var(--surface-border)", color: "var(--text-primary)", background: "var(--surface-card)" }}
                   onMouseEnter={e => {
-                    e.currentTarget.style.borderColor = "#214A36";
-                    e.currentTarget.style.color = "#214A36";
+                    e.currentTarget.style.borderColor = "#B8962E";
+                    e.currentTarget.style.color = "#B8962E";
                   }}
                   onMouseLeave={e => {
-                    e.currentTarget.style.borderColor = "#E2DDD0";
-                    e.currentTarget.style.color = "#2A2B2A";
+                    e.currentTarget.style.borderColor = "var(--surface-border)";
+                    e.currentTarget.style.color = "var(--text-primary)";
                   }}
                 >
                   Shop Groceries
@@ -69,55 +72,67 @@ export default function HeroBanner() {
             </div>
 
             {/* Trust badges */}
-            <div className="flex items-center gap-6 mt-8 flex-wrap">
+            <div className="flex items-center gap-6 mt-10 flex-wrap">
               {[
-                { icon: "✓", label: "100% Fresh", bg: "#E6F2EC", color: "#214A36" },
-                { icon: "🛡", label: "Safe & Hygienic", bg: "#FAE8E5", color: "#C1492E" },
-                { icon: "⚡", label: "15 min delivery", bg: "#FBF5E1", color: "#B8962E" },
+                { icon: <CheckCircle className="w-4 h-4" />, label: "100% Fresh", bg: "rgba(184,150,46,0.1)", color: "#B8962E" },
+                { icon: <CheckCircle className="w-4 h-4" />, label: "Premium Quality", bg: "rgba(193,73,46,0.1)", color: "#C1492E" },
+                { icon: <CheckCircle className="w-4 h-4" />, label: "15 min VIP Delivery", bg: "rgba(33,74,54,0.1)", color: "#214A36" },
               ].map(b => (
-                <div key={b.label} className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-lg flex items-center justify-center font-bold text-sm" style={{ background: b.bg, color: b.color }}>
+                <div key={b.label} className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-full flex items-center justify-center font-bold" style={{ background: b.bg, color: b.color }}>
                     {b.icon}
                   </div>
-                  <span className="text-xs font-semibold" style={{ color: "#5A5B5A" }}>{b.label}</span>
+                  <span className="text-[13px] font-bold" style={{ color: "var(--text-muted)" }}>{b.label}</span>
                 </div>
               ))}
             </div>
           </div>
 
           {/* Right: Promo Cards */}
-          <div className="flex-shrink-0 grid grid-cols-2 gap-3 w-full md:w-auto md:max-w-[360px]">
+          <div className="flex-shrink-0 grid grid-cols-2 gap-4 w-full md:w-auto md:max-w-[380px]">
             <div
-              className="rounded-2xl p-5 text-white col-span-2"
-              style={{ background: "linear-gradient(135deg, #C1492E, #8B2A18)" }}
+              className="rounded-[20px] p-6 text-white col-span-2 relative overflow-hidden transition-transform hover:-translate-y-1 hover:shadow-xl hover:shadow-[#9C412C]/30"
+              style={{ background: "#9C412C" }}
             >
-              <p className="text-xs font-bold opacity-80 mb-1 uppercase tracking-wider">Featured Offer</p>
-              <p className="text-xl font-black leading-tight">Flat 30% off on Groceries</p>
-              <p className="text-sm opacity-90 mt-1">Min order ₹199</p>
+              <div className="absolute inset-0 opacity-5" style={{ background: "radial-gradient(circle at top right, white, transparent 70%)" }} />
+              <p className="text-[10px] font-bold mb-2 uppercase tracking-wide relative z-10 text-[#EDD0BF] opacity-90">Casano Gold Exclusive</p>
+              <p className="text-2xl font-black leading-tight relative z-10 font-['Playfair_Display']">Flat 30% off<br/>Premium Groceries</p>
+              <p className="text-[13px] font-medium mt-2 relative z-10 border-l-2 border-white/20 pl-2 text-white/90">Min order ₹199</p>
               <Link href="/category/groceries">
                 <button
-                  className="mt-3 text-white text-xs font-bold px-3 py-1.5 rounded-lg transition-colors"
-                  style={{ background: "rgba(255,255,255,0.2)" }}
+                  className="mt-4 text-white text-[13px] font-bold px-5 py-2.5 rounded-lg transition-colors relative z-10 hover:bg-white/30 backdrop-blur-md"
+                  style={{ background: "rgba(255,255,255,0.15)", border: "1px solid rgba(255,255,255,0.1)" }}
                 >
                   Shop Now
                 </button>
               </Link>
             </div>
-            <div className="rounded-2xl p-4 text-white" style={{ background: "linear-gradient(135deg, #214A36, #0F2C1F)" }}>
-              <p className="text-xs font-bold opacity-70 mb-1">Gadgets</p>
-              <p className="text-base font-black leading-tight">Up to 20% off</p>
+            
+            <div 
+              className="rounded-[20px] p-5 text-white transition-transform hover:-translate-y-1 hover:shadow-xl hover:shadow-[#33211A]/30 dark:hover:shadow-[#0F2C1F]/30 bg-[#33211A] dark:bg-gradient-to-br dark:from-[#1A2520] dark:to-[#0F2C1F]" 
+            >
+              <p className="text-[10px] uppercase tracking-wider font-bold mb-1 text-[#C4B7B1]">Tech & Living</p>
+              <p className="text-lg font-black leading-tight font-['Playfair_Display'] mb-3 mt-1 text-white">Up to 20% off</p>
               <Link href="/category/gadgets">
-                <p className="text-xs mt-2 font-semibold" style={{ color: "#A8D5B8" }}>Explore →</p>
+                <p className="text-[13px] font-bold inline-flex items-center transition-opacity hover:opacity-80" style={{ color: "#5D8056" }}>
+                  Explore <span className="ml-1">→</span>
+                </p>
               </Link>
             </div>
-            <div className="rounded-2xl p-4 text-white" style={{ background: "linear-gradient(135deg, #B8962E, #7D6219)" }}>
-              <p className="text-xs font-bold opacity-70 mb-1">Fashion</p>
-              <p className="text-base font-black leading-tight">New Arrivals</p>
+            
+            <div 
+              className="rounded-[20px] p-5 text-white transition-transform hover:-translate-y-1 hover:shadow-xl hover:shadow-[#291411]/20 dark:hover:shadow-[#B8962E]/20 bg-[#291411] dark:bg-gradient-to-br dark:from-[#2A2015] dark:to-[#1A1510]" 
+            >
+              <p className="text-[10px] uppercase tracking-wider font-bold mb-1 text-[#C4B7B1]">Luxury Fashion</p>
+              <p className="text-lg font-black leading-tight font-['Playfair_Display'] mb-3 mt-1 text-white">New Arrivals</p>
               <Link href="/category/fashion">
-                <p className="text-xs mt-2 font-semibold" style={{ color: "#FBF5E1" }}>View All →</p>
+                <p className="text-[13px] font-bold inline-flex items-center transition-opacity hover:opacity-80" style={{ color: "#B38E36" }}>
+                  View All <span className="ml-1">→</span>
+                </p>
               </Link>
             </div>
           </div>
+          
         </div>
       </div>
     </div>
