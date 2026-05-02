@@ -2,7 +2,7 @@ services:
   - type: web
     name: casano-backend
     env: node
-    rootDir: packages/backend
+    rootDir: backend
     buildCommand: npm install
     startCommand: npm start
     envVars:

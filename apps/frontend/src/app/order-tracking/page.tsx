@@ -1,8 +1,40 @@
 "use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Phone, HelpCircle, ShieldCheck, MapPin, X, ChevronRight, Package, CheckCircle, Truck, Home, Store, Bot, Star, ChefHat } from 'lucide-react';
 import { ReactNode } from 'react';
+import {
+  Map,
+  MapMarker,
+  MarkerContent,
+  MarkerTooltip,
+  MapControls,
+  MapRoute,
+  useMap,
+} from "@/components/ui/map";
+
+/* ─── Coordinates ─── */
+const STORE_COORDS: [number, number] = [77.6245, 12.9352]; // Casano Store (lng, lat)
+const HOME_COORDS: [number, number] = [77.6390, 12.9480]; // Customer Home
+const MAP_CENTER: [number, number] = [77.6317, 12.9416]; // Midpoint
+
+/* ─── Route GeoJSON ─── */
+const routeGeoJSON: GeoJSON.Feature<GeoJSON.LineString> = {
+  type: "Feature",
+  properties: {},
+  geometry: {
+    type: "LineString",
+    coordinates: [
+      STORE_COORDS,
+      [77.6270, 12.9370],
+      [77.6300, 12.9395],
+      [77.6330, 12.9420],
+      [77.6355, 12.9445],
+      [77.6375, 12.9465],
+      HOME_COORDS,
+    ],
+  },
+};
 
 /* ─── Tracking step data ─── */
 const STEPS: { icon: ReactNode; label: string; sub: string }[] = [
@@ -23,10 +55,39 @@ const CHAT_HISTORY = [
   },
 ];
 
+/* ─── Animated Delivery Marker (pulsing driver dot on the route) ─── */
+function AnimatedDriverMarker({ progress }: { progress: number }) {
+  // Interpolate along the route based on progress (0–1)
+  const coords = routeGeoJSON.geometry.coordinates;
+  const totalSegments = coords.length - 1;
+  const segIndex = Math.min(Math.floor(progress * totalSegments), totalSegments - 1);
+  const segProgress = (progress * totalSegments) - segIndex;
+
+  const lng = coords[segIndex][0] + (coords[segIndex + 1][0] - coords[segIndex][0]) * segProgress;
+  const lat = coords[segIndex][1] + (coords[segIndex + 1][1] - coords[segIndex][1]) * segProgress;
+
+  return (
+    <MapMarker longitude={lng} latitude={lat}>
+      <MarkerContent>
+        <div className="relative">
+          {/* Pulse ring */}
+          <div className="absolute -inset-2 rounded-full bg-[#19c74a]/30 animate-ping" />
+          {/* Driver dot */}
+          <div className="w-5 h-5 rounded-full bg-[#19c74a] border-[3px] border-white shadow-lg shadow-[#19c74a]/40 relative z-10" />
+        </div>
+      </MarkerContent>
+      <MarkerTooltip>
+        <span className="font-bold">Kiran is on the way!</span>
+      </MarkerTooltip>
+    </MapMarker>
+  );
+}
+
 export default function OrderTrackingPage() {
   const [driverAssigned, setDriverAssigned] = useState(false);
   const [currentStep, setCurrentStep] = useState(1); // 0-indexed
   const [supportOpen, setSupportOpen] = useState(false);
+  const [driverProgress, setDriverProgress] = useState(0);
 
   /* Auto-animate tracking steps */
   useEffect(() => {
@@ -34,6 +95,21 @@ export default function OrderTrackingPage() {
     const t2 = setTimeout(() => setCurrentStep(2), 6000); // "On the way"
     return () => { clearTimeout(t1); clearTimeout(t2); };
   }, []);
+
+  /* Animate driver along route when step >= 2 */
+  useEffect(() => {
+    if (currentStep < 2) return;
+    const interval = setInterval(() => {
+      setDriverProgress(prev => {
+        if (prev >= 0.85) {
+          clearInterval(interval);
+          return 0.85;
+        }
+        return prev + 0.003;
+      });
+    }, 80);
+    return () => clearInterval(interval);
+  }, [currentStep]);
 
   const statusText = currentStep < 2 ? 'Packing your order' : 'Arriving in 15 minutes';
 
@@ -165,31 +241,69 @@ export default function OrderTrackingPage() {
         </div>
       </div>
 
-      {/* ─── Right Map Area ─── */}
+      {/* ─── Right Map Area (mapcn MapLibre GL) ─── */}
       <div className="relative flex-1 h-[45vh] lg:h-screen">
-        {/* OpenStreetMap embed — Bengaluru area, no API key required */}
-        <iframe
-          title="Order tracking map"
-          src="https://www.openstreetmap.org/export/embed.html?bbox=77.5800%2C12.9100%2C77.6700%2C12.9700&layer=mapnik&marker=12.9352%2C77.6245"
-          className="w-full h-full border-0"
-          style={{ filter: 'saturate(0.8) brightness(0.95)' }}
-          loading="lazy"
-        />
+        <Map
+          center={MAP_CENTER}
+          zoom={14}
+          pitch={30}
+          className="w-full h-full"
+        >
+          {/* Map Controls */}
+          <MapControls
+            position="bottom-right"
+            showZoom={true}
+            showLocate={true}
+          />
+
+          {/* Route line from store to home */}
+          <MapRoute
+            coordinates={routeGeoJSON.geometry.coordinates as [number, number][]}
+            color="#19c74a"
+            width={4}
+            opacity={0.8}
+          />
+
+          {/* Store Marker */}
+          <MapMarker longitude={STORE_COORDS[0]} latitude={STORE_COORDS[1]}>
+            <MarkerContent>
+              <div className="flex items-center gap-1.5 bg-white dark:bg-[#1a1a1a] rounded-xl px-3 py-2 shadow-lg border border-gray-100 dark:border-gray-700 cursor-pointer hover:shadow-xl transition-shadow">
+                <div className="w-7 h-7 rounded-full bg-[#19c74a]/15 flex items-center justify-center">
+                  <Store className="w-4 h-4 text-[#19c74a]" />
+                </div>
+                <span className="text-xs font-bold text-gray-900 dark:text-white whitespace-nowrap">Casano Store</span>
+              </div>
+            </MarkerContent>
+            <MarkerTooltip>
+              <span>Pickup location • Electronic City</span>
+            </MarkerTooltip>
+          </MapMarker>
+
+          {/* Home Marker */}
+          <MapMarker longitude={HOME_COORDS[0]} latitude={HOME_COORDS[1]}>
+            <MarkerContent>
+              <div className="flex items-center gap-1.5 bg-white dark:bg-[#1a1a1a] rounded-xl px-3 py-2 shadow-lg border border-gray-100 dark:border-gray-700 cursor-pointer hover:shadow-xl transition-shadow">
+                <div className="w-7 h-7 rounded-full bg-blue-500/15 flex items-center justify-center">
+                  <Home className="w-4 h-4 text-blue-500" />
+                </div>
+                <span className="text-xs font-bold text-gray-900 dark:text-white whitespace-nowrap">Your Home</span>
+              </div>
+            </MarkerContent>
+            <MarkerTooltip>
+              <span>Delivery address • Bengaluru</span>
+            </MarkerTooltip>
+          </MapMarker>
+
+          {/* Animated Driver Marker (shows after driver is assigned and step is "On the way") */}
+          {driverAssigned && currentStep >= 2 && (
+            <AnimatedDriverMarker progress={driverProgress} />
+          )}
+        </Map>
 
         {/* Status overlay on map */}
-        <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-white dark:bg-[#1a1a1a] rounded-full px-6 py-3 shadow-xl border border-gray-100 dark:border-gray-800 flex items-center gap-3">
+        <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-white dark:bg-[#1a1a1a] rounded-full px-6 py-3 shadow-xl border border-gray-100 dark:border-gray-800 flex items-center gap-3 z-10">
           <div className="w-3 h-3 rounded-full bg-[#19c74a] animate-pulse" />
           <span className="font-bold text-gray-900 dark:text-white text-sm">{statusText}</span>
-        </div>
-
-        {/* Store & Home pin labels */}
-        <div className="absolute bottom-6 right-6 flex flex-col gap-2">
-          <div className="bg-white dark:bg-[#1a1a1a] rounded-xl px-4 py-2 shadow-lg border border-gray-100 dark:border-gray-800 flex items-center gap-2 text-sm font-bold">
-            <Store className="w-4 h-4 text-[#19c74a]" /> Casano Store
-          </div>
-          <div className="bg-white dark:bg-[#1a1a1a] rounded-xl px-4 py-2 shadow-lg border border-gray-100 dark:border-gray-800 flex items-center gap-2 text-sm font-bold">
-            <Home className="w-4 h-4 text-[#19c74a]" /> Your Home
-          </div>
         </div>
       </div>
 

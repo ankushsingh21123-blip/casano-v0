@@ -1,16 +1,30 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Search, MapPin, ChevronDown, Clock, ShoppingCart, Home, List,
   History, ArrowRight, X, LocateFixed, CheckCircle, CreditCard,
-  Wallet, User, Phone, Package, Headphones, LogOut, ArrowLeft
+  Wallet, User, Phone, Package, Headphones, LogOut, ArrowLeft,
+  Heart, Shield, Zap, Star, Tag, ChevronRight, Gift, RefreshCw, Truck, BadgeCheck
 } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
 import LoginModal from './LoginModal';
 import ThemeToggle from './ThemeToggle';
+import MobileHomeSkeleton from './ui/SkeletonLoader';
+import UnicornScene from "unicornstudio-react";
+
+const SEARCH_HINTS = [
+  'Search "milk"', 'Search "bread"', 'Search "medicines"',
+  'Search "pens"', 'Search "eggs"', 'Search "rice"',
+];
+
+const DEALS = [
+  { label: 'Flat 30% Off', desc: 'On Premium Groceries', tag: 'CASANO30', color: '#C1492E', bg: 'linear-gradient(135deg, #C1492E, #a03a22)', validity: 'Valid till midnight' },
+  { label: 'Under ₹99', desc: 'Daily Essentials', tag: 'STEAL DEAL', color: '#B8962E', bg: 'linear-gradient(135deg, #B8962E, #8A701F)', validity: 'Limited stock' },
+  { label: 'Buy 1 Get 1', desc: 'Beverages & Snacks', tag: 'BOGO', color: '#214A36', bg: 'linear-gradient(135deg, #214A36, #163224)', validity: 'Ends in 2h 45m' },
+];
 
 const CATEGORIES = [
   { name: 'Groceries', image: '/category_groceries.png', path: '/category/groceries', fallbackColor: '#FAE8E5' },
@@ -38,6 +52,7 @@ const MOCK_ORDERS = [
     total: 82,
     status: 'Delivered',
     statusColor: 'text-[#214A36] bg-[#E6F2EC]',
+    images: ['/category_groceries.png', '/category_groceries.png'],
   },
   {
     id: 'ORD-2024-002',
@@ -46,6 +61,16 @@ const MOCK_ORDERS = [
     total: 87,
     status: 'Delivered',
     statusColor: 'text-[#214A36] bg-[#E6F2EC]',
+    images: ['/category_stationery.png', '/category_groceries.png'],
+  },
+  {
+    id: 'ORD-2024-003',
+    date: 'Feb 28, 2024',
+    items: ['Curd x2', 'Pen Set x1'],
+    total: 125,
+    status: 'Cancelled',
+    statusColor: 'text-[#C1492E] bg-[#FAE8E5]',
+    images: ['/category_groceries.png', '/category_stationery.png'],
   },
 ];
 
@@ -56,8 +81,40 @@ export default function MobileHome() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [searchIdx, setSearchIdx] = useState(0);
   const { items, addItem, removeItem, cartTotal, cartCount } = useCart();
   const { isLoggedIn, user, logout } = useAuth();
+
+  // Apply dark mode class to <html> only when user explicitly toggles
+  const toggleDarkMode = useCallback(() => {
+    setIsDarkMode(prev => {
+      const next = !prev;
+      if (next) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+      return next;
+    });
+  }, []);
+
+  // On mount, ensure dark class matches state (default: light)
+  useEffect(() => {
+    document.documentElement.classList.remove('dark');
+  }, []);
+
+  // Skeleton loading simulation
+  useEffect(() => {
+    const t = setTimeout(() => setIsLoading(false), 1200);
+    return () => clearTimeout(t);
+  }, []);
+
+  // Rotating search placeholder
+  useEffect(() => {
+    const t = setInterval(() => setSearchIdx(i => (i + 1) % SEARCH_HINTS.length), 2500);
+    return () => clearInterval(t);
+  }, []);
 
   const deliveryFee = 0;
   const handlingFee = 5;
@@ -68,15 +125,28 @@ export default function MobileHome() {
   };
   const handleRemove = (id: string) => removeItem(id);
 
+  if (isLoading) return <MobileHomeSkeleton />;
+
   return (
-    <div className="flex w-full flex-col min-h-screen relative font-sans transition-colors duration-300" style={{ background: "var(--bg-main)", color: "var(--text-primary)" }}>
+    <div className="flex w-full flex-col min-h-screen relative font-sans transition-colors duration-300" style={{ background: "var(--bg-main)", color: "var(--text-primary)", paddingTop: "env(safe-area-inset-top, 0px)" }}>
+      {/* Background UnicornScene */}
+      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden opacity-30 mix-blend-screen">
+        <UnicornScene
+          projectId="18CBccbb02aYYChpjQtO"
+          width="100%"
+          height="100%"
+          scale={1}
+          dpi={1.5}
+          sdkUrl="https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@2.1.11/dist/unicornStudio.umd.js"
+        />
+      </div>
 
       {/* ── HOME SCREEN ── */}
       {appState === 'home' && (
-        <motion.main initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex-1 overflow-y-auto pb-36 hide-scrollbar">
+        <motion.main initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="relative z-10 flex-1 overflow-y-auto pb-36 hide-scrollbar">
 
           {/* Header */}
-          <div className="sticky top-0 z-40 pb-3 pt-4 px-4 shadow-sm border-b transition-colors" style={{ background: "var(--surface-card)", borderColor: "var(--surface-border)" }}>
+          <div className="sticky top-0 z-40 pb-3 pt-3 px-4 shadow-sm border-b transition-colors" style={{ background: "var(--surface-card)", borderColor: "var(--surface-border)" }}>
             <div className="flex items-center justify-between mb-3">
               <button className="flex items-center gap-2" onClick={() => {}}>
                 <div className="rounded-xl p-2" style={{ background: "rgba(193,73,46,0.1)" }}>
@@ -92,39 +162,82 @@ export default function MobileHome() {
                   </p>
                 </div>
               </button>
-              <div className="flex items-center gap-2">
-                <ThemeToggle isDarkMode={isDarkMode} toggle={() => setIsDarkMode(!isDarkMode)} />
+              <div className="flex items-center gap-2" style={{ transform: 'scale(0.7)', transformOrigin: 'center right' }}>
+                <ThemeToggle isDarkMode={isDarkMode} toggle={toggleDarkMode} />
               </div>
             </div>
 
-            {/* Search */}
+            {/* Search with rotating placeholder */}
             <button
               className="w-full rounded-xl px-4 py-3 flex items-center gap-3 text-left transition-colors border"
               style={{ background: "var(--bg-main)", borderColor: "var(--surface-border)" }}
               onClick={() => window.location.href = '/products'}
             >
               <Search size={18} style={{ color: "var(--text-muted)" }} className="flex-shrink-0" />
-              <span className="text-sm font-medium" style={{ color: "var(--text-muted)" }}>Search products...</span>
+              <AnimatePresence mode="wait">
+                <motion.span
+                  key={searchIdx}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.25 }}
+                  className="text-sm font-medium"
+                  style={{ color: "var(--text-muted)" }}
+                >
+                  {SEARCH_HINTS[searchIdx]}
+                </motion.span>
+              </AnimatePresence>
             </button>
           </div>
 
           {/* Promo Banner */}
           <div className="px-4 py-4">
-            <div className="rounded-2xl p-5 text-white relative overflow-hidden" style={{ background: "linear-gradient(135deg, #C1492E, #a03a22)" }}>
-              <div className="relative z-10">
-                <p className="text-xs font-bold opacity-80 uppercase tracking-wider mb-1">Limited time</p>
-                <h3 className="text-xl font-black leading-tight" style={{ fontFamily: "var(--font-heading)" }}>Flat 30% off groceries</h3>
-                <p className="text-sm opacity-90 mt-1">Min order ₹199 · Code CASANO30</p>
-                <button
-                  onClick={() => window.location.href = '/category/groceries'}
-                  className="mt-3 text-[#2A2B2A] bg-white text-xs font-bold px-4 py-2 rounded-xl transition-transform hover:scale-105"
-                >
-                  Shop Now
-                </button>
-              </div>
-              <div className="absolute -right-6 -bottom-6 w-28 h-28 bg-white/10 rounded-full" />
-              <div className="absolute -right-2 top-2 w-16 h-16 bg-white/10 rounded-full" />
+            <div className="flex gap-3 overflow-x-auto hide-scrollbar snap-x pb-2">
+              {DEALS.map((deal, idx) => (
+                <div key={idx} className="min-w-[280px] max-w-[280px] snap-center rounded-2xl p-5 text-white relative overflow-hidden shadow-md flex-shrink-0" style={{ background: deal.bg }}>
+                  <div className="relative z-10">
+                    <div className="flex justify-between items-start mb-2">
+                      <p className="text-[10px] font-black opacity-90 uppercase tracking-widest bg-white/20 px-2 py-1 rounded-md backdrop-blur-sm">{deal.tag}</p>
+                      <div className="flex items-center gap-1 opacity-80">
+                        <Clock size={12} />
+                        <span className="text-[10px] font-bold">{deal.validity}</span>
+                      </div>
+                    </div>
+                    <h3 className="text-2xl font-black leading-tight mt-1" style={{ fontFamily: "var(--font-heading)" }}>{deal.label}</h3>
+                    <p className="text-xs opacity-90 mt-1 font-medium">{deal.desc}</p>
+                    <button
+                      onClick={() => window.location.href = '/category/groceries'}
+                      className="mt-4 text-[#2A2B2A] bg-white text-[11px] font-black px-4 py-2.5 rounded-xl transition-transform hover:scale-105 shadow-sm"
+                    >
+                      Shop Now
+                    </button>
+                  </div>
+                  {/* Decorative orbs */}
+                  <div className="absolute -right-6 -bottom-6 w-32 h-32 bg-white/10 rounded-full blur-xl" />
+                  <div className="absolute -right-2 top-2 w-16 h-16 bg-white/10 rounded-full blur-md" />
+                  <div className="absolute left-10 -bottom-10 w-24 h-24 bg-black/10 rounded-full blur-xl" />
+                </div>
+              ))}
             </div>
+          </div>
+
+          {/* Trust Badges */}
+          <div className="px-4 mb-4 flex gap-2 overflow-x-auto hide-scrollbar snap-x pb-2">
+            {[
+              { icon: Truck, text: 'Free Delivery', sub: 'Above ₹99', color: '#B8962E', bgLight: 'rgba(184,150,46,0.1)' },
+              { icon: Zap, text: '15 Min', sub: 'VIP Delivery', color: '#214A36', bgLight: 'rgba(33,74,54,0.1)' },
+              { icon: Shield, text: '100% Secure', sub: 'Payments', color: '#7C3AED', bgLight: 'rgba(124,58,237,0.1)' },
+            ].map((b, i) => (
+              <motion.div whileTap={{ scale: 0.95 }} key={i} className="flex-1 min-w-[115px] snap-center flex items-center gap-2.5 rounded-2xl px-3 py-3 border shadow-sm" style={{ background: 'var(--surface-card)', borderColor: 'var(--surface-border)' }}>
+                <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: b.bgLight }}>
+                  <b.icon size={16} style={{ color: b.color }} />
+                </div>
+                <div>
+                  <p className="text-[11px] font-black leading-tight tracking-tight whitespace-nowrap">{b.text}</p>
+                  <p className="text-[9px] font-bold mt-0.5 opacity-80 whitespace-nowrap" style={{ color: b.color }}>{b.sub}</p>
+                </div>
+              </motion.div>
+            ))}
           </div>
 
           {/* Categories Grid */}
@@ -206,32 +319,122 @@ export default function MobileHome() {
               })}
             </div>
           </div>
+
+          {/* Quick Reorder Section */}
+          <div className="py-5 border-t" style={{ background: "var(--surface-card)", borderColor: "var(--surface-border)" }}>
+            <div className="px-4 flex justify-between items-center mb-4">
+              <div className="flex items-center gap-2">
+                <RefreshCw size={16} style={{ color: "var(--action-primary)" }} />
+                <h2 className="text-[17px] font-black tracking-tight" style={{ fontFamily: "var(--font-heading)" }}>Buy it again</h2>
+              </div>
+              <button className="text-sm font-bold" style={{ color: "var(--action-primary)" }} onClick={() => window.location.href = '/account/orders'}>History</button>
+            </div>
+            <div className="flex gap-3 px-4 overflow-x-auto hide-scrollbar snap-x pb-2">
+              {PRODUCTS.slice(2, 6).map((p: any) => {
+                const cartItem = items.find(i => i.id === p.id);
+                const qty = cartItem?.quantity || 0;
+                return (
+                  <div
+                    key={`reorder-${p.id}`}
+                    className="min-w-[120px] max-w-[120px] rounded-xl p-2.5 border shadow-sm flex flex-col snap-start flex-shrink-0"
+                    style={{ background: "var(--bg-main)", borderColor: "var(--surface-border)" }}
+                  >
+                    <div className="relative mb-2">
+                      <div className="w-full aspect-square rounded-lg overflow-hidden bg-gray-100">
+                        <img src={p.image} alt={p.name} className="w-full h-full object-cover" />
+                      </div>
+                    </div>
+                    <h3 className="font-bold text-[11px] leading-snug line-clamp-1 mb-1" style={{ color: "var(--text-primary)" }}>{p.name}</h3>
+                    <div className="mt-auto flex justify-between items-center pt-1">
+                      <p className="font-black text-xs raj-price">₹{p.price}</p>
+                      {qty === 0 ? (
+                        <motion.button
+                          whileTap={{ scale: 0.9 }}
+                          onClick={() => handleAdd(p)}
+                          className="w-6 h-6 flex items-center justify-center rounded-md"
+                          style={{ background: "var(--action-primary)", color: "white" }}
+                        >
+                          <span className="font-bold text-sm">+</span>
+                        </motion.button>
+                      ) : (
+                        <div className="flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[10px] font-black text-white" style={{ background: "var(--action-primary)" }}>
+                          <button onClick={() => handleRemove(p.id)} className="w-3 text-center font-black">−</button>
+                          <span className="w-3 text-center">{qty}</span>
+                          <button onClick={() => handleAdd(p)} className="w-3 text-center font-black">+</button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+
+          {/* Footer Trust */}
+          <div className="px-4 pb-6">
+            <div className="rounded-2xl p-4 text-center border" style={{ background: 'var(--surface-card)', borderColor: 'var(--surface-border)' }}>
+              <div className="flex justify-center gap-6 mb-3">
+                {[
+                  { icon: Shield, label: 'Secure' },
+                  { icon: RefreshCw, label: 'Easy Returns' },
+                  { icon: Truck, label: 'Free Delivery' },
+                ].map((t, i) => (
+                  <div key={i} className="flex flex-col items-center gap-1">
+                    <div className="w-9 h-9 rounded-full flex items-center justify-center" style={{ background: 'rgba(193,73,46,0.08)' }}>
+                      <t.icon size={16} style={{ color: 'var(--action-primary)' }} />
+                    </div>
+                    <span className="text-[9px] font-bold" style={{ color: 'var(--text-muted)' }}>{t.label}</span>
+                  </div>
+                ))}
+              </div>
+              <p className="text-[10px] font-medium" style={{ color: 'var(--text-muted)' }}>FSSAI Licensed · 100% Fresh Guaranteed · Casano.in</p>
+            </div>
+          </div>
         </motion.main>
       )}
 
       {/* ── ORDER HISTORY ── */}
       {appState === 'orders' && (
-        <motion.div initial={{ x: '100%' }} animate={{ x: 0 }} className="fixed inset-0 z-50 flex flex-col" style={{ background: "var(--bg-main)" }}>
+        <motion.div initial={{ x: '100%' }} animate={{ x: 0 }} className="fixed inset-0 z-50 flex flex-col" style={{ background: "var(--bg-main)", paddingTop: "env(safe-area-inset-top, 0px)" }}>
           <div className="p-4 flex items-center gap-4 border-b" style={{ background: "var(--surface-card)", borderColor: "var(--surface-border)" }}>
-            <button onClick={() => setAppState('profile')} className="p-2 rounded-full transition-colors" style={{ background: "var(--surface-border)" }}>
-              <ArrowLeft size={20} />
+            <button onClick={() => setAppState('home')} className="w-9 h-9 rounded-full flex items-center justify-center" style={{ background: "var(--surface-border)" }}>
+              <ArrowLeft size={18} />
             </button>
-            <h2 className="text-lg font-black" style={{ fontFamily: "var(--font-heading)" }}>My Orders</h2>
+            <h2 className="text-lg font-black" style={{ fontFamily: "var(--font-heading)" }}>Your Orders</h2>
           </div>
           <div className="flex-1 overflow-y-auto p-4 space-y-3">
             {MOCK_ORDERS.map(order => (
-              <div key={order.id} className="rounded-2xl p-4 border shadow-sm" style={{ background: "var(--surface-card)", borderColor: "var(--surface-border)" }}>
-                <div className="flex justify-between items-start mb-2">
-                  <div>
-                    <p className="font-bold text-sm">{order.id}</p>
-                    <p className="text-xs mt-0.5" style={{ color: "var(--text-secondary)" }}>{order.date}</p>
+              <div key={order.id} className="rounded-2xl border shadow-sm overflow-hidden" style={{ background: "var(--surface-card)", borderColor: "var(--surface-border)" }}>
+                {/* Status + Price row */}
+                <div className="p-4 pb-2">
+                  <div className="flex justify-between items-center mb-1">
+                    <div className="flex items-center gap-2">
+                      <span className="font-bold text-sm">{order.status === 'Delivered' ? 'Order delivered' : 'Order cancelled'}</span>
+                      {order.status === 'Delivered' ? (
+                        <CheckCircle size={15} style={{ color: '#214A36' }} />
+                      ) : (
+                        <X size={15} style={{ color: '#C1492E' }} />
+                      )}
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <span className="font-black text-sm">₹{order.total}</span>
+                      <ChevronRight size={16} style={{ color: 'var(--text-muted)' }} />
+                    </div>
                   </div>
-                  <span className={`text-[11px] font-black px-2 py-1 rounded-full ${order.statusColor}`}>{order.status}</span>
+                  <p className="text-xs" style={{ color: "var(--text-secondary)" }}>Placed at {order.date}</p>
                 </div>
-                <p className="text-xs mb-3" style={{ color: "var(--text-secondary)" }}>{order.items.join(' · ')}</p>
-                <div className="flex items-center justify-between border-t pt-3" style={{ borderColor: "var(--surface-border)" }}>
-                  <span className="font-black text-sm">₹{order.total}</span>
-                  <button className="text-xs font-bold border px-3 py-1.5 rounded-lg" style={{ color: "var(--action-primary)", borderColor: "var(--action-primary)" }}>Reorder</button>
+                {/* Product thumbnails */}
+                <div className="px-4 py-2 flex gap-2">
+                  {order.images.map((img, idx) => (
+                    <div key={idx} className="w-12 h-12 rounded-lg overflow-hidden border flex-shrink-0" style={{ borderColor: 'var(--surface-border)' }}>
+                      <img src={img} alt="" className="w-full h-full object-cover" />
+                    </div>
+                  ))}
+                </div>
+                {/* Order Again CTA */}
+                <div className="px-4 pb-4 pt-2">
+                  <button className="text-sm font-bold" style={{ color: 'var(--action-primary)' }}>Order Again</button>
                 </div>
               </div>
             ))}
@@ -241,9 +444,9 @@ export default function MobileHome() {
 
       {/* ── SUPPORT ── */}
       {appState === 'support' && (
-        <motion.div initial={{ x: '100%' }} animate={{ x: 0 }} className="fixed inset-0 z-50 flex flex-col" style={{ background: "var(--bg-main)" }}>
+        <motion.div initial={{ x: '100%' }} animate={{ x: 0 }} className="fixed inset-0 z-50 flex flex-col" style={{ background: "var(--bg-main)", paddingTop: "env(safe-area-inset-top, 0px)" }}>
           <div className="p-4 flex items-center gap-4 border-b" style={{ background: "var(--surface-card)", borderColor: "var(--surface-border)" }}>
-            <button onClick={() => setAppState('profile')} className="p-2 rounded-full transition-colors" style={{ background: "var(--surface-border)" }}>
+            <button onClick={() => setAppState('home')} className="p-2 rounded-full transition-colors" style={{ background: "var(--surface-border)" }}>
               <ArrowLeft size={20} />
             </button>
             <h2 className="text-lg font-black" style={{ fontFamily: "var(--font-heading)" }}>Support</h2>
@@ -263,8 +466,9 @@ export default function MobileHome() {
             <div className="rounded-2xl p-5 border shadow-sm text-center" style={{ background: "var(--surface-card)", borderColor: "var(--surface-border)" }}>
               <Phone size={28} className="mx-auto mb-3" style={{ color: "var(--action-primary)" }} />
               <p className="font-black text-sm mb-1">Need more help?</p>
-              <p className="text-xs mb-4" style={{ color: "var(--text-secondary)" }}>Our team is available 24/7</p>
-              <a href="tel:+911800001234" className="inline-block text-white px-5 py-2.5 rounded-xl font-bold text-sm" style={{ background: "var(--action-primary)" }}>
+              <p className="text-xs mb-2" style={{ color: "var(--text-secondary)" }}>Our team is available 24/7</p>
+              <p className="text-sm font-bold mb-4" style={{ color: "var(--text-primary)" }}>📞 8523048480</p>
+              <a href="tel:+918523048480" className="inline-block text-white px-5 py-2.5 rounded-xl font-bold text-sm" style={{ background: "var(--action-primary)" }}>
                 Call Support
               </a>
             </div>
@@ -274,52 +478,82 @@ export default function MobileHome() {
 
       {/* ── PROFILE SCREEN ── */}
       {appState === 'profile' && (
-        <motion.div initial={{ y: '100%' }} animate={{ y: 0 }} className="fixed inset-0 z-50 flex flex-col" style={{ background: "var(--bg-main)" }}>
-          <div className="p-5 flex items-center justify-between border-b" style={{ background: "var(--surface-card)", borderColor: "var(--surface-border)" }}>
-            <h2 className="text-xl font-black" style={{ fontFamily: "var(--font-heading)" }}>My Account</h2>
-            <button onClick={() => setAppState('home')} className="p-2 rounded-full transition-colors" style={{ background: "var(--surface-border)" }}>
-              <X size={20} />
+        <motion.div initial={{ y: '100%' }} animate={{ y: 0 }} className="fixed inset-0 z-50 flex flex-col" style={{ background: "var(--bg-main)", paddingTop: "env(safe-area-inset-top, 0px)" }}>
+          <div className="p-4 flex items-center gap-4 border-b" style={{ background: "var(--surface-card)", borderColor: "var(--surface-border)" }}>
+            <button onClick={() => setAppState('home')} className="w-9 h-9 rounded-full flex items-center justify-center" style={{ background: "var(--surface-border)" }}>
+              <ArrowLeft size={18} />
             </button>
+            <h2 className="text-lg font-black" style={{ fontFamily: "var(--font-heading)" }}>Profile</h2>
           </div>
 
           <div className="flex-1 overflow-y-auto p-4 space-y-4">
             {isLoggedIn ? (
               <>
                 {/* User Card */}
-                <div className="rounded-2xl p-5 border shadow-sm flex items-center gap-4" style={{ background: "var(--surface-card)", borderColor: "var(--surface-border)" }}>
-                  <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-white text-xl font-black shadow-sm" style={{ background: "linear-gradient(135deg, #C1492E, #B8962E)" }}>
+                <div className="flex items-center gap-4 mb-2">
+                  <div className="w-14 h-14 rounded-full flex items-center justify-center text-white text-xl font-black shadow-sm" style={{ background: "linear-gradient(135deg, #C1492E, #B8962E)" }}>
                     {user?.name ? user.name.charAt(0).toUpperCase() : <User size={24} />}
                   </div>
                   <div>
                     <h3 className="font-black text-lg leading-tight">{user?.name || 'User'}</h3>
                     <p className="text-sm font-medium" style={{ color: "var(--text-secondary)" }}>+91 {user?.phone}</p>
-                    {user?.address && (
-                      <p className="text-xs mt-1 truncate max-w-[200px]" style={{ color: "var(--text-muted)" }}>{user.address}</p>
-                    )}
                   </div>
                 </div>
 
-                {/* Menu */}
-                <div className="rounded-2xl border shadow-sm" style={{ background: "var(--surface-card)", borderColor: "var(--surface-border)" }}>
+                {/* Quick Actions Grid */}
+                <div className="grid grid-cols-3 gap-3">
                   {[
-                    { icon: Package, label: 'My Orders', onClick: () => setAppState('orders') },
-                    { icon: MapPin, label: 'Saved Addresses', onClick: () => {} },
-                    { icon: Wallet, label: 'Casano Wallet (₹450)', onClick: () => {} },
-                    { icon: Headphones, label: 'Help & Support', onClick: () => setAppState('support') },
+                    { icon: Package, label: 'Your\nOrders', onClick: () => setAppState('orders') },
+                    { icon: Headphones, label: 'Help &\nSupport', onClick: () => setAppState('support') },
+                    { icon: Heart, label: 'Your\nWishlist', onClick: () => {} },
                   ].map((item, i) => (
-                    <button
-                      key={i}
-                      onClick={item.onClick}
-                      className="w-full flex items-center justify-between p-4 border-b last:border-0 text-left transition-colors"
-                      style={{ borderColor: "var(--surface-border)" }}
+                    <button key={i} onClick={item.onClick}
+                      className="flex flex-col items-center gap-2 p-4 rounded-2xl border transition-colors"
+                      style={{ background: 'var(--surface-card)', borderColor: 'var(--surface-border)' }}
                     >
-                      <div className="flex items-center gap-3">
-                        <item.icon size={18} style={{ color: "var(--text-muted)" }} />
-                        <span className="font-semibold text-sm">{item.label}</span>
-                      </div>
-                      <ArrowRight size={16} style={{ color: "var(--text-muted)" }} />
+                      <item.icon size={22} style={{ color: 'var(--text-muted)' }} />
+                      <span className="text-[11px] font-semibold text-center leading-tight whitespace-pre-line">{item.label}</span>
                     </button>
                   ))}
+                </div>
+
+                {/* Wallet Card */}
+                <div className="rounded-2xl p-4 border shadow-sm flex items-center justify-between" style={{ background: 'rgba(184,150,46,0.06)', borderColor: 'rgba(184,150,46,0.2)' }}>
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-lg flex items-center justify-center" style={{ background: 'rgba(184,150,46,0.15)' }}>
+                      <Wallet size={18} style={{ color: '#B8962E' }} />
+                    </div>
+                    <div>
+                      <p className="text-sm font-bold">Casano Cash</p>
+                      <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>Available Balance: <b>₹450</b></p>
+                    </div>
+                  </div>
+                  <span className="text-xs font-bold px-3 py-1.5 rounded-lg border" style={{ borderColor: 'var(--surface-border)' }}>Add</span>
+                </div>
+
+                {/* Your Information */}
+                <div>
+                  <h3 className="text-sm font-black mb-3" style={{ fontFamily: 'var(--font-heading)' }}>Your Information</h3>
+                  <div className="rounded-2xl border shadow-sm" style={{ background: "var(--surface-card)", borderColor: "var(--surface-border)" }}>
+                    {[
+                      { icon: MapPin, label: 'Saved Addresses', onClick: () => {} },
+                      { icon: Gift, label: 'Refer & Earn', onClick: () => {} },
+                      { icon: Headphones, label: 'Help & Support', onClick: () => setAppState('support') },
+                    ].map((item, i) => (
+                      <button
+                        key={i}
+                        onClick={item.onClick}
+                        className="w-full flex items-center justify-between p-4 text-left transition-colors"
+                        style={{ borderBottom: i < 2 ? '1px dashed var(--surface-border)' : 'none' }}
+                      >
+                        <div className="flex items-center gap-3">
+                          <item.icon size={18} style={{ color: "var(--text-muted)" }} />
+                          <span className="font-semibold text-sm">{item.label}</span>
+                        </div>
+                        <ChevronRight size={16} style={{ color: "var(--text-muted)" }} />
+                      </button>
+                    ))}
+                  </div>
                 </div>
 
                 <button
@@ -352,7 +586,7 @@ export default function MobileHome() {
 
       {/* ── CHECKOUT SCREEN ── */}
       {appState === 'checkout' && (
-        <motion.div initial={{ x: '100%' }} animate={{ x: 0 }} className="fixed inset-0 z-50 flex flex-col" style={{ background: "var(--bg-main)" }}>
+        <motion.div initial={{ x: '100%' }} animate={{ x: 0 }} className="fixed inset-0 z-50 flex flex-col" style={{ background: "var(--bg-main)", paddingTop: "env(safe-area-inset-top, 0px)" }}>
           <div className="p-4 flex items-center gap-4 border-b" style={{ background: "var(--surface-card)", borderColor: "var(--surface-border)" }}>
             <button onClick={() => setAppState('home')} className="p-2 rounded-full transition-colors" style={{ background: "var(--surface-border)" }}>
               <ArrowLeft size={20} />
@@ -429,7 +663,7 @@ export default function MobileHome() {
 
       {/* ── ORDER TRACKING ── */}
       {appState === 'tracking' && (
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="fixed inset-0 z-50 flex flex-col" style={{ background: "var(--bg-main)" }}>
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="fixed inset-0 z-50 flex flex-col" style={{ background: "var(--bg-main)", paddingTop: "env(safe-area-inset-top, 0px)" }}>
           <div className="p-6 text-center">
             <div className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-3" style={{ background: "rgba(193,73,46,0.1)" }}>
               <Package size={28} style={{ color: "var(--action-primary)" }} />
@@ -471,6 +705,18 @@ export default function MobileHome() {
       {/* ── BOTTOM: CART STRIP + NAV ── */}
       {(appState === 'home') && (
         <div className="fixed bottom-0 w-full max-w-md mx-auto z-50">
+          {/* Free delivery bar */}
+          {cartCount === 0 && (
+            <div className="mx-3 mb-2 rounded-2xl px-4 py-2.5 flex items-center gap-3 shadow-lg" style={{ background: '#1a1714', color: '#fff' }}>
+              <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: 'rgba(184,150,46,0.2)' }}>
+                <Truck size={14} style={{ color: '#B8962E' }} />
+              </div>
+              <div className="flex-1">
+                <p className="text-xs font-bold">Unlock free delivery</p>
+                <p className="text-[10px] opacity-70">Shop for ₹99</p>
+              </div>
+            </div>
+          )}
           <AnimatePresence>
             {cartCount > 0 && !isCartOpen && (
               <motion.div

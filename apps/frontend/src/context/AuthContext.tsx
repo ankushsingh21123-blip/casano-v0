@@ -1,51 +1,93 @@
 "use client";
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 
-type User = {
-  phone: string;
-  name: string;
-  address: string;
-} | null;
+const BACKEND = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8080';
+
+export type UserProfile = {
+  uid: string;
+  phone?: string | null;
+  email?: string | null;
+  full_name?: string | null;
+  photo_url?: string | null;
+  role: 'customer' | 'vendor' | 'admin';
+};
 
 interface AuthContextType {
-  user: User;
+  user: UserProfile | null;
   isLoggedIn: boolean;
-  login: (phone: string) => void;
-  setProfile: (name: string, address: string) => void;
-  logout: () => void;
+  loading: boolean;
+  refreshUser: () => Promise<void>;
+  logout: () => Promise<void>;
   deliveryLocation: string;
   setDeliveryLocation: (loc: string) => void;
+  // Legacy compatibility
+  login: (phone: string) => void;
+  setProfile: (name: string, address: string) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User>(null);
-  const [deliveryLocation, setDeliveryLocationState] = useState<string>('');
+  const [user, setUser] = useState<UserProfile | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [deliveryLocation, setDeliveryLocationState] = useState('');
 
-  const login = (phone: string) => setUser({ phone, name: '', address: '' });
+  const refreshUser = useCallback(async () => {
+    try {
+      const res = await fetch(`${BACKEND}/api/auth/me`, {
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+      });
+      if (res.ok) {
+        const { user: profile } = await res.json();
+        setUser(profile);
+      } else {
+        setUser(null);
+      }
+    } catch {
+      setUser(null);
+    }
+  }, []);
 
-  const setProfile = (name: string, address: string) => {
-    setUser(prev => prev ? { ...prev, name, address } : null);
+  // On app boot — check session cookie
+  useEffect(() => {
+    refreshUser().finally(() => setLoading(false));
+  }, [refreshUser]);
+
+  const logout = async () => {
+    try {
+      await fetch(`${BACKEND}/api/auth/logout`, { method: 'POST', credentials: 'include' });
+    } catch {}
+    // Also sign out Firebase if available
+    try {
+      const { auth } = await import('@/lib/firebase');
+      if (auth) await auth.signOut();
+    } catch {}
+    setUser(null);
   };
 
-  const setDeliveryLocation = (loc: string) => {
-      setDeliveryLocationState(loc);
-  };
+  const setDeliveryLocation = (loc: string) => setDeliveryLocationState(loc);
 
-  const logout = () => setUser(null);
+  // Legacy shims
+  const login = (_phone: string) => {};
+  const setProfile = async (name: string, _address: string) => {
+    if (user) setUser(prev => prev ? { ...prev, full_name: name } : null);
+  };
 
   return (
-    <AuthContext.Provider value={{ user, isLoggedIn: !!user, login, setProfile, logout, deliveryLocation, setDeliveryLocation }}>
+    <AuthContext.Provider value={{
+      user, isLoggedIn: !!user, loading,
+      refreshUser, logout,
+      deliveryLocation, setDeliveryLocation,
+      login, setProfile,
+    }}>
       {children}
     </AuthContext.Provider>
   );
 }
 
 export function useAuth() {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
+  const ctx = useContext(AuthContext);
+  if (!ctx) throw new Error('useAuth must be used within AuthProvider');
+  return ctx;
 }

@@ -105,9 +105,9 @@ export default function Footer() {
             <h3 className="font-bold mb-4 text-[15px]" style={{ color: "var(--text-primary)" }}>For Store Owners</h3>
             <ul className="flex flex-col gap-2.5">
               <li>
-                <Link href="/partner" className="text-sm font-semibold" style={{ color: "var(--accent-trust)" }}>
+                <a href="https://form.typeform.com/to/lQOu4edG" target="_blank" rel="noopener noreferrer" className="text-sm font-semibold" style={{ color: "var(--accent-trust)" }}>
                   Become a Partner Store →
-                </Link>
+                </a>
               </li>
               {[["Vendor App Login", "/vendor"], ["How It Works", "/partner/how-it-works"], ["Partner FAQ", "/partner/faq"]].map(([label, href]) => (
                 <li key={label}>

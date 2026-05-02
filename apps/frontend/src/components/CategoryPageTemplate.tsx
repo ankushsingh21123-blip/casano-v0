@@ -1,8 +1,10 @@
 "use client";
 import Header from "@/components/Header";
 import Link from "next/link";
-import { ReactNode } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { useCart } from "@/context/CartContext";
+import { fetchProducts } from "@/services/api.service";
+import { supabase } from "@/lib/supabase";
 import {
   ShoppingCart, Shirt, Smartphone, Pencil, Dumbbell, ShoppingBag,
   Apple, Milk, Sandwich, Banana, CircleDot, Carrot, Leaf, Egg,
@@ -83,33 +85,77 @@ interface CategoryPageProps {
   products: { name: string; price: string; icon: string }[];
 }
 
-export function CategoryPageTemplate({ category, icon, gradient, products }: CategoryPageProps) {
+export function CategoryPageTemplate({ category, icon, gradient, products: initialProducts }: CategoryPageProps) {
   const CategoryIcon = CATEGORY_ICON_MAP[category] || ShoppingBag;
   const { addItem, removeItem, items } = useCart();
+  const [products, setProducts] = useState(initialProducts);
+
+  useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        const res = await fetchProducts();
+        if (res.data && res.data.length > 0) {
+          // Filter by category or map them if needed
+          // For now, if there are DB products, we could append them or replace
+          // Assuming DB products have category field matching the current category
+          const categoryProducts = res.data.filter((p: any) => p.category === category);
+          if (categoryProducts.length > 0) {
+            // Map DB products to frontend format
+            const mapped = categoryProducts.map((p: any) => ({
+               id: p.id,
+               name: p.name,
+               price: p.price.toString(),
+               icon: p.icon || 'box'
+            }));
+            // Merge with hardcoded to keep the demo looking full, or just replace
+            // Replacing for now if DB has items for this category
+            setProducts(mapped);
+          }
+        }
+      } catch (err) {
+        console.error("Failed to load real products:", err);
+      }
+    };
+    
+    loadProducts();
+
+    // Supabase realtime subscription
+    const channel = supabase
+      .channel('public:products')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'products' }, payload => {
+        console.log('Realtime product change:', payload);
+        loadProducts(); // Reload to get updated list/prices
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [category]);
 
   return (
-    <div className="min-h-screen" style={{ background: "linear-gradient(180deg, #0f0d0a 0%, #1a1714 50%, #0f0d0a 100%)" }}>
+    <div className="min-h-screen" style={{ background: "var(--bg-main)", color: "var(--text-primary)" }}>
       <Header />
       <main className="max-w-[1400px] mx-auto px-4 pb-20 pt-8">
         {/* Breadcrumb */}
-        <div className="flex items-center gap-2 text-sm mb-6" style={{ color: "#8a8580" }}>
+        <div className="flex items-center gap-2 text-sm mb-6" style={{ color: "var(--text-muted)" }}>
           <Link href="/" className="hover:text-[#C1492E] transition-colors">Home</Link>
           <span>›</span>
-          <span className="font-semibold" style={{ color: "#e8e0d4" }}>{category}</span>
+          <span className="font-semibold" style={{ color: "var(--text-primary)" }}>{category}</span>
         </div>
 
         {/* Hero */}
         <div
           className="w-full rounded-3xl p-8 mb-10 flex items-center gap-6 relative overflow-hidden"
-          style={{ background: "linear-gradient(135deg, #1a1510 0%, #2a1f15 40%, #B8962E 200%)" }}
+          style={{ background: "linear-gradient(135deg, var(--action-primary), #B8962E)", opacity: 0.95 }}
         >
           <div className="absolute inset-0 opacity-20" style={{ background: "radial-gradient(ellipse at 80% 50%, #B8962E33, transparent 70%)" }} />
-          <div className="w-16 h-16 rounded-2xl flex items-center justify-center relative z-10" style={{ background: "rgba(184,150,46,0.15)", border: "1px solid rgba(184,150,46,0.3)" }}>
-            <CategoryIcon className="w-8 h-8" style={{ color: "#B8962E" }} />
+          <div className="w-16 h-16 rounded-2xl flex items-center justify-center relative z-10" style={{ background: "rgba(255,255,255,0.15)", border: "1px solid rgba(255,255,255,0.3)" }}>
+            <CategoryIcon className="w-8 h-8" style={{ color: "#fff" }} />
           </div>
           <div className="relative z-10">
-            <h1 className="text-3xl font-black" style={{ color: "#f5f0e8" }}>{category}</h1>
-            <p className="mt-1 font-medium" style={{ color: "#a09080" }}>
+            <h1 className="text-3xl font-black" style={{ color: "#fff" }}>{category}</h1>
+            <p className="mt-1 font-medium" style={{ color: "rgba(255,255,255,0.8)" }}>
               {products.length}+ products available · Delivered in 15 mins
             </p>
           </div>
@@ -117,31 +163,31 @@ export function CategoryPageTemplate({ category, icon, gradient, products }: Cat
 
         {/* Products Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-          {products.map((p, i) => {
+          {products.map((p: any, i) => {
             const ProductIcon = ICON_MAP[p.icon] || ShoppingBag;
-            const productId = `${category.toLowerCase()}-${p.name.toLowerCase().replace(/\s+/g, '-')}`;
+            const productId = p.id || `${category.toLowerCase()}-${p.name.toLowerCase().replace(/\s+/g, '-')}`;
             const qty = items.find(item => item.id === productId)?.quantity || 0;
             return (
               <div
                 key={i}
                 className="rounded-2xl p-4 transition-all cursor-pointer group"
-                style={{ background: "#1a1714", border: "1px solid #2e2a25" }}
+                style={{ background: "var(--surface-card)", border: "1px solid var(--surface-border)" }}
                 onMouseEnter={(e: any) => {
-                  e.currentTarget.style.borderColor = "#B8962E55";
+                  e.currentTarget.style.borderColor = "var(--action-primary)";
                   e.currentTarget.style.transform = "translateY(-4px)";
-                  e.currentTarget.style.boxShadow = "0 8px 30px rgba(184,150,46,0.1)";
+                  e.currentTarget.style.boxShadow = "0 8px 30px rgba(193,73,46,0.12)";
                 }}
                 onMouseLeave={(e: any) => {
-                  e.currentTarget.style.borderColor = "#2e2a25";
+                  e.currentTarget.style.borderColor = "var(--surface-border)";
                   e.currentTarget.style.transform = "translateY(0)";
                   e.currentTarget.style.boxShadow = "none";
                 }}
               >
-                <div className="w-full aspect-square rounded-xl flex items-center justify-center mb-3 group-hover:scale-105 transition-transform" style={{ background: "#252017" }}>
-                  <ProductIcon className="w-10 h-10 transition-colors" style={{ color: "#6b6055" }} />
+                <div className="w-full aspect-square rounded-xl flex items-center justify-center mb-3 group-hover:scale-105 transition-transform" style={{ background: "var(--bg-main)" }}>
+                  <ProductIcon className="w-10 h-10 transition-colors" style={{ color: "var(--text-muted)" }} />
                 </div>
-                <p className="text-sm font-semibold truncate" style={{ color: "#e8e0d4" }}>{p.name}</p>
-                <p className="font-black text-sm mt-1" style={{ color: "#C1492E" }}>₹{p.price}</p>
+                <p className="text-sm font-semibold truncate" style={{ color: "var(--text-primary)" }}>{p.name}</p>
+                <p className="font-black text-sm mt-1" style={{ color: "var(--action-primary)" }}>₹{p.price}</p>
                 
                 {qty === 0 ? (
                   <button
@@ -156,15 +202,15 @@ export function CategoryPageTemplate({ category, icon, gradient, products }: Cat
                     ADD
                   </button>
                 ) : (
-                  <div className="mt-2 flex items-center justify-between rounded-xl px-1 py-1" style={{ background: "#2a2520", border: "1px solid #C1492E44" }}>
+                  <div className="mt-2 flex items-center justify-between rounded-xl px-1 py-1" style={{ background: "var(--bg-main)", border: "1px solid rgba(193,73,46,0.3)" }}>
                     <button
                       onClick={() => removeItem(productId)}
                       className="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold"
-                      style={{ background: "#C1492E33", color: "#C1492E" }}
+                      style={{ background: "rgba(193,73,46,0.15)", color: "var(--action-primary)" }}
                     >
                       −
                     </button>
-                    <span className="text-sm font-black" style={{ color: "#e8e0d4" }}>{qty}</span>
+                    <span className="text-sm font-black" style={{ color: "var(--text-primary)" }}>{qty}</span>
                     <button
                       onClick={() => addItem({ id: productId, name: p.name, price: parseInt(p.price), size: "", image: "" })}
                       className="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold"

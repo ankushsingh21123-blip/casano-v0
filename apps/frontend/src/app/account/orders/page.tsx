@@ -118,15 +118,18 @@ export default function OrdersPage() {
 
             {/* Actions */}
             <div className="flex flex-col sm:flex-row items-center gap-3 w-full">
-              <button className="w-full sm:w-auto flex-1 bg-white dark:bg-[#222] border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 text-gray-700 dark:text-gray-300 px-6 py-3.5 rounded-xl font-bold flex items-center justify-center gap-2 transition-colors">
-                View Details <ChevronRight className="w-4 h-4" />
-              </button>
+              {order.status === 'Delivered' && (
+                <button className="w-full sm:w-auto flex-1 bg-white dark:bg-[#222] border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 text-gray-700 dark:text-gray-300 px-6 py-3.5 rounded-xl font-bold flex items-center justify-center gap-2 transition-colors">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                  Rate Order
+                </button>
+              )}
               
               <button 
                 onClick={() => handleReorder(order.items)}
                 className="w-full sm:w-auto flex-1 bg-casano-orange hover:bg-casano-orange-dark text-white px-6 py-3.5 rounded-xl font-bold flex items-center justify-center gap-2 transition-all hover:-translate-y-0.5 shadow-lg shadow-casano-orange/20"
               >
-                <RotateCcw className="w-4 h-4 stroke-[3]" /> Reorder Items
+                <RotateCcw className="w-4 h-4 stroke-[3]" /> Buy it again
               </button>
             </div>
 

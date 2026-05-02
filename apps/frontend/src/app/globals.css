@@ -1,7 +1,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
 @custom-variant dark (&:where(.dark, .dark *));
+
+/* Map loader pulse animation (used via inline styles in map.tsx) */
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.4; transform: scale(0.8); }
+}
 
 @theme {
   /* ═══════════════════════════════════════════
@@ -9,32 +17,32 @@
      ─────────────────────────────────────────── */
 
   /* Backgrounds */
-  --color-raj-pearl:       #FDFBF7; /* Makrana Pearl White — main canvas */
-  --color-raj-sand:        #EFEADD; /* Jaisalmer Sand Beige — cards & surfaces */
-  --color-raj-sand-dark:   #E2DDD0; /* Deeper sand — hover states */
+  --color-raj-pearl:       #FDFBF7;
+  --color-raj-sand:        #EFEADD;
+  --color-raj-sand-dark:   #E2DDD0;
 
   /* Primary text */
-  --color-raj-surma:       #2A2B2A; /* Surma Grey — all main text */
-  --color-raj-surma-mid:   #5A5B5A; /* Muted body text */
-  --color-raj-surma-light: #9A9B9A; /* Placeholder / subtle labels */
+  --color-raj-surma:       #2A2B2A;
+  --color-raj-surma-mid:   #5A5B5A;
+  --color-raj-surma-light: #9A9B9A;
 
   /* Primary CTA */
-  --color-raj-saffron:     #C1492E; /* Royal Saffron / Terracotta — buttons */
-  --color-raj-saffron-dark:#A63C25; /* Saffron hover */
-  --color-raj-saffron-light:#FAE8E5; /* Saffron tint background */
+  --color-raj-saffron:     #C1492E;
+  --color-raj-saffron-dark:#A63C25;
+  --color-raj-saffron-light:#FAE8E5;
 
   /* Trust & Success accent */
-  --color-raj-forest:      #214A36; /* Pichwai Forest Green — prices, verified */
-  --color-raj-forest-mid:  #2E6649; /* Lighter forest green */
-  --color-raj-forest-light:#E6F2EC; /* Forest tint background */
+  --color-raj-forest:      #214A36;
+  --color-raj-forest-mid:  #2E6649;
+  --color-raj-forest-light:#E6F2EC;
 
   /* Gold accent for premium shimmer */
-  --color-raj-gold:        #B8962E; /* Royal Gold — optional decorative */
-  --color-raj-gold-light:  #FBF5E1; /* Gold tint */
+  --color-raj-gold:        #B8962E;
+  --color-raj-gold-light:  #FBF5E1;
 
   /* Legacy Casano brand (keep for gradual migration) */
-  --color-brand-orange:    #C1492E;   /* mapped to saffron */
-  --color-casano-green:    #214A36;   /* mapped to forest */
+  --color-brand-orange:    #C1492E;
+  --color-casano-green:    #214A36;
 
   /* Typography */
   --font-heading: 'Playfair Display', Georgia, serif;
@@ -50,22 +58,54 @@
   --foreground:      #171614;
 
   /* Mapped CSS custom props for quick access */
-  --bg-main:         #FCFBF9; /* Bright elegant off-white canvas */
-  --surface-card:    #FFFFFF; /* Pure white floating cards */
-  --surface-border:  #E8E2D9; /* Very subtle warm border */
-  --text-primary:    #171614; /* Deep rich almost black for luxury contrast */
+  --bg-main:         #FCFBF9;
+  --surface-card:    #FFFFFF;
+  --surface-border:  #E8E2D9;
+  --text-primary:    #171614;
   --text-secondary:  #5A5550;
   --text-muted:      #96908A;
   --action-primary:  #C1492E;
   --action-hover:    #A63C25;
   --accent-trust:    #214A36;
-  --bg-hero:         #F4EFE6; /* Elegant premium darker beige for hero section */
+  --bg-hero:         #F4EFE6;
+
+  /* shadcn/ui design tokens */
+  --card:            oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover:         oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary:         oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary:       oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted:           oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent:          oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive:     oklch(0.577 0.245 27.325);
+  --border:          oklch(0.922 0 0);
+  --input:           oklch(0.922 0 0);
+  --ring:            oklch(0.708 0 0);
+  --chart-1:         oklch(0.87 0 0);
+  --chart-2:         oklch(0.556 0 0);
+  --chart-3:         oklch(0.439 0 0);
+  --chart-4:         oklch(0.371 0 0);
+  --chart-5:         oklch(0.269 0 0);
+  --radius:          0.625rem;
+  --sidebar:         oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent:  oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border:  oklch(0.922 0 0);
+  --sidebar-ring:    oklch(0.708 0 0);
 }
 
 /* ── Dark Mode (Stitch-designed warm dark palette) ── */
 .dark {
-  --background:      #121110;
-  --foreground:      #F1EFEA;
+  --background:      oklch(0.145 0 0);
+  --foreground:      oklch(0.985 0 0);
 
   --bg-main:         #121110;
   --surface-card:    #1C1B19;
@@ -76,7 +116,38 @@
   --action-primary:  #D15B42;
   --action-hover:    #C1492E;
   --accent-trust:    #2D6349;
-  --bg-hero:         #161514; /* Deep subtle contrast for dark mode hero */
+  --bg-hero:         #161514;
+
+  /* shadcn/ui dark tokens */
+  --card:            oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover:         oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary:         oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary:       oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted:           oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent:          oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive:     oklch(0.704 0.191 22.216);
+  --border:          oklch(1 0 0 / 10%);
+  --input:           oklch(1 0 0 / 15%);
+  --ring:            oklch(0.556 0 0);
+  --chart-1:         oklch(0.87 0 0);
+  --chart-2:         oklch(0.556 0 0);
+  --chart-3:         oklch(0.439 0 0);
+  --chart-4:         oklch(0.371 0 0);
+  --chart-5:         oklch(0.269 0 0);
+  --sidebar:         oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent:  oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border:  oklch(1 0 0 / 10%);
+  --sidebar-ring:    oklch(0.556 0 0);
 }
 
 .dark body {
@@ -132,8 +203,6 @@ h1, h2, h3,
 
 /* ── Body / UI / number font ── */
 body {
-  background: var(--background);
-  color: var(--foreground);
   font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
@@ -241,10 +310,17 @@ button, input, select, textarea {
     /* Disable iOS bounce scroll */
     overscroll-behavior: none;
   }
-  
+
   /* Hide the FloatingMarquee in standalone to save space */
   .floating-marquee-bar {
     top: env(safe-area-inset-top) !important;
+  }
+}
+
+/* ── Safe area for all mobile browsers (not just standalone) ── */
+@supports (padding-top: env(safe-area-inset-top)) {
+  .safe-area-top {
+    padding-top: env(safe-area-inset-top);
   }
 }
 
@@ -262,4 +338,65 @@ button, input, select, textarea {
   0% { transform: translateY(100%); }
   60% { transform: translateY(-8px); }
   100% { transform: translateY(0); }
+}
+
+@theme inline {
+  --font-heading:       var(--font-sans);
+  --font-sans:       var(--font-sans);
+  --color-sidebar-ring:       var(--sidebar-ring);
+  --color-sidebar-border:       var(--sidebar-border);
+  --color-sidebar-accent-foreground:       var(--sidebar-accent-foreground);
+  --color-sidebar-accent:       var(--sidebar-accent);
+  --color-sidebar-primary-foreground:       var(--sidebar-primary-foreground);
+  --color-sidebar-primary:       var(--sidebar-primary);
+  --color-sidebar-foreground:       var(--sidebar-foreground);
+  --color-sidebar:       var(--sidebar);
+  --color-chart-5:       var(--chart-5);
+  --color-chart-4:       var(--chart-4);
+  --color-chart-3:       var(--chart-3);
+  --color-chart-2:       var(--chart-2);
+  --color-chart-1:       var(--chart-1);
+  --color-ring:       var(--ring);
+  --color-input:       var(--input);
+  --color-border:       var(--border);
+  --color-destructive:       var(--destructive);
+  --color-accent-foreground:       var(--accent-foreground);
+  --color-accent:       var(--accent);
+  --color-muted-foreground:       var(--muted-foreground);
+  --color-muted:       var(--muted);
+  --color-secondary-foreground:       var(--secondary-foreground);
+  --color-secondary:       var(--secondary);
+  --color-primary-foreground:       var(--primary-foreground);
+  --color-primary:       var(--primary);
+  --color-popover-foreground:       var(--popover-foreground);
+  --color-popover:       var(--popover);
+  --color-card-foreground:       var(--card-foreground);
+  --color-card:       var(--card);
+  --color-foreground:       var(--foreground);
+  --color-background:       var(--background);
+  --radius-sm:       calc(var(--radius) * 0.6);
+  --radius-md:       calc(var(--radius) * 0.8);
+  --radius-lg:       var(--radius);
+  --radius-xl:       calc(var(--radius) * 1.4);
+  --radius-2xl:       calc(var(--radius) * 1.8);
+  --radius-3xl:       calc(var(--radius) * 2.2);
+  --radius-4xl:       calc(var(--radius) * 2.6);
+}
+
+@layer base {
+  .maplibregl-popup-content {
+    @apply bg-transparent! shadow-none! p-0! rounded-none!;
+  }
+  .maplibregl-popup-tip {
+    @apply hidden!;
+  }
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
 }

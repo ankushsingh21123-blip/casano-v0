@@ -14,420 +14,211 @@
 
 ---
 
-## 📌 Table of Contents
+## 📌 Comprehensive Codebase Documentation
 
-- [🎓 Academic Submission Guide](#-academic-submission-guide)
-- [The Problem](#-the-problem)
-- [Our Solution](#-our-solution)
-- [How It Works](#-how-it-works)
-- [Key Features](#-key-features)
-- [Tech Stack & Architecture](#-tech-stack--architecture)
-- [Unit Economics](#-unit-economics)
-- [Product Categories](#-product-categories)
-- [Platform Portals](#-platform-portals)
-- [Payments & Checkout](#-payments--checkout)
-- [Getting Started (Developer)](#-getting-started-developer)
-- [Project Structure](#-project-structure)
-- [Roadmap](#-roadmap)
-- [Team](#-team)
-- [Contact & Invest](#-contact--invest)
+This README serves as the ultimate, detailed technical reference for the entire Casano HyperlocalOS codebase. It documents every language, framework, library, file, and algorithmic condition used across the frontend, backend, and database layers.
 
 ---
 
-## 🎓 Academic Submission Guide
+## 🛠️ Global Technology Stack
 
-This project is built for the **"Building Web Applications with React"** end-term evaluation. It demonstrates production-level proficiency in React 19 and Next.js 15.
+### Frontend App (`apps/frontend`)
+*   **Core Framework:** Next.js 15 (App Router), React 19 (Hooks, Concurrent features).
+*   **Language:** TypeScript (Strict mode) & JSX/TSX.
+*   **Styling:** Tailwind CSS 4 (Utility-first), CSS Modules (`.module.css`), `clsx` & `tailwind-merge` for dynamic classes.
+*   **Animations:** Framer Motion (page transitions, micro-interactions), GSAP (complex timelines), `tw-animate-css`.
+*   **UI Components:** Radix UI (accessible primitives), Shadcn UI (customizable components), Lucide React (icons).
+*   **Mapping:** MapLibre GL (`maplibre-gl`) for interactive order tracking maps.
+*   **Data Visualization:** Chart.js & `react-chartjs-2` (Admin/Investor dashboards).
+*   **State Management:** React Context API (`AuthContext`, `CartContext`), Custom Hooks (`useLocalStorage`).
 
-### 📝 Evaluation Rubric Mapping
+### Backend Services (`backend/` & `packages/backend/`)
+*   **Core Framework:** Node.js, Express.js 5.
+*   **Language:** JavaScript (ES Modules / CommonJS mixed depending on the package).
+*   **Real-time Communication:** Socket.io (Bi-directional events for order tracking and merchant alerts).
+*   **Database Interaction:** `@supabase/supabase-js` (Primary BaaS), `pg` (PostgreSQL client for custom queries), Prisma ORM (`@prisma/client`).
+*   **Caching & Rate Limiting:** Redis (`redis` client), `express-rate-limit`.
+*   **Security:** Helmet.js (HTTP headers), `jsonwebtoken` (JWT for auth), `bcrypt` (password hashing), CORS.
+*   **External APIs:** 
+    *   Firebase Admin (`firebase-admin`) for secure backend auth verification.
+    *   Razorpay / Stripe for payment processing.
+    *   Twilio for SMS/OTP verification.
+    *   Elasticsearch for advanced product search.
 
-| Rubric Criteria | Implementation Detail | Source Reference |
-|---|---|---|
-| **1. Advanced React Hooks** | Uses `useMemo` for heavy bill calculations and `useCallback` for stable event handlers to prevent layout thrashing. | [CartPanel.tsx](file:///c:/Users/HP/jatphatt/apps/frontend/src/components/CartPanel.tsx) |
-| **2. Custom Hooks** | `useLocalStorage`: A robust hook for cross-session state persistence. <br/> `useCart`: Abstraction for cart management logic. | [hooks/](file:///c:/Users/HP/jatphatt/apps/frontend/src/hooks) |
-| **3. Global State (Context)** | Centralized `AuthContext` and `CartContext` to handle complex multi-page state without prop-drilling. | [context/](file:///c:/Users/HP/jatphatt/apps/frontend/src/context) |
-| **4. Code Architecture** | Implements the **Service Pattern** (`src/services`) to decouple business logic (Firebase) from UI components. | [services/](file:///c:/Users/HP/jatphatt/apps/frontend/src/services) |
-| **5. Performance Tuning** | Uses `dynamic()` (lazy loading) for heavy 3D/Animation components to ensure a 100/100 Lighthouse score. | [page.jsx](file:///c:/Users/HP/jatphatt/apps/frontend/src/app/page.jsx) |
-| **6. Secure Authentication** | Integrated **Firebase Auth** with support for Google and Phone OTP flows. | [AuthContext.tsx](file:///c:/Users/HP/jatphatt/apps/frontend/src/context/AuthContext.tsx) |
-
----
-
-## 🔥 The Problem
-
-India's Q-commerce industry is growing at **45% CAGR**, yet it is plagued by a broken economics model:
-
-| Pain Point | Industry Reality |
-|---|---|
-| **High CapEx** | Dark stores cost ₹2–3 Lakh/month in rent + staffing *before a single order* |
-| **Low Margins** | Blinkit, Zepto, Instamart operate at **–15% to –25% contribution margins** per order |
-| **Kirana Exclusion** | 15 million local shops — the world's densest retail network — are completely bypassed |
-| **Last-Mile Cost** | 3PL delivery costs ₹40–60/trip, eating into already razor-thin margins |
-
----
-
-## 💡 Our Solution
-
-**Casano (HyperlocalOS)** is a zero-warehouse hyperlocal delivery platform that leverages the *existing infrastructure* of local Kirana stores instead of building expensive dark stores.
-
-### The Casano Advantage
-
-| Metric | Competitors (Blinkit, Zepto) | Casano |
-|---|---|---|
-| **Warehouse Rent** | ₹2.5 Lakh/month | **₹0/month** |
-| **Delivery Cost** | ₹40–60/trip (3PL) | **₹15/trip** (Shakti fleet) |
-| **Onboarding Time** | Weeks of setup | **< 5 minutes** (barcode scanner) |
-| **Contribution Margin** | –15% to –25% | **+12%** |
-| **Inventory Risk** | Full ownership | **Zero** (Kirana-owned) |
+### Database & Infrastructure
+*   **Primary Database:** PostgreSQL (with PostGIS extension for geospatial queries like distance calculation).
+*   **Schema Management:** Prisma (`schema.prisma`) and raw SQL (`schema.sql`).
+*   **Containerization:** Docker & Docker Compose (`docker-compose.yml` for local Postgres, Redis, Elasticsearch).
+*   **Deployment Providers:** Vercel/Netlify (Frontend), Railway/Render (Backend).
 
 ---
 
-## ⚙️ How It Works
+## 📂 Detailed Project Structure & File-by-File Breakdown
 
-```
-┌──────────────┐      ┌──────────────┐      ┌──────────────┐
-│  📱 Customer │ ───▶ │  🏪 Kirana   │ ───▶ │  🛵 Rider    │
-│  Orders on   │      │  Partner     │      │  Delivers    │
-│  Casano App  │      │  Accepts &   │      │  to Door in  │
-│              │      │  Packs Order │      │  <15 minutes │
-└──────────────┘      └──────────────┘      └──────────────┘
-```
-
-1. **Customer Orders** — Browse products from nearby Kirana stores and place an order in seconds
-2. **Kirana Partner Accepts** — The nearest partner store receives the order via the Vendor App, accepts and packs it within minutes
-3. **Rider Delivers** — A delivery partner picks up from the store and delivers to the customer's doorstep — typically in under 15 minutes
+### 1. Root Configurations
+*   **`package.json`**: Root monorepo configuration using npm workspaces (`apps/*`, `packages/*`).
+*   **`docker-compose.yml`**: Defines local services: `postgres` (with PostGIS), `redis` (Alpine), and `elasticsearch` (Single-node).
+*   **`netlify.toml`**: Netlify deployment config pointing to `apps/frontend` using the `@netlify/plugin-nextjs`.
+*   **`railway.json`**: Railway deployment config building and starting the `backend/` directory using Nixpacks.
+*   **`render.yaml`**: Render deployment config targeting `packages/backend/`.
+*   **`utils/algorithms.js`**: Core business logic functions (detailed in the Conditions section below).
 
 ---
 
-## ✨ Key Features
+### 2. Frontend Application (`apps/frontend/`)
 
-### 🛒 Customer App
-- **Multi-category storefront** — Groceries, Fashion, Pharmacy, Gadgets, Gym supplements, Stationery, and more
-- **Smart search** powered by Elasticsearch with instant suggestions
-- **Product detail modals** with pricing, descriptions, and quick-add to cart
-- **Sliding cart panel** with real-time total calculation
-- **Dark / Light mode** toggle with smooth transitions
-- **Mobile-first responsive design** with dedicated mobile home experience
-- **Hero banners** and category carousels for product discovery
-- **Order tracking** with real-time status updates
-- **Order history & returns** management
-- **Saved addresses** management
-- **Customer support** portal
+#### Configuration Files
+*   **`next.config.ts`**: Next.js configuration ignoring build errors and externalizing `@prisma/client`.
+*   **`tailwind.config.ts` / `postcss.config.mjs`**: Tailwind CSS 4 and PostCSS setup.
+*   **`tsconfig.json`**: Strict TypeScript configuration tailored for Next.js.
+*   **`public/manifest.json` & `public/sw.js`**: PWA (Progressive Web App) configuration and Service Worker for offline caching, static asset management, and push notifications.
 
-### 🏪 Merchant (Vendor) App
-- **Magic onboarding** — Merchants can onboard their entire inventory by simply scanning barcodes (< 5 min setup)
-- **Barcode scanner** with product auto-fill from database
-- **Order management dashboard** — Accept, pack, and hand off orders
-- **Real-time order notifications** via WebSockets
+#### Contexts & Global State (`src/context/`)
+*   **`AuthContext.tsx`**: Manages global user state (`user`, `isLoggedIn`, `deliveryLocation`). Provides `login`, `logout`, and `setProfile` functions.
+*   **`CartContext.tsx`**: Manages shopping cart state. Features Redis-simulated instant caching using `localStorage`. Calculates `cartTotal` and `cartCount` using `useMemo`.
+*   **`Providers.tsx`**: Wrapper component composing all contexts and showing a one-time `SplashLoader` per session.
 
-### 🛵 Rider App
-- **Rider onboarding** flow with document verification
-- **Live order assignment** and delivery management
-- **Trip optimization** for neighbourhood-level deliveries
+#### Custom Hooks (`src/hooks/`)
+*   **`useLocalStorage.ts`**: A reactive interface mimicking `useState` but persisting data to the browser's `localStorage` safely.
 
-### 🔐 Admin Panel
-- **Operations Dashboard** — Real-time metrics, order monitoring, and fleet management
-- **Investor Dashboard** — Interactive unit economics simulator, live business metrics, and data room access
-- **Onboarding Wizard** — Guided setup for new cities/zones
+#### Services & Lib (`src/services/` & `src/lib/`)
+*   **`firebase.ts`**: Initializes Firebase client app, Auth, and sets up invisible Recaptcha for Phone OTP.
+*   **`firebase.service.ts`**: Abstraction layer for Firebase Auth (Google popup, Email/Password, Phone SMS sending and verifying).
+*   **`utils.ts`**: Contains `cn` utility (merging Tailwind classes securely with `clsx` and `twMerge`).
 
-### 📊 Investor Portal
-- **Interactive pitch page** with live unit economics calculator
-- **AOV slider** showing real-time contribution margin calculations
-- **Break-even point simulator**
-- **One-click access to data room**
+#### Core UI Components (`src/components/`)
+*   **`Header.tsx` & `Footer.tsx`**: Global navigation and footer elements.
+*   **`HeroBanner.tsx` & `LiquidHero.tsx`**: High-impact visual headers for the homepage, utilizing dynamic animations.
+*   **`CategoryGrid.tsx` & `CategorySlider.tsx`**: Interactive components for browsing product categories.
+*   **`CartPanel.tsx`**: A sliding drawer displaying current cart items, total calculations, and a checkout CTA.
+*   **`ProductCard.tsx` & `ProductDetailsModal.tsx`**: Displays individual product details, pricing, and "Add to Cart" functionality.
+*   **`LoginModal.tsx`**: A multi-step modal handling Firebase Authentication (Phone, Google, Email).
+*   **`SearchBar.tsx`**: Integrated search input utilizing Elasticsearch backend endpoints.
+*   **`LocationModal.tsx`**: Captures and validates user delivery coordinates.
+*   **`PWAInstallPrompt.tsx`**: Detects iOS/Android and prompts the user to "Add to Home Screen".
+*   **`ThemeToggle.tsx`**: Switches between the custom light and dark "Rajputana" themes.
+*   **`AuthGuard.tsx`**: A Higher-Order Component (HOC) to protect private routes, redirecting unauthenticated users.
 
----
-
-## 🏗 Tech Stack & Architecture
-
-### Frontend
-| Technology | Purpose |
-|---|---|
-| **Next.js 15** | App Router, SSR, API routes |
-| **React 19** | Latest concurrent features |
-| **TypeScript** | Type safety across the codebase |
-| **Tailwind CSS 4** | Utility-first styling |
-| **Framer Motion** | Smooth animations & transitions |
-| **Lucide React** | Modern icon system |
-| **Chart.js + react-chartjs-2** | Analytics visualizations |
-
-### Backend & Infrastructure
-| Technology | Purpose |
-|---|---|
-| **Express.js 5** | REST API server |
-| **PostgreSQL + Prisma ORM** | Primary database with type-safe ORM |
-| **Redis** | Caching & session management |
-| **Elasticsearch** | Full-text product search |
-| **Socket.io** | Real-time order updates & notifications |
-| **Firebase Auth** | Multi-method authentication (Email, Phone OTP, Google) |
-| **Firebase Admin SDK** | Server-side auth verification |
-
-### Payments & Security
-| Technology | Purpose |
-|---|---|
-| **Razorpay** | Indian payment gateway (UPI, cards, netbanking) |
-| **Stripe** | International payment processing |
-| **Helmet.js** | HTTP security headers |
-| **bcrypt** | Password hashing |
-| **JWT (jsonwebtoken)** | Token-based session management |
-| **express-rate-limit** | API rate limiting & DDoS protection |
-
-### Communications
-| Technology | Purpose |
-|---|---|
-| **Twilio** | SMS & OTP verification |
-| **QR Code (qrcode.react)** | UPI QR code generation |
-
-### Architecture Diagram
-```
-                    ┌─────────────────────────────────────────────┐
-                    │              CASANO PLATFORM                │
-                    └─────────────────────────────────────────────┘
-                                        │
-          ┌─────────────────────────────┼──────────────────────────┐
-          │                             │                          │
-    ┌─────▼─────┐              ┌────────▼────────┐        ┌───────▼───────┐
-    │ Customer  │              │   Merchant      │        │    Rider      │
-    │  Web App  │              │   Vendor App    │        │    App        │
-    │ (Next.js) │              │   (Next.js)     │        │   (Next.js)   │
-    └─────┬─────┘              └────────┬────────┘        └───────┬───────┘
-          │                             │                          │
-          └─────────────────────────────┼──────────────────────────┘
-                                        │
-                              ┌─────────▼──────────┐
-                              │   API Gateway      │
-                              │  (Express.js 5)    │
-                              │  + Rate Limiting   │
-                              │  + Helmet Security │
-                              └─────────┬──────────┘
-                                        │
-          ┌──────────────┬──────────────┼──────────────┬──────────────┐
-          │              │              │              │              │
-   ┌──────▼──────┐ ┌─────▼─────┐ ┌─────▼─────┐ ┌─────▼─────┐ ┌─────▼─────┐
-   │ PostgreSQL  │ │   Redis   │ │Elasticsearch│ │ Firebase  │ │ Socket.io │
-   │ + Prisma    │ │  Cache    │ │  Search    │ │   Auth    │ │ Real-time │
-   └─────────────┘ └───────────┘ └───────────┘ └───────────┘ └───────────┘
-          │                                            │
-   ┌──────▼──────┐                              ┌─────▼─────┐
-   │  Razorpay   │                              │  Twilio   │
-   │  + Stripe   │                              │  SMS/OTP  │
-   └─────────────┘                              └───────────┘
-```
+#### Next.js App Router Pages (`src/app/`)
+*   **`layout.tsx`**: The Root Layout. Configures global fonts (Geist), metadata, PWA meta tags, and wraps the app in `<Providers>`.
+*   **`page.jsx`**: The main landing page. Implements responsive switching (renders `OldMobileHome` on small screens, desktop layout otherwise).
+*   **`globals.css`**: Defines the extensive "Rajputana" design system CSS variables, Shadcn UI tokens, dark mode overrides, and custom scrollbars.
+*   **`checkout/page.tsx`**: The checkout flow integrating Razorpay/Stripe, addressing, and order creation.
+*   **`order-tracking/page.tsx`**: A real-time tracking interface showing delivery progress, driver location via MapLibre GL, and WebSockets.
+*   **`merchant/`**: Contains the Vendor Dashboard for accepting orders, and `scanner/` for barcode-based inventory addition.
+*   **`rider/`**: Contains the Delivery Partner Dashboard for accepting trips and updating statuses.
+*   **`admin/`**: Contains `ops/` (Operations dashboard), `investor/` (Data room & metrics), and `wizard/` (City setup).
+*   **`category/[id]/page.tsx`**: Dynamic category browsing pages (e.g., Groceries, Pharmacy).
+*   **`product/[id]/page.tsx`**: SEO-friendly individual product pages.
+*   **`account/`**: User profile, saved addresses, and order history pages.
 
 ---
 
-## 💰 Unit Economics
-
-> Built for profitability from **Day 1** — not "post-scale."
-
-| Parameter | Value |
-|---|---|
-| **Average Order Value (AOV)** | ₹400 |
-| **Commission Rate** | 12% |
-| **Revenue per Order** | ₹48 |
-| **Delivery Cost (Shakti Fleet)** | ₹15/trip |
-| **Contribution Margin per Order** | **+₹33** |
-| **Break-Even Point** | ~121 orders/month per node |
-| **Warehouse Rent** | ₹0 |
-| **Inventory Capital** | ₹0 (Kirana-owned) |
-
-### Why ₹15/trip Delivery?
-We leverage the **Shakti Scheme** — employing an all-female delivery fleet that operates at 66% lower cost than traditional 3PL providers, while creating employment opportunities for women in local communities.
+### 3. Backend Implementation #1: Supabase-driven API (`backend/server.js`)
+*   **Core Role:** Serves as the primary CRUD API connecting the frontend directly to Supabase via `@supabase/supabase-js` (using Service Role Key).
+*   **WebSocket Setup:** Initializes `Socket.io` with CORS configured for the frontend URL.
+*   **Authentication:** Middleware `authenticateUser` verifies Supabase JWT tokens via `supabase.auth.getUser()`.
+*   **Key Endpoints:**
+    *   `GET /api/vendors`, `GET /api/products`: Public data fetching.
+    *   `POST /api/vendors`: Vendor onboarding (updates `profiles` role).
+    *   `POST /api/products`, `PATCH /api/products/:id`: Inventory management.
+    *   `POST /api/orders`: Order creation. Emits `orderCreated` via Socket.io to specific `vendor_${id}` rooms.
+    *   `PATCH /api/orders/:orderId/status`: Status updates, broadcasting to both user and vendor rooms.
+    *   `GET /api/products/search`: Implements full-text search using Supabase `.ilike()`.
+    *   `Wholesale APIs`: Complete CRUD for bulk ordering (`wholesale_products`, `wholesale_inquiries`).
 
 ---
 
-## 🛍 Product Categories
-
-| Category | Description |
-|---|---|
-| 🥬 **Groceries** | Daily essentials, fresh produce, packaged foods |
-| 👗 **Fashion** | Clothing, accessories from local boutiques |
-| 💊 **Pharmacy** | Medicines, health & wellness products |
-| 📱 **Gadgets** | Electronics, mobile accessories, chargers |
-| 💪 **Gym** | Supplements, protein, fitness accessories |
-| ✏️ **Stationery** | Office supplies, school essentials, art materials |
-
----
-
-## 🖥 Platform Portals
-
-Casano operates as a **multi-sided marketplace** with dedicated portals for each stakeholder:
-
-| Portal | URL Path | Description |
-|---|---|---|
-| **Customer Storefront** | `/` | Product discovery, cart, checkout, and order tracking |
-| **Product Pages** | `/products`, `/product/[id]` | Browse and search all products |
-| **Category Pages** | `/category/[name]` | Filtered category browsing |
-| **Customer Account** | `/account` | Orders, addresses, and support |
-| **Checkout** | `/checkout` | Multi-method payment flow |
-| **Order Tracking** | `/order-tracking` | Real-time delivery status |
-| **Returns** | `/return` | Product return and refund management |
-| **Merchant Dashboard** | `/merchant` | Vendor order management |
-| **Barcode Scanner** | `/merchant/scanner` | Magic inventory onboarding |
-| **Rider Dashboard** | `/rider` | Delivery partner management |
-| **Rider Onboarding** | `/rider/onboarding` | New rider registration |
-| **Admin Ops** | `/admin/ops` | Operations monitoring |
-| **Admin Investor** | `/admin/investor` | Business metrics & data room |
-| **Admin Wizard** | `/admin/wizard` | City/zone setup wizard |
-| **Investor Pitch** | `/investors` | Interactive investor landing page |
-| **About** | `/about` | Company story, values, and team |
+### 4. Backend Implementation #2: Advanced Node/Express Services (`packages/backend/`)
+*   **Core Role:** Advanced backend handling raw PostgreSQL (PostGIS), Redis caching, rate-limiting, and complex algorithmic dispatching.
+*   **`server.js`**: Initializes Express, Socket.io, Postgres `Pool`, and Redis client. Applies `helmet` security and custom IP blocking middleware.
+*   **Middleware (`middleware/security.js`)**: Implements strict `express-rate-limit` for OTPs (10/15min), Search (60/min), and Orders (10/min).
+*   **Routes (`routes/orders.js`)**: 
+    *   Handles order creation and sets a 60-second auto-reject timeout if the shop doesn't accept.
+    *   Implements the **Triple-Layer Verification Endpoint** (Merchant Handoff OTP, Customer Dropoff OTP, Geofencing).
+*   **Routes (`routes/search.js`)**: 
+    *   Queries PostGIS (`ST_Distance`, `ST_DWithin`) to find shops within a specific radius.
+    *   Passes results through the custom `calculateShopScore` algorithm.
+*   **Services (`services/payments.js`)**: Integrates Razorpay order creation and HMAC SHA256 signature verification.
+*   **Services (`services/loyalty.js`)**: Calculates order streaks and awards loyalty points via SQL queries.
 
 ---
 
-## 💳 Payments & Checkout
+### 5. Database Schemas
 
-Casano supports a comprehensive Indian-first payment stack:
+#### Prisma Schema (`apps/frontend/prisma/schema.prisma`)
+Used for type-safe ORM access on the frontend/Next.js API side.
+*   **Models:** `Merchant`, `Product`, `SalesLog`, `Profit`, `Order`, `ReturnRequest`, `Customer`.
+*   **Relations:** Customers to Orders, Merchants to Products/Orders.
 
-- **UPI** — Google Pay, PhonePe, Paytm + manual UPI ID entry + QR code scan
-- **Credit / Debit Cards** — Visa, Mastercard, RuPay, Pluxee, Amex, Diners Club
-- **Net Banking** — HDFC, ICICI, SBI, Kotak, Axis + 11 more banks with searchable dropdown
-- **Wallets** — Mobikwik, PhonePe Wallet
-- **Cash on Delivery** — With exact change recommendation
-- **Pay Later** — Simpl, LazyPay (coming soon)
-
-### Payment Processing Pipeline
-```
-Customer → Secure Connection (TLS) → Stripe Gateway → Kirana Partner Notification → Rider Dispatch
-```
-
-The checkout includes a **real-time 4-stage processing overlay** showing the order pipeline: Payment verification → Store notification → Rider matching → Delivery dispatch.
+#### Raw SQL Schema (`packages/database/schema.sql`)
+Used for advanced backend operations requiring PostGIS and JSONB.
+*   **`users`**: Central auth table (roles: customer, shopkeeper, delivery, admin). Tracks streaks and loyalty points.
+*   **`shops`**: Uses `GEOMETRY(POINT, 4326)` for PostGIS location tracking.
+*   **`products` & `inventory`**: Junction tables mapping products to shops with specific quantities and prices.
+*   **`orders`**: Stores items as `JSONB`, tracks multi-party verification booleans (`shop_verified`, `delivery_verified`), and financial breakdowns.
+*   **`loyalty_ledger`, `referrals`, `refunds`, `offers`**: Supporting business logic tables.
 
 ---
 
-## 🚀 Getting Started (Developer)
+## 🧠 Algorithmic Conditions & Core Logic Details
 
-### Prerequisites
-- **Node.js** 18+ 
-- **npm** 9+
-- **PostgreSQL** 14+
-- **Redis** 7+
+All primary business logic algorithms reside in `utils/algorithms.js` and `packages/backend/services/`. Here is exactly how they work:
 
-### Installation
+### 1. Distance Calculation (`haversineDistance`)
+*   **Formula:** Standard Haversine formula calculating the great-circle distance between two points on a sphere given their longitudes and latitudes.
+*   **Usage:** Determines real-time distance between Customer ↔ Shop, and Rider ↔ Shop.
 
-```bash
-# Clone the repository
-git clone https://github.com/ankushsingh21123/casano.git
-cd casano
+### 2. Dynamic Shop Ranking (`calculateShopScore`)
+When a user searches for a product, shops are ranked based on a composite score:
+*   **Distance (35%):** `Math.max(0, 10 - dist * 2)`. Closer is better.
+*   **Price (20%):** `Math.max(0, 10 - (price / 20))`. Cheaper is better.
+*   **Stock (20%):** >10 items = 10 pts, >0 items = 5 pts, 0 items = 0 pts.
+*   **Rating (15%):** `shop.rating * 2`.
+*   **Extra Stock Bonus (5%):** +3 points if marked as high volume.
+*   **Open Status (5%):** +5 points if open, **-99 points penalty** if closed (determined by `isShopOpen` comparing current time to `hours_open`/`hours_close`).
 
-# Install dependencies
-npm install
+### 3. Dynamic Delivery Fee Engine (`calculateDelivery`)
+Calculates the cost breakdown before checkout:
+*   **Base Variables:** Base Fee = ₹15, Per KM = ₹8, Platform Fee = 5% of order value.
+*   **Peak Hours Condition:** If time is 08:00-10:00 OR 18:00-21:00, a multiplier of `1.3x` is applied.
+*   **Warning Condition:** If distance > 3km, it flags `is_far_warning = true` and generates a warning message showing how much the user could save by choosing a closer shop.
 
-# Navigate to frontend
-cd apps/frontend
+### 4. Surge Pricing Engine (`getSurgeMultiplier`)
+Used to adjust rider payouts and customer fees dynamically:
+*   **Time Conditions:** 
+    *   Morning/Evening Rush: `1.3x`
+    *   Late Night (23:00 - 06:00): `1.5x`
+    *   Weekends (Sat/Sun): Applies an additional `1.1x` multiplier.
+*   **Demand/Supply Ratio Condition:** Queries Redis for active orders vs. active drivers in an area.
+    *   Ratio > 3.0 (High Demand): Applies `1.4x` multiplier.`
+    *   Ratio > 1.5 (Busy): Applies `1.1x` multiplier.
+*   **Cap:** Hard cap at `2.5x` maximum surge.
 
-# Set up environment variables
-cp .env.example .env.local
-# Edit .env.local with your Firebase, Razorpay, Twilio, and database credentials
+### 5. Hyperlocal Dispatch Engine (`dispatcher.js`)
+Instead of pinging the single closest rider, it uses a **Weighted Cost Function** to find the optimal driver:
+1.  **Query:** Finds all 'IDLE' riders within 3km of the shop via PostGIS.
+2.  **Evaluate:** For each rider, calculates:
+    *   `Distance Score` (Weight 1.5)
+    *   `ETA Score` (Weight 2.0 - Prioritizes direction of travel)
+    *   `Idle Time` (Weight 0.5 - Subtracts minutes idle to prioritize drivers waiting longer).
+3.  **Condition:** `matchScore = (Distance * 1.5) + (ETA * 2.0) - (IdleTime * 0.5)`.
+4.  **Action:** The rider with the *lowest* `matchScore` is assigned. Updates DB to `EN_ROUTE_SHOP` and emits WebSocket event to that specific driver.
 
-# Run the development server
-npm run dev
-```
+### 6. Triple-Layer Anti-Scam Protocol (`routes/orders.js`)
+Ensures inventory is not stolen and customers receive their items:
+1.  **Merchant Handoff:** Driver scans Merchant's app QR/OTP. Changes status to `picked_up`, sets `delivery_verified = true`.
+2.  **Geofencing (Commented/Mocked):** Validates driver GPS is within 50 meters of Customer GPS.
+3.  **Customer Dropoff:** Driver inputs OTP provided by Customer. Changes status to `delivered`, sets `customer_verified = true`.
 
-Open [http://localhost:3000](http://localhost:3000) to see the app.
-
-### Environment Variables Required
-
-| Variable | Service |
-|---|---|
-| `NEXT_PUBLIC_FIREBASE_*` | Firebase Auth (client-side) |
-| `FIREBASE_ADMIN_*` | Firebase Admin SDK (server-side) |
-| `DATABASE_URL` | PostgreSQL connection string |
-| `REDIS_URL` | Redis connection string |
-| `RAZORPAY_KEY_ID` / `SECRET` | Razorpay payment gateway |
-| `STRIPE_SECRET_KEY` | Stripe payment gateway |
-| `TWILIO_*` | Twilio SMS/OTP |
-| `ELASTICSEARCH_URL` | Elasticsearch instance |
-
----
-
-## 📁 Project Structure
-
-```
-casano/
-├── apps/
-│   └── frontend/                # Next.js 15 application
-│       ├── src/
-│       │   ├── app/
-│       │   │   ├── page.jsx           # Homepage (responsive: desktop + mobile)
-│       │   │   ├── about/             # About page, company story
-│       │   │   ├── account/           # Customer account (orders, addresses, support)
-│       │   │   ├── admin/             # Admin panel (investor, ops, wizard)
-│       │   │   ├── api/               # API routes
-│       │   │   ├── category/          # Category pages (6 categories)
-│       │   │   ├── checkout/          # Multi-payment checkout
-│       │   │   ├── investors/         # Investor pitch landing page
-│       │   │   ├── merchant/          # Merchant dashboard + barcode scanner
-│       │   │   ├── order-success/     # Order confirmation
-│       │   │   ├── order-tracking/    # Real-time order tracking
-│       │   │   ├── product/           # Individual product pages
-│       │   │   ├── products/          # Product listing & search
-│       │   │   ├── return/            # Returns management
-│       │   │   └── rider/             # Rider dashboard + onboarding
-│       │   ├── components/            # Reusable UI components (23 components)
-│       │   │   ├── Header.tsx         # Global navigation header
-│       │   │   ├── Footer.tsx         # Site footer
-│       │   │   ├── CartPanel.tsx      # Sliding cart drawer
-│       │   │   ├── LoginModal.tsx     # Multi-method auth modal
-│       │   │   ├── SearchBar.tsx      # Elasticsearch-powered search
-│       │   │   ├── AuthGuard.tsx      # Protected route wrapper
-│       │   │   ├── ProductCard.tsx    # Product display card
-│       │   │   ├── HeroBanner.tsx     # Homepage hero section
-│       │   │   ├── ThemeToggle.tsx    # Dark/Light mode switch
-│       │   │   ├── SplashLoader.tsx   # App loading animation
-│       │   │   └── ...               # 13 more components
-│       │   └── context/              # React Context providers (cart, auth, theme)
-│       └── package.json
-├── packages/                     # Shared packages (monorepo)
-├── config/                       # Configuration files
-├── utils/                        # Utility functions
-└── prompts/                      # AI library & prompt templates
-```
+### 7. Security & IP Blocking (`server.js`)
+*   **Condition:** If an IP hits endpoints > 200 times within 60 seconds (tracked via Redis `ip_req:{ip}`), the IP is added to `blocked_ip:{ip}` with a 1-hour expiration. All subsequent requests return `429 Rate limit exceeded` or `403 Access denied`.
 
 ---
-
-## 🗺 Roadmap
-
-| Phase | Milestone | Status |
-|---|---|---|
-| **Phase 1** | Customer storefront, cart, checkout | ✅ Complete |
-| **Phase 2** | Merchant onboarding (barcode scanner) | ✅ Complete |
-| **Phase 3** | Rider management & delivery tracking | ✅ Complete |
-| **Phase 4** | Firebase authentication (Email, Phone, Google) | ✅ Complete |
-| **Phase 5** | Admin dashboards (Ops + Investor) | ✅ Complete |
-| **Phase 6** | Payment integrations (Razorpay, UPI, Cards) | ✅ Complete |
-| **Phase 7** | Native iOS & Android apps (React Native) | 🔜 Upcoming |
-| **Phase 8** | AI-powered demand prediction & route optimization | 🔜 Upcoming |
-| **Phase 9** | Multi-city expansion (Bengaluru → 10 cities) | 🔜 Upcoming |
-| **Phase 10** | Kirana Credit & Financial Services (KiranaFi) | 🔜 Upcoming |
-
----
-
-## 👨‍💻 Team
-
-| Name | Role |
-|---|---|
-| **Ankush Singh** | Founder & CEO |
-| **Vendor Partners** | Local Kirana Stores |
-| **Delivery Partners** | Neighbourhood Riders (Shakti Fleet) |
-
----
-
-## 📞 Contact & Invest
-
-<p align="center">
-  <strong>We are currently raising our Pre-Seed round.</strong><br/>
-  For pitch deck, data room access, or partnership inquiries:
-</p>
-
-<p align="center">
-  📧 <strong>ankush@casano.in</strong><br/>
-  🌐 <a href="https://casano.in">casano.in</a><br/>
-  🏙 Based in Bengaluru, India
-</p>
 
 <p align="center">
   <em>"Shop Local. Support Local. Delivered in 15 minutes."</em>
 </p>
-
----
 
 <p align="center">
   <sub>© 2026 Casano (HyperlocalOS). All rights reserved.</sub>

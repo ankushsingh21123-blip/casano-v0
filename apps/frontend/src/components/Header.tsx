@@ -35,6 +35,7 @@ export default function Header() {
         style={{
           background: isDarkMode ? "#151210" : "#52201C",
           borderColor: isDarkMode ? "#2e2a2544" : "#6b2923",
+          paddingTop: "env(safe-area-inset-top, 0px)",
         }}
       >
         <div className="flex items-center h-[68px] w-full max-w-[1440px] mx-auto px-4 sm:px-6 gap-4 sm:gap-6">
