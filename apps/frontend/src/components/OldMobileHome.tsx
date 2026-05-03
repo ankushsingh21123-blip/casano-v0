@@ -13,7 +13,7 @@ import { useAuth } from '@/context/AuthContext';
 import LoginModal from './LoginModal';
 import ThemeToggle from './ThemeToggle';
 import MobileHomeSkeleton from './ui/SkeletonLoader';
-import UnicornScene from "unicornstudio-react";
+// UnicornStudio removed — using pure CSS animated background instead
 
 const SEARCH_HINTS = [
   'Search "milk"', 'Search "bread"', 'Search "medicines"',
@@ -129,17 +129,12 @@ export default function MobileHome() {
 
   return (
     <div className="flex w-full flex-col min-h-screen relative font-sans transition-colors duration-300" style={{ background: "var(--bg-main)", color: "var(--text-primary)", paddingTop: "env(safe-area-inset-top, 0px)" }}>
-      {/* Background UnicornScene */}
-      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden opacity-30 mix-blend-screen">
-        <UnicornScene
-          projectId="18CBccbb02aYYChpjQtO"
-          width="100%"
-          height="100%"
-          scale={1}
-          dpi={1.5}
-          sdkUrl="https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@2.1.11/dist/unicornStudio.umd.js"
-        />
-      </div>
+      {/* Animated gradient background */}
+      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden opacity-20" style={{
+        background: 'radial-gradient(ellipse at 20% 50%, rgba(193,73,46,0.3), transparent 55%), radial-gradient(ellipse at 80% 20%, rgba(184,150,46,0.2), transparent 50%), radial-gradient(ellipse at 50% 80%, rgba(33,74,54,0.15), transparent 60%)',
+        animation: 'bgShift 12s ease-in-out infinite alternate',
+      }} />
+      <style>{`@keyframes bgShift { 0% { opacity: 0.15; transform: scale(1); } 50% { opacity: 0.25; transform: scale(1.02); } 100% { opacity: 0.15; transform: scale(1); } }`}</style>
 
       {/* ── HOME SCREEN ── */}
       {appState === 'home' && (

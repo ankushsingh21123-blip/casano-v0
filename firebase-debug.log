@@ -1,0 +1,22 @@
+[debug] [2026-05-03T22:26:49.980Z] ----------------------------------------------------------------------
+[debug] [2026-05-03T22:26:49.985Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\HP\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\firebase-tools\lib\bin\firebase.js projects:addfirebase casano-platform-app
+[debug] [2026-05-03T22:26:49.985Z] CLI Version:   15.16.0
+[debug] [2026-05-03T22:26:49.986Z] Platform:      win32
+[debug] [2026-05-03T22:26:49.986Z] Node Version:  v25.2.1
+[debug] [2026-05-03T22:26:49.986Z] Time:          Mon May 04 2026 03:56:49 GMT+0530 (India Standard Time)
+[debug] [2026-05-03T22:26:49.986Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-05-03T22:26:50.266Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-05-03T22:26:50.267Z] > authorizing via signed-in user (ankushsingh21123@gmail.com)
+[debug] [2026-05-03T22:26:50.274Z] Checked if tokens are valid: true, expires at: 1777850189672
+[debug] [2026-05-03T22:26:50.274Z] Checked if tokens are valid: true, expires at: 1777850189672
+[debug] [2026-05-03T22:26:50.276Z] >>> [apiv2][query] POST https://firebase.googleapis.com/v1beta1/projects/casano-platform-app:addFirebase [none]
+[debug] [2026-05-03T22:26:51.183Z] <<< [apiv2][status] POST https://firebase.googleapis.com/v1beta1/projects/casano-platform-app:addFirebase 403
+[debug] [2026-05-03T22:26:51.184Z] <<< [apiv2][body] POST https://firebase.googleapis.com/v1beta1/projects/casano-platform-app:addFirebase {"error":{"code":403,"message":"The caller does not have permission","status":"PERMISSION_DENIED"}}
+[debug] [2026-05-03T22:26:51.186Z] Request to https://firebase.googleapis.com/v1beta1/projects/casano-platform-app:addFirebase had HTTP Error: 403, The caller does not have permission
+[debug] [2026-05-03T22:26:51.188Z] FirebaseError: Request to https://firebase.googleapis.com/v1beta1/projects/casano-platform-app:addFirebase had HTTP Error: 403, The caller does not have permission
+    at responseToError (C:\Users\HP\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\firebase-tools\lib\responseToError.js:53:12)
+    at RetryOperation._fn (C:\Users\HP\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\firebase-tools\lib\apiv2.js:333:77)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+[error] 
+[error] Error: Failed to add Firebase to Google Cloud Platform project. See firebase-debug.log for more info.

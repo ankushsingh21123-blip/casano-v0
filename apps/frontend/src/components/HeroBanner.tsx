@@ -4,13 +4,8 @@ import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { CheckCircle, Sparkles } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import dynamic from "next/dynamic";
 
-/* ── Lazy-load UnicornScene to avoid SSR issues ── */
-const UnicornScene = dynamic(() => import("unicornstudio-react"), {
-  ssr: false,
-  loading: () => null,
-});
+// UnicornStudio removed — pure CSS animated background used instead
 
 /* ── Curated gradient palettes (with brand orange baked in) ── */
 const GRADIENT_PRESETS = [
@@ -146,17 +141,12 @@ export default function HeroBanner() {
   return (
     <div className="w-full transition-colors duration-300 relative overflow-hidden" style={{ borderBottom: "1px solid var(--surface-border)" }}>
 
-      {/* UnicornStudio animated background */}
-      <div className="absolute inset-0 z-0">
-        <UnicornScene
-          projectId="18CBccbb02aYYChpjQtO"
-          width="100%"
-          height="100%"
-          scale={1}
-          dpi={1.5}
-          sdkUrl="https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@2.1.11/dist/unicornStudio.umd.js"
-        />
-      </div>
+      {/* Animated mesh background (replaces UnicornStudio) */}
+      <div className="absolute inset-0 z-0" style={{
+        background: 'radial-gradient(ellipse at 30% 40%, rgba(193,73,46,0.12), transparent 60%), radial-gradient(ellipse at 70% 30%, rgba(184,150,46,0.1), transparent 55%), radial-gradient(ellipse at 50% 80%, rgba(33,74,54,0.08), transparent 60%)',
+        animation: 'heroShift 15s ease-in-out infinite alternate',
+      }} />
+      <style>{`@keyframes heroShift { 0% { transform: scale(1) rotate(0deg); } 50% { transform: scale(1.03) rotate(0.5deg); } 100% { transform: scale(1) rotate(0deg); } }`}</style>
 
       {/* Gradient overlay for readability on top of the scene */}
       <div

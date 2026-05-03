@@ -1,0 +1,12 @@
+{
+  "auth": {
+    "providers": {
+      "anonymous": false,
+      "emailPassword": false,
+      "googleSignIn": {
+        "oAuthBrandDisplayName": "Casano Hyperlocal",
+        "supportEmail": "ankushsingh21123@gmail.com"
+      }
+    }
+  }
+}
