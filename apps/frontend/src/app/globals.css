@@ -333,6 +333,19 @@ button, input, select, textarea {
   }
 }
 
+/* ── Suppress any Unicorn Studio watermark / badge ── */
+[class*="unicorn-studio"],
+[class*="us-player"],
+[class*="us-badge"],
+[id*="unicorn-studio"],
+a[href*="unicornstudio.com"],
+iframe[src*="unicornstudio"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
 /* ── Install prompt animation ── */
 @keyframes slideUpBounce {
   0% { transform: translateY(100%); }

@@ -90,8 +90,12 @@ export default function CartPanel({ isOpen, onClose, onLoginClick }: CartPanelPr
                 </div>
               ) : items.map((item: any) => (
                 <div key={item.id} className="p-4 flex gap-4">
-                  <div className="w-[72px] h-[72px] bg-white rounded-xl p-2 border border-gray-100 dark:border-gray-800 flex-shrink-0 shadow-sm">
-                    <img src={item.image} alt={item.name} className="w-full h-full object-contain rounded" />
+                  <div className="w-[72px] h-[72px] bg-white rounded-xl p-2 border border-gray-100 dark:border-gray-800 flex-shrink-0 shadow-sm flex items-center justify-center">
+                    {item.image ? (
+                      <img src={item.image} alt={item.name} className="w-full h-full object-contain rounded" />
+                    ) : (
+                      <ShoppingCart className="w-6 h-6 text-gray-300" />
+                    )}
                   </div>
                   <div className="flex-1 flex flex-col justify-between">
                     <div>

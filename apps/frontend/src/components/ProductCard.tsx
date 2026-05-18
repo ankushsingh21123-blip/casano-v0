@@ -3,6 +3,7 @@
 import { useCart } from "@/context/CartContext";
 import ProductDetailsModal from "./ProductDetailsModal";
 import { useState } from "react";
+import { ShoppingCart } from "lucide-react";
 
 interface ProductProps {
   id: string;
@@ -63,11 +64,17 @@ export default function ProductCard(props: ProductProps) {
               {tag}
             </div>
           )}
-          <img
-            src={image}
-            alt={name}
-            className="object-contain w-full h-full transition-transform group-hover:scale-105"
-          />
+          {image ? (
+            <img
+              src={image}
+              alt={name}
+              className="object-contain w-full h-full transition-transform group-hover:scale-105"
+            />
+          ) : (
+            <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ background: "#EFEADD" }}>
+              <ShoppingCart className="w-5 h-5" style={{ color: "#9A9B9A" }} />
+            </div>
+          )}
 
           {/* Delivery time badge */}
           <div

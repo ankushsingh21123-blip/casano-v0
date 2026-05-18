@@ -191,7 +191,7 @@ export function CategoryPageTemplate({ category, icon, gradient, products: initi
                 
                 {qty === 0 ? (
                   <button
-                    onClick={() => addItem({ id: productId, name: p.name, price: parseInt(p.price), size: "", image: "" })}
+                    onClick={() => addItem({ id: productId, name: p.name, price: parseInt(p.price), size: "", image: p.image || `/category_${category.toLowerCase().replace(/\s.*/, '')}.png` })}
                     className="mt-2 w-full text-xs font-bold py-2 rounded-xl transition-all flex items-center justify-center gap-1"
                     style={{
                       background: "linear-gradient(135deg, #C1492E, #a03a22)",
@@ -212,7 +212,7 @@ export function CategoryPageTemplate({ category, icon, gradient, products: initi
                     </button>
                     <span className="text-sm font-black" style={{ color: "var(--text-primary)" }}>{qty}</span>
                     <button
-                      onClick={() => addItem({ id: productId, name: p.name, price: parseInt(p.price), size: "", image: "" })}
+                      onClick={() => addItem({ id: productId, name: p.name, price: parseInt(p.price), size: "", image: p.image || `/category_${category.toLowerCase().replace(/\s.*/, '')}.png` })}
                       className="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold"
                       style={{ background: "#C1492E", color: "#fff" }}
                     >
