@@ -19,7 +19,7 @@ export default function LiquidHero() {
   const dispRef = useRef<SVGFEDisplacementMapElement>(null);
   const [mounted, setMounted] = useState(false);
   const [mousePos, setMousePos] = useState({ x: 0.5, y: 0.5 });
-  const rafRef = useRef<number>();
+  const rafRef = useRef<number>(undefined);
   const turbValRef = useRef(0);
   const turbTargetRef = useRef(0);
 

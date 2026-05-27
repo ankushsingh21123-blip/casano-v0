@@ -337,9 +337,30 @@ button, input, select, textarea {
 [class*="unicorn-studio"],
 [class*="us-player"],
 [class*="us-badge"],
+[class*="us-watermark"],
+[class*="us-brand"],
 [id*="unicorn-studio"],
+[id*="us-badge"],
+[data-us-project],
+[data-unicorn],
 a[href*="unicornstudio.com"],
-iframe[src*="unicornstudio"] {
+a[href*="unicorn.studio"],
+iframe[src*="unicornstudio"],
+iframe[src*="unicorn.studio"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  position: absolute !important;
+  left: -9999px !important;
+}
+
+/* Cover fixed-position injected watermarks (SDK badges placed outside app DOM) */
+body > a[href*="unicorn"],
+body > div[style*="position: fixed"] a[href*="unicorn"],
+body > div[style*="position:fixed"] a[href*="unicorn"] {
   display: none !important;
   visibility: hidden !important;
   opacity: 0 !important;

@@ -1,10 +1,8 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
-import { X, ArrowLeft, MapPin, User, Phone, Chrome } from "lucide-react";
+import { X, ArrowLeft, User, Phone } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
-
-const BACKEND = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8080";
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -12,7 +10,7 @@ interface LoginModalProps {
 }
 
 export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
-  const { refreshUser } = useAuth();
+  const { refreshUser, setProfile } = useAuth();
   const [step, setStep] = useState<"phone" | "otp" | "profile">("phone");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
@@ -45,16 +43,8 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
 
   if (!isOpen) return null;
 
-  /* ─── Exchange Firebase idToken with backend ─── */
-  const exchangeToken = async (firebaseUser: any) => {
-    const idToken = await firebaseUser.getIdToken(true);
-    const res = await fetch(`${BACKEND}/api/auth/firebase-exchange`, {
-      method: "POST",
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ idToken }),
-    });
-    if (!res.ok) throw new Error("Backend exchange failed");
+  /* ─── After Firebase sign-in, just refresh local auth state ─── */
+  const handlePostSignIn = async () => {
     await refreshUser();
   };
 
@@ -92,8 +82,8 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
     setLoading(true); setError("");
     try {
       const result = await confirmationRef.current.confirm(code);
-      await exchangeToken(result.user);
-      // Check if new user (no name) → show profile step, else close
+      await handlePostSignIn();
+      // Check if new user (no displayName) → show profile step, else close
       if (!result.user.displayName) {
         setStep("profile");
       } else {
@@ -113,8 +103,8 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
       const { auth, googleProvider } = await import("@/lib/firebase");
       const { signInWithPopup } = await import("firebase/auth");
       if (!auth || !googleProvider) throw new Error("Firebase not configured");
-      const result = await signInWithPopup(auth, googleProvider);
-      await exchangeToken(result.user);
+      await signInWithPopup(auth, googleProvider);
+      await handlePostSignIn();
       onClose();
     } catch (err: any) {
       if (err.code !== "auth/popup-closed-by-user") setError(err.message || "Google sign-in failed");
@@ -128,13 +118,8 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
     if (!name.trim()) return;
     setLoading(true);
     try {
-      await fetch(`${BACKEND}/api/auth/profile/me`, {
-        method: "PATCH",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ full_name: name.trim() }),
-      });
-      await refreshUser();
+      // Save name locally via AuthContext (no backend needed)
+      setProfile(name.trim(), "");
       onClose();
     } catch {}
     finally { setLoading(false); }

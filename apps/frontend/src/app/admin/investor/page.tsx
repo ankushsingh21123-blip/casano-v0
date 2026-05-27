@@ -26,7 +26,7 @@ export default function InvestorDashboard() {
 
     // Simulator State
     const [aov, setAov] = useState(400);
-    const [deliveryCost, setDeliveryCost] = useState(15); // Default to Shakti
+    const [deliveryCost, setDeliveryCost] = useState(15); // Default to GeoRunner
     const [commission, setCommission] = useState(12); // %
     const [marketing, setMarketing] = useState(10); // ₹ per order
 
@@ -205,18 +205,18 @@ export default function InvestorDashboard() {
                             </div>
                         </div>
 
-                        {/* Shakti Rider Telemetry */}
+                        {/* Runner Telemetry */}
                         <div className="absolute top-[45%] left-[65%] text-center">
                             <div className="w-2 h-2 bg-pink-400 rounded-full mx-auto shadow-[0_0_8px_rgba(244,114,182,0.8)] relative z-10"></div>
-                            <p className="text-[8px] text-pink-400 mt-1 font-mono">Shakti-04</p>
+                            <p className="text-[8px] text-pink-400 mt-1 font-mono">Runner-04</p>
                         </div>
                         <div className="absolute top-[25%] left-[35%] text-center">
                             <div className="w-2 h-2 bg-pink-400 rounded-full mx-auto shadow-[0_0_8px_rgba(244,114,182,0.8)] relative z-10"></div>
-                            <p className="text-[8px] text-pink-400 mt-1 font-mono">Shakti-12</p>
+                            <p className="text-[8px] text-pink-400 mt-1 font-mono">Runner-12</p>
                         </div>
                         <div className="absolute top-[75%] left-[55%] text-center">
                             <div className="w-2 h-2 bg-pink-400 rounded-full mx-auto shadow-[0_0_8px_rgba(244,114,182,0.8)] relative z-10"></div>
-                            <p className="text-[8px] text-pink-400 mt-1 font-mono">Shakti-18</p>
+                            <p className="text-[8px] text-pink-400 mt-1 font-mono">Runner-18</p>
                         </div>
                     </div>
 
@@ -246,35 +246,35 @@ export default function InvestorDashboard() {
                 </div>
             </div>
 
-            {/* NEW: Shakti Logistics Cost-Benefit */}
+            {/* NEW: GeoRunner Logistics Cost-Benefit */}
             <div className="mt-8 bg-neutral-900 border border-neutral-800 p-6 rounded-2xl shadow-xl flex flex-col md:flex-row gap-8 items-center">
                 <div className="flex-1 space-y-4">
-                    <div className="inline-block bg-rose-500/10 border border-rose-500/30 text-rose-400 font-bold text-xs uppercase tracking-widest px-3 py-1 rounded-full">
+                    <div className="inline-block bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-bold text-xs uppercase tracking-widest px-3 py-1 rounded-full">
                         Proprietary Advantage
                     </div>
-                    <h2 className="text-2xl font-black text-white">The &quot;Shakti&quot; Logistics Engine</h2>
+                    <h2 className="text-2xl font-black text-white">The &quot;GeoRunner&quot; Logistics Engine</h2>
                     <p className="text-sm text-neutral-400 leading-relaxed">
-                        By tapping into the Karnataka &quot;Shakti&quot; scheme (free local bus travel for women) and building a specialized, safety-first all-female hyperlocal fleet, we bypass the aggressive pricing models of standard 3PL (Third Party Logistics) players like Dunzo or Shadowfax.
+                        By leveraging a crowd-sourced network of resident pedestrian and bicycle-based runners (college students and neighborhood helpers) operating within a strict 1-2 km radius, we bypass the aggressive pricing models and high carbon footprint of standard 3PL (Third Party Logistics) players like Dunzo or Shadowfax.
                     </p>
                     <div className="flex gap-4 mt-4">
                         <div className="bg-neutral-800 p-4 rounded-xl flex-1 border border-neutral-700">
                             <p className="text-[10px] text-neutral-500 uppercase font-bold mb-1">Standard 3PL</p>
                             <p className="text-xl font-bold text-neutral-300">₹45 / order</p>
                         </div>
-                        <div className="bg-rose-950/30 p-4 rounded-xl flex-1 border border-rose-900/50">
-                            <p className="text-[10px] text-rose-400 uppercase font-bold mb-1">Shakti Fleet</p>
-                            <p className="text-xl font-bold text-rose-300">₹15 / order</p>
+                        <div className="bg-emerald-950/30 p-4 rounded-xl flex-1 border border-emerald-900/50">
+                            <p className="text-[10px] text-emerald-400 uppercase font-bold mb-1">GeoRunner Fleet</p>
+                            <p className="text-xl font-bold text-emerald-300">₹15 / order</p>
                         </div>
                     </div>
                 </div>
                 <div className="w-full md:w-1/3 bg-black p-5 rounded-xl border border-neutral-800 flex flex-col items-center justify-center text-center">
-                    <div className="w-16 h-16 rounded-full bg-rose-500/20 flex flex-col items-center justify-center border-2 border-rose-500 mb-3 relative">
-                        <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-ping"></div>
-                        <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></div>
-                        <span className="text-2xl">👩🏽‍✈️</span>
+                    <div className="w-16 h-16 rounded-full bg-emerald-500/20 flex flex-col items-center justify-center border-2 border-emerald-500 mb-3 relative">
+                        <div className="absolute -top-1 -right-1 w-3 h-3 bg-emerald-500 rounded-full animate-ping"></div>
+                        <div className="absolute -top-1 -right-1 w-3 h-3 bg-emerald-500 rounded-full"></div>
+                        <span className="text-2xl">🏃🏽‍♂️</span>
                     </div>
                     <h3 className="text-white font-bold text-sm">Active Monitoring</h3>
-                    <p className="text-[10px] text-neutral-500 mt-1">Live SOS and unified tracking engaged for all 42 active female partners across nodes.</p>
+                    <p className="text-[10px] text-neutral-500 mt-1">Live routing telemetry and safety-first tracking engaged for all 42 active neighborhood runners.</p>
                 </div>
             </div>
 
@@ -297,7 +297,7 @@ export default function InvestorDashboard() {
 
                         <div>
                             <div className="flex justify-between mb-1">
-                                <label className="text-xs font-bold text-neutral-300 uppercase">Delivery Cost (3PL vs Shakti)</label>
+                                <label className="text-xs font-bold text-neutral-300 uppercase">Delivery Cost (3PL vs GeoRunner)</label>
                                 <span className="text-rose-400 font-bold">₹{deliveryCost}</span>
                             </div>
                             <input type="range" min="10" max="60" step="5" value={deliveryCost} onChange={(e: any) => setDeliveryCost(Number(e.target.value))} className="w-full accent-rose-500" />

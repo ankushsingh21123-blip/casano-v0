@@ -70,6 +70,21 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
       <body className="antialiased">
+        {/* Remove any Unicorn Studio watermark injected at runtime */}
+        <script dangerouslySetInnerHTML={{ __html: `
+          (function() {
+            function removeUnicornBadge() {
+              document.querySelectorAll(
+                'a[href*="unicorn.studio"], a[href*="unicornstudio.com"], ' +
+                '[class*="us-badge"], [class*="us-watermark"], [class*="us-brand"], ' +
+                '[id*="us-badge"], [data-us-project], [data-unicorn]'
+              ).forEach(function(el) { el.remove(); });
+            }
+            removeUnicornBadge();
+            var obs = new MutationObserver(removeUnicornBadge);
+            obs.observe(document.body, { childList: true, subtree: true });
+          })();
+        ` }} />
         <ServiceWorkerRegistration />
         <ScrollProgress />
         <FloatingMarquee />

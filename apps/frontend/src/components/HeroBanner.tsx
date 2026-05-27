@@ -1,203 +1,92 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { CheckCircle, Sparkles } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { CheckCircle, ArrowRight } from "lucide-react";
+import { motion } from "framer-motion";
 
-// UnicornStudio removed — pure CSS animated background used instead
-
-/* ── Curated gradient palettes (with brand orange baked in) ── */
-const GRADIENT_PRESETS = [
-  // Default warm Rajputana
-  { c1: [244, 239, 230], c2: [250, 232, 229], c3: [251, 245, 225] },
-  // Saffron sunrise
-  { c1: [193, 73, 46], c2: [184, 150, 46], c3: [250, 232, 229] },
-  // Deep terracotta dusk
-  { c1: [173, 69, 49], c2: [142, 52, 36], c3: [244, 239, 230] },
-  // Forest gold
-  { c1: [33, 74, 54], c2: [184, 150, 46], c3: [230, 242, 236] },
-  // Pearl saffron
-  { c1: [253, 251, 247], c2: [193, 73, 46], c3: [251, 245, 225] },
-  // Royal amber
-  { c1: [184, 150, 46], c2: [193, 73, 46], c3: [33, 74, 54] },
-  // Midnight spice
-  { c1: [42, 43, 42], c2: [193, 73, 46], c3: [184, 150, 46] },
-  // Warm blush
-  { c1: [250, 232, 229], c2: [244, 239, 230], c3: [193, 73, 46] },
-];
-
-function rgb(arr: number[]) {
-  return `rgb(${arr[0]}, ${arr[1]}, ${arr[2]})`;
-}
-
-function lerpColor(a: number[], b: number[], t: number): number[] {
-  return a.map((v, i) => Math.round(v + (b[i] - v) * t));
-}
+// ── Palette ──────────────────────────────────────────────────────────────────
+// Background  : #6B2A1A  (deep reddish-brown / sienna)
+// Headline    : #FFF4E8  (warm cream)
+// Italic span : #F5C9A0  (peachy sand — softer than cream)
+// Body text   : #EECBA8  (warm peach-tan)
+// Accent      : #E8A56A  (amber-gold — replaces green for link / badge glow)
+// Badge bg    : rgba(232,165,106, 0.15)
+// Badge border: rgba(232,165,106, 0.35)
+// Cards (dark): deeper sienna shades so they contrast on the warm bg
+// ─────────────────────────────────────────────────────────────────────────────
 
 export default function HeroBanner() {
-  const [colors, setColors] = useState(GRADIENT_PRESETS[0]);
-  const [displayColors, setDisplayColors] = useState(GRADIENT_PRESETS[0]);
-  const [isAnimating, setIsAnimating] = useState(false);
-  const [presetIndex, setPresetIndex] = useState(0);
-
-  /* ── Smooth color interpolation ── */
-  useEffect(() => {
-    if (
-      colors.c1.join() === displayColors.c1.join() &&
-      colors.c2.join() === displayColors.c2.join() &&
-      colors.c3.join() === displayColors.c3.join()
-    ) {
-      setIsAnimating(false);
-      return;
-    }
-
-    setIsAnimating(true);
-    let frame: number;
-    let progress = 0;
-    const startC1 = [...displayColors.c1];
-    const startC2 = [...displayColors.c2];
-    const startC3 = [...displayColors.c3];
-    const duration = 800; // ms
-    let startTime: number | null = null;
-
-    const animate = (ts: number) => {
-      if (!startTime) startTime = ts;
-      progress = Math.min((ts - startTime) / duration, 1);
-      const ease = progress < 0.5
-        ? 4 * progress * progress * progress
-        : 1 - Math.pow(-2 * progress + 2, 3) / 2; // cubic ease-in-out
-
-      setDisplayColors({
-        c1: lerpColor(startC1, colors.c1, ease),
-        c2: lerpColor(startC2, colors.c2, ease),
-        c3: lerpColor(startC3, colors.c3, ease),
-      });
-
-      if (progress < 1) {
-        frame = requestAnimationFrame(animate);
-      } else {
-        setIsAnimating(false);
-      }
-    };
-
-    frame = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(frame);
-  }, [colors]);
-
-  /* ── Randomize with brand orange anchor ── */
-  const randomize = useCallback(() => {
-    const randInt = (max: number) => Math.floor(Math.random() * max);
-
-    // 50% chance: pick a curated preset, 50% chance: fully random with orange
-    if (Math.random() > 0.5) {
-      const next = (presetIndex + 1 + randInt(GRADIENT_PRESETS.length - 1)) % GRADIENT_PRESETS.length;
-      setPresetIndex(next);
-      setColors(GRADIENT_PRESETS[next]);
-    } else {
-      // Always anchor one color to the brand orange family
-      const orangeBase = [
-        193 + randInt(30) - 15,
-        73 + randInt(30) - 15,
-        46 + randInt(20) - 10,
-      ].map(v => Math.max(0, Math.min(255, v)));
-
-      setColors({
-        c1: orangeBase,
-        c2: [randInt(255), randInt(255), randInt(255)],
-        c3: [randInt(255), randInt(255), randInt(255)],
-      });
-    }
-  }, [presetIndex]);
-
-  /* ── Auto-cycle every 6 seconds ── */
-  useEffect(() => {
-    const interval = setInterval(randomize, 6000);
-    return () => clearInterval(interval);
-  }, [randomize]);
-
-  const gradientBg = `
-    radial-gradient(ellipse at 15% 50%, ${rgb(displayColors.c1)}33, transparent 55%),
-    radial-gradient(ellipse at 85% 20%, ${rgb(displayColors.c2)}28, transparent 50%),
-    radial-gradient(ellipse at 50% 90%, ${rgb(displayColors.c3)}22, transparent 60%),
-    var(--bg-hero)
-  `;
-
-  /* ── Floating orbs overlay ── */
-  const orbStyle = (color: number[], x: string, y: string, size: string, delay: number) => ({
-    position: "absolute" as const,
-    left: x,
-    top: y,
-    width: size,
-    height: size,
-    borderRadius: "50%",
-    background: `radial-gradient(circle, ${rgb(color)}18, transparent 70%)`,
-    filter: "blur(40px)",
-    pointerEvents: "none" as const,
-    animation: `float-orb ${8 + delay}s ease-in-out infinite alternate`,
-    animationDelay: `${delay}s`,
-  });
-
   return (
-    <div className="w-full transition-colors duration-300 relative overflow-hidden" style={{ borderBottom: "1px solid var(--surface-border)" }}>
+    <div
+      className="w-full relative overflow-hidden"
+      style={{
+        borderBottom: "1px solid rgba(255,255,255,0.08)",
+        background: "linear-gradient(135deg, #6B2A1A 0%, #7D3320 50%, #5C2015 100%)",
+      }}
+    >
 
-      {/* Animated mesh background (replaces UnicornStudio) */}
-      <div className="absolute inset-0 z-0" style={{
-        background: 'radial-gradient(ellipse at 30% 40%, rgba(193,73,46,0.12), transparent 60%), radial-gradient(ellipse at 70% 30%, rgba(184,150,46,0.1), transparent 55%), radial-gradient(ellipse at 50% 80%, rgba(33,74,54,0.08), transparent 60%)',
-        animation: 'heroShift 15s ease-in-out infinite alternate',
-      }} />
-      <style>{`@keyframes heroShift { 0% { transform: scale(1) rotate(0deg); } 50% { transform: scale(1.03) rotate(0.5deg); } 100% { transform: scale(1) rotate(0deg); } }`}</style>
 
-      {/* Gradient overlay for readability on top of the scene */}
+      {/* Amber glow — top left */}
       <div
-        className="absolute inset-0 transition-none z-[1]"
-        style={{ background: gradientBg, opacity: 0.55 }}
+        className="absolute -top-20 -left-20 w-[400px] h-[400px] rounded-full pointer-events-none z-0"
+        style={{
+          background: "radial-gradient(circle, rgba(232,165,106,0.18), transparent 70%)",
+          filter: "blur(50px)",
+        }}
       />
 
-      {/* Floating orbs */}
-      <div style={{ ...orbStyle(displayColors.c1, "10%", "20%", "300px", 0), zIndex: 1 }} />
-      <div style={{ ...orbStyle(displayColors.c2, "70%", "10%", "250px", 2), zIndex: 1 }} />
-      <div style={{ ...orbStyle(displayColors.c3, "40%", "60%", "200px", 4), zIndex: 1 }} />
-
-      {/* Promo Strip — Gold Accent */}
-      <div className="text-center py-2.5 text-xs font-bold tracking-widest uppercase transition-colors relative z-[2]" 
-           style={{ background: "var(--surface-card)", color: "#B8962E", borderBottom: "1px solid var(--surface-border)" }}>
-        Free delivery on your first 3 orders — Use code&nbsp;
-        <span className="underline underline-offset-4 cursor-pointer hover:text-opacity-80">FIRST3</span>
-      </div>
+      {/* Subtle light leak — bottom right */}
+      <div
+        className="absolute bottom-0 right-0 w-[300px] h-[300px] rounded-full pointer-events-none z-0"
+        style={{
+          background: "radial-gradient(circle, rgba(255,200,120,0.10), transparent 70%)",
+          filter: "blur(60px)",
+        }}
+      />
 
       {/* Hero Section */}
-      <div className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 py-12 sm:py-20 relative z-[2]">
+      <div className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 py-14 sm:py-20 relative z-[2]">
         <div className="flex flex-col md:flex-row items-center justify-between gap-10">
 
           {/* Left: Copy */}
           <div className="flex-1 max-w-2xl">
+
             {/* Trusted badge */}
             <div
-              className="inline-flex items-center gap-2 text-[11px] font-bold px-4 py-1.5 rounded-full mb-6 uppercase tracking-wider transition-all hover:bg-opacity-80 cursor-default"
-              style={{ background: "rgba(184,150,46,0.1)", color: "#B8962E", border: "1px solid rgba(184,150,46,0.2)" }}
+              className="inline-flex items-center gap-2 text-[11px] font-bold px-4 py-1.5 rounded-full mb-6 uppercase tracking-wider"
+              style={{
+                background: "rgba(232,165,106,0.15)",
+                color: "#E8A56A",
+                border: "1px solid rgba(232,165,106,0.35)",
+              }}
             >
-              <span className="w-1.5 h-1.5 rounded-full" style={{ background: "#B8962E", boxShadow: "0 0 8px #B8962E" }} />
+              <span
+                className="w-1.5 h-1.5 rounded-full"
+                style={{ background: "#E8A56A", boxShadow: "0 0 8px #E8A56A" }}
+              />
               Delivered from your premium Kirana
             </div>
 
             <h1
               className="text-4xl sm:text-5xl md:text-[56px] font-black tracking-tight leading-[1.05] mb-6"
-              style={{ color: "var(--text-primary)", fontFamily: "var(--font-heading)" }}
+              style={{ color: "#FFF4E8", fontFamily: "var(--font-heading)" }}
             >
-              Everything you need,<br />
-              <motion.span
-                key={rgb(displayColors.c1)}
-                initial={{ opacity: 0.7 }}
-                animate={{ opacity: 1 }}
-                style={{ color: rgb(displayColors.c1), fontStyle: "italic" }}
+              Everything you need,
+              <br />
+              <span
+                className="italic"
+                style={{ color: "#F5C9A0", opacity: 0.85 }}
               >
                 delivered in minutes.
-              </motion.span>
+              </span>
             </h1>
 
-            <p className="text-lg sm:text-xl max-w-lg mb-10 leading-relaxed font-medium" style={{ color: "var(--text-secondary)" }}>
-              Groceries, medicines, and luxury essentials — curated and delivered to your door in <strong style={{ color: "#B8962E" }}>15 minutes</strong>.
+            <p
+              className="text-lg sm:text-xl max-w-lg mb-10 leading-relaxed font-medium"
+              style={{ color: "#EECBA8" }}
+            >
+              Groceries, medicines, and luxury essentials — curated and delivered to your door in{" "}
+              <strong style={{ color: "#E8A56A" }}>15 minutes</strong>.
             </p>
 
             <div className="flex items-center gap-4 flex-wrap">
@@ -205,64 +94,54 @@ export default function HeroBanner() {
                 <motion.button
                   whileHover={{ scale: 1.03, y: -2 }}
                   whileTap={{ scale: 0.97 }}
-                  className="px-8 py-4 rounded-xl font-bold text-[15px] text-white transition-shadow"
+                  className="px-8 py-4 rounded-xl font-bold text-[15px] transition-shadow flex items-center gap-2"
                   style={{
-                    background: `linear-gradient(135deg, ${rgb(displayColors.c1)}, ${rgb(lerpColor(displayColors.c1, [0, 0, 0], 0.25))})`,
-                    boxShadow: `0 8px 30px ${rgb(displayColors.c1)}4D`,
+                    background: "#E8A56A",
+                    color: "#3A1008",
+                    boxShadow: "0 8px 30px rgba(232,165,106,0.4)",
                   }}
                 >
                   Browse Products
+                  <ArrowRight size={16} />
                 </motion.button>
               </Link>
+
               <Link href="/category/groceries">
                 <motion.button
                   whileHover={{ scale: 1.03, y: -2 }}
                   whileTap={{ scale: 0.97 }}
                   className="px-8 py-4 rounded-xl font-bold text-[15px] transition-all"
-                  style={{ border: "1px solid var(--surface-border)", color: "var(--text-primary)", background: "var(--surface-card)" }}
-                  onMouseEnter={e => {
-                    e.currentTarget.style.borderColor = rgb(displayColors.c2);
-                    e.currentTarget.style.color = rgb(displayColors.c2);
-                  }}
-                  onMouseLeave={e => {
-                    e.currentTarget.style.borderColor = "var(--surface-border)";
-                    e.currentTarget.style.color = "var(--text-primary)";
+                  style={{
+                    border: "1px solid rgba(255,255,255,0.2)",
+                    color: "#FFF4E8",
+                    background: "rgba(255,255,255,0.08)",
                   }}
                 >
                   Shop Groceries
                 </motion.button>
               </Link>
-
-              {/* Randomize gradient button */}
-              <motion.button
-                whileHover={{ scale: 1.1, rotate: 15 }}
-                whileTap={{ scale: 0.9, rotate: -15 }}
-                onClick={randomize}
-                className="w-10 h-10 rounded-full flex items-center justify-center transition-all cursor-pointer"
-                style={{
-                  background: `linear-gradient(135deg, ${rgb(displayColors.c1)}, ${rgb(displayColors.c2)}, ${rgb(displayColors.c3)})`,
-                  boxShadow: `0 4px 15px ${rgb(displayColors.c1)}33`,
-                  border: "2px solid rgba(255,255,255,0.3)",
-                }}
-                title="Randomize colors"
-                aria-label="Randomize gradient colors"
-              >
-                <Sparkles size={16} color="white" />
-              </motion.button>
             </div>
 
             {/* Trust badges */}
             <div className="flex items-center gap-6 mt-10 flex-wrap">
               {[
-                { icon: <CheckCircle className="w-4 h-4" />, label: "100% Fresh", bg: "rgba(184,150,46,0.1)", color: "#B8962E" },
-                { icon: <CheckCircle className="w-4 h-4" />, label: "Premium Quality", bg: "rgba(184,150,46,0.1)", color: "#B8962E" },
-                { icon: <CheckCircle className="w-4 h-4" />, label: "15 min VIP Delivery", bg: "rgba(33,74,54,0.1)", color: "#214A36" },
-              ].map(b => (
+                { label: "100% Fresh" },
+                { label: "Premium Quality" },
+                { label: "15 min VIP Delivery" },
+              ].map((b) => (
                 <div key={b.label} className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-full flex items-center justify-center font-bold" style={{ background: b.bg, color: b.color }}>
-                    {b.icon}
+                  <div
+                    className="w-8 h-8 rounded-full flex items-center justify-center"
+                    style={{ background: "rgba(232,165,106,0.2)", color: "#E8A56A" }}
+                  >
+                    <CheckCircle className="w-4 h-4" />
                   </div>
-                  <span className="text-[13px] font-bold" style={{ color: "var(--text-muted)" }}>{b.label}</span>
+                  <span
+                    className="text-[13px] font-bold"
+                    style={{ color: "#EECBA8" }}
+                  >
+                    {b.label}
+                  </span>
                 </div>
               ))}
             </div>
@@ -270,77 +149,103 @@ export default function HeroBanner() {
 
           {/* Right: Promo Cards */}
           <div className="flex-shrink-0 grid grid-cols-2 gap-4 w-full md:w-auto md:max-w-[380px]">
+
+            {/* Main card */}
             <motion.div
               whileHover={{ y: -4, scale: 1.02 }}
               className="rounded-[20px] p-6 text-white col-span-2 relative overflow-hidden cursor-pointer"
               style={{
-                background: `linear-gradient(135deg, ${rgb(displayColors.c1)}, ${rgb(lerpColor(displayColors.c1, [0, 0, 0], 0.2))})`,
-                boxShadow: `0 12px 40px ${rgb(displayColors.c1)}33`,
+                background: "linear-gradient(135deg, #3A1008, #5A1E10)",
+                boxShadow: "0 12px 40px rgba(0,0,0,0.35)",
               }}
             >
-              <div className="absolute inset-0 opacity-10" style={{ background: "radial-gradient(circle at top right, white, transparent 70%)" }} />
-              {/* Decorative orb in card */}
-              <div className="absolute -right-4 -top-4 w-20 h-20 rounded-full" style={{ background: `${rgb(displayColors.c2)}30`, filter: "blur(20px)" }} />
-              <p className="text-[10px] font-bold mb-2 uppercase tracking-wide relative z-10 opacity-80">Casano Gold Exclusive</p>
-              <p className="text-2xl font-black leading-tight relative z-10" style={{ fontFamily: "var(--font-heading)" }}>Flat 30% off<br/>Premium Groceries</p>
-              <p className="text-[13px] font-medium mt-2 relative z-10 border-l-2 border-white/20 pl-2 text-white/90">Min order ₹199</p>
+              <div
+                className="absolute inset-0 opacity-20"
+                style={{
+                  background: "radial-gradient(circle at top right, rgba(232,165,106,0.5), transparent 70%)",
+                }}
+              />
+              <p className="text-[10px] font-bold mb-2 uppercase tracking-wide relative z-10 opacity-60">
+                Casano Gold Exclusive
+              </p>
+              <p
+                className="text-2xl font-black leading-tight relative z-10"
+                style={{ fontFamily: "var(--font-heading)", color: "#FFF4E8" }}
+              >
+                Flat 30% off
+                <br />
+                Premium Groceries
+              </p>
+              <p className="text-[13px] font-medium mt-2 relative z-10 border-l-2 border-white/20 pl-2 text-white/70">
+                Min order ₹199
+              </p>
               <Link href="/category/groceries">
                 <button
-                  className="mt-4 text-white text-[13px] font-bold px-5 py-2.5 rounded-lg transition-colors relative z-10 hover:bg-white/30 backdrop-blur-md"
-                  style={{ background: "rgba(255,255,255,0.15)", border: "1px solid rgba(255,255,255,0.1)" }}
+                  className="mt-4 text-[13px] font-bold px-5 py-2.5 rounded-lg transition-colors relative z-10"
+                  style={{
+                    background: "rgba(232,165,106,0.2)",
+                    border: "1px solid rgba(232,165,106,0.4)",
+                    color: "#E8A56A",
+                  }}
                 >
                   Shop Now
                 </button>
               </Link>
             </motion.div>
-            
+
+            {/* Bottom left card */}
             <motion.div
               whileHover={{ y: -4, scale: 1.02 }}
-              className="rounded-[20px] p-5 text-white cursor-pointer"
+              className="rounded-[20px] p-5 cursor-pointer"
               style={{
-                background: `linear-gradient(135deg, ${rgb(lerpColor(displayColors.c2, [0, 0, 0], 0.7))}, ${rgb(lerpColor(displayColors.c2, [0, 0, 0], 0.85))})`,
-                boxShadow: `0 8px 25px ${rgb(displayColors.c2)}22`,
+                background: "linear-gradient(135deg, #3A1008, #4A1810)",
+                boxShadow: "0 8px 25px rgba(0,0,0,0.25)",
               }}
             >
-              <p className="text-[10px] uppercase tracking-wider font-bold mb-1 text-white/60">Tech & Living</p>
-              <p className="text-lg font-black leading-tight mb-3 mt-1 text-white" style={{ fontFamily: "var(--font-heading)" }}>Up to 20% off</p>
+              <p className="text-[10px] uppercase tracking-wider font-bold mb-1" style={{ color: "rgba(255,244,232,0.5)" }}>
+                Tech &amp; Living
+              </p>
+              <p
+                className="text-lg font-black leading-tight mb-3 mt-1"
+                style={{ fontFamily: "var(--font-heading)", color: "#FFF4E8" }}
+              >
+                Up to 20% off
+              </p>
               <Link href="/category/gadgets">
-                <p className="text-[13px] font-bold inline-flex items-center transition-opacity hover:opacity-80" style={{ color: rgb(displayColors.c2) }}>
+                <p className="text-[13px] font-bold inline-flex items-center transition-opacity hover:opacity-80" style={{ color: "#E8A56A" }}>
                   Explore <span className="ml-1">→</span>
                 </p>
               </Link>
             </motion.div>
-            
+
+            {/* Bottom right card */}
             <motion.div
               whileHover={{ y: -4, scale: 1.02 }}
-              className="rounded-[20px] p-5 text-white cursor-pointer"
+              className="rounded-[20px] p-5 cursor-pointer"
               style={{
-                background: `linear-gradient(135deg, ${rgb(lerpColor(displayColors.c3, [0, 0, 0], 0.7))}, ${rgb(lerpColor(displayColors.c3, [0, 0, 0], 0.85))})`,
-                boxShadow: `0 8px 25px ${rgb(displayColors.c3)}22`,
+                background: "linear-gradient(135deg, #3A1008, #4A1810)",
+                boxShadow: "0 8px 25px rgba(0,0,0,0.25)",
               }}
             >
-              <p className="text-[10px] uppercase tracking-wider font-bold mb-1 text-white/60">Luxury Fashion</p>
-              <p className="text-lg font-black leading-tight mb-3 mt-1 text-white" style={{ fontFamily: "var(--font-heading)" }}>New Arrivals</p>
+              <p className="text-[10px] uppercase tracking-wider font-bold mb-1" style={{ color: "rgba(255,244,232,0.5)" }}>
+                Luxury Fashion
+              </p>
+              <p
+                className="text-lg font-black leading-tight mb-3 mt-1"
+                style={{ fontFamily: "var(--font-heading)", color: "#FFF4E8" }}
+              >
+                New Arrivals
+              </p>
               <Link href="/category/fashion">
-                <p className="text-[13px] font-bold inline-flex items-center transition-opacity hover:opacity-80" style={{ color: rgb(displayColors.c3) }}>
+                <p className="text-[13px] font-bold inline-flex items-center transition-opacity hover:opacity-80" style={{ color: "#E8A56A" }}>
                   View All <span className="ml-1">→</span>
                 </p>
               </Link>
             </motion.div>
+
           </div>
-          
         </div>
       </div>
-
-      {/* Float orb animation keyframes */}
-      <style jsx>{`
-        @keyframes float-orb {
-          0% { transform: translate(0, 0) scale(1); }
-          33% { transform: translate(15px, -20px) scale(1.05); }
-          66% { transform: translate(-10px, 10px) scale(0.95); }
-          100% { transform: translate(5px, -15px) scale(1.02); }
-        }
-      `}</style>
     </div>
   );
 }
