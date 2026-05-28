@@ -42,12 +42,12 @@ export default function ProductDetailsModal({ isOpen, onClose, product }: Produc
       <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-[900px] h-[90vh] sm:h-[600px] flex flex-col sm:flex-row overflow-hidden animate-in fade-in zoom-in-95 duration-200">
         
         {/* Close Button - Desktop (Absolute) / Mobile (Header) */}
-        <button 
+        <MagneticButton 
           onClick={onClose}
           className="absolute top-4 right-4 z-10 bg-white/80 backdrop-blur-sm p-2 rounded-full shadow-sm hover:bg-gray-100 transition-colors"
         >
           <X className="w-5 h-5 text-gray-800" />
-        </button>
+        </MagneticButton>
 
         {/* Left Side: Images */}
         <div className="w-full sm:w-1/2 h-[45%] sm:h-full bg-white border-b sm:border-b-0 sm:border-r border-gray-100 p-8 flex flex-col items-center justify-center relative">
@@ -66,12 +66,12 @@ export default function ProductDetailsModal({ isOpen, onClose, product }: Produc
               </div>
            </div>
            
-           <button className="absolute left-4 top-1/2 -translate-y-1/2 bg-white shadow-md p-2 rounded-full hidden sm:block">
+           <MagneticButton className="absolute left-4 top-1/2 -translate-y-1/2 bg-white shadow-md p-2 rounded-full hidden sm:block">
               <ChevronLeft className="w-5 h-5 text-gray-600" />
-           </button>
-           <button className="absolute right-4 top-1/2 -translate-y-1/2 bg-white shadow-md p-2 rounded-full hidden sm:block">
+           </MagneticButton>
+           <MagneticButton className="absolute right-4 top-1/2 -translate-y-1/2 bg-white shadow-md p-2 rounded-full hidden sm:block">
               <ChevronRight className="w-5 h-5 text-gray-600" />
-           </button>
+           </MagneticButton>
         </div>
 
         {/* Right Side: Details */}
@@ -117,19 +117,19 @@ export default function ProductDetailsModal({ isOpen, onClose, product }: Produc
               </MagneticButton>
             ) : (
               <div className="ml-auto flex items-center bg-brand-green text-white rounded-lg overflow-hidden h-10 shadow-sm w-[100px]">
-                <button 
+                <MagneticButton 
                   className="w-1/3 h-full flex items-center justify-center font-bold hover:bg-[#0b721b] transition-colors"
                   onClick={() => setQuantity(q => q - 1)}
                 >
                   −
-                </button>
+                </MagneticButton>
                 <span className="w-1/3 text-center text-[15px] font-bold">{quantity}</span>
-                <button 
+                <MagneticButton 
                    className="w-1/3 h-full flex items-center justify-center font-bold hover:bg-[#0b721b] transition-colors"
                    onClick={() => setQuantity(q => q + 1)}
                 >
                   +
-                </button>
+                </MagneticButton>
               </div>
             )}
           </div>
