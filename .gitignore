@@ -60,3 +60,19 @@ casano/lint_output.txt
 /ip_utf8.txt
 /ports.txt
 /ports_utf8.txt
+
+# Database files (may contain real user data)
+*.db
+*.sqlite
+*.sqlite3
+
+# Log files
+*.log
+
+# Vercel temp env pulls
+*.env.vercel*
+apps/frontend/.env.vercel*
+
+# Sensitive helper scripts
+upload_vercel_env.js
+apps/frontend/upload_vercel_env.js

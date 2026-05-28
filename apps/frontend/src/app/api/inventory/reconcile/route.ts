@@ -1,11 +1,13 @@
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import prisma from '@/lib/prisma';
 
 export async function POST(req: Request) {
     try {
         const { merchant_id } = await req.json();
+
+        if (!merchant_id || typeof merchant_id !== 'string') {
+            return NextResponse.json({ error: 'merchant_id is required' }, { status: 400 });
+        }
 
         // This is a prime candidate for "Ghost Inventory" (sold physically, forgot to update app)
         const suspiciousProducts = await prisma.product.findMany({

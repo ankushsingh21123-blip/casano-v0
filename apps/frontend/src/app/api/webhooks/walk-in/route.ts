@@ -7,6 +7,14 @@ export async function POST(request: Request) {
         const body = await request.json();
         const { productId, quantity } = body;
 
+        // Input validation
+        if (!productId || typeof productId !== 'string') {
+            return NextResponse.json({ error: 'productId is required and must be a string' }, { status: 400 });
+        }
+        if (typeof quantity !== 'number' || !Number.isInteger(quantity) || quantity <= 0) {
+            return NextResponse.json({ error: 'quantity must be a positive integer' }, { status: 400 });
+        }
+
         // Ghost Inventory Preventer Logic
         const product = await prisma.product.findUnique({
             where: { id: productId },
@@ -14,6 +22,10 @@ export async function POST(request: Request) {
 
         if (!product) {
             return NextResponse.json({ error: 'Product not found' }, { status: 404 });
+        }
+
+        if (product.total_stock < quantity) {
+            return NextResponse.json({ error: 'Insufficient physical stock' }, { status: 400 });
         }
 
         const newTotalStock = product.total_stock - quantity;

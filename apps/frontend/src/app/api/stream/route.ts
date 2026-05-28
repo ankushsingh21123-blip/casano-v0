@@ -3,44 +3,51 @@ import { eventBus } from '@/lib/eventBus';
 
 export const dynamic = 'force-dynamic';
 
-export async function GET() {
+export async function GET(request: Request) {
     const stream = new ReadableStream({
         start(controller) {
             const encoder = new TextEncoder();
 
             const onUpdate = (data: any) => {
-                const message = `data: ${JSON.stringify(data)}\n\n`;
-                controller.enqueue(encoder.encode(message));
+                try {
+                    const message = `data: ${JSON.stringify(data)}\n\n`;
+                    controller.enqueue(encoder.encode(message));
+                } catch {
+                    // Stream may have been closed — trigger cleanup
+                    cleanup();
+                }
             };
 
             eventBus.on('product_updated', onUpdate);
 
             // Keep connection alive with a comment every 15s
             const intervalId = setInterval(() => {
-                controller.enqueue(encoder.encode(': keep-alive\n\n'));
+                try {
+                    controller.enqueue(encoder.encode(': keep-alive\n\n'));
+                } catch {
+                    // Stream closed — trigger cleanup
+                    cleanup();
+                }
             }, 15000);
 
-            // Clean up on client disconnect
-            requestAnimationFrame(() => { }); // hack to keep typescript happy if needed
-
-            // In Next.js App Router, the return from start isn't natively closing the stream properly 
-            // when a client disconnects unless we handle aborted signal, but standard stream handles it decently.
+            // Proper cleanup function
             const cleanup = () => {
                 clearInterval(intervalId);
                 eventBus.off('product_updated', onUpdate);
+                try { controller.close(); } catch {}
             };
 
-            // Since App Router doesn't expose req.on('close'), we just return the stream.
-            // The interval will eventually error when the stream closes, and we'll catch it.
-            // Better: we can try to intercept controller errors.
+            // Detect client disconnect via AbortSignal
+            request.signal.addEventListener('abort', cleanup);
         },
     });
 
     return new NextResponse(stream, {
         headers: {
             'Content-Type': 'text/event-stream',
-            'Cache-Control': 'no-cache',
+            'Cache-Control': 'no-cache, no-transform',
             'Connection': 'keep-alive',
+            'X-Accel-Buffering': 'no', // Prevent nginx buffering
         },
     });
 }

@@ -2,8 +2,21 @@ import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { eventBus } from '@/lib/eventBus';
 
+// Verify webhook API key
+function verifyWebhookAuth(request: Request): boolean {
+    const apiKey = request.headers.get('x-api-key');
+    const expectedKey = process.env.WEBHOOK_API_KEY;
+    if (!expectedKey) return false; // Reject if not configured
+    return apiKey === expectedKey;
+}
+
 // Triggered by external platforms (e.g., Magicpin, Paytm via ONDC Protocol)
 export async function POST(request: Request) {
+    // Authenticate the webhook caller
+    if (!verifyWebhookAuth(request)) {
+        return NextResponse.json({ error: 'Unauthorized: Invalid or missing API key' }, { status: 401 });
+    }
+
     try {
         const payload = await request.json();
         // ONDC Mock Payload: { network_id: "ondc_magicpin", merchant_id: "...", items: [{ productId, quantity }] }
@@ -14,20 +27,32 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: 'Invalid ONDC payload' }, { status: 400 });
         }
 
+        // Validate each item
+        for (const item of items) {
+            if (!item.productId || typeof item.quantity !== 'number' || item.quantity <= 0) {
+                return NextResponse.json({ error: 'Invalid item in payload: productId and positive quantity required' }, { status: 400 });
+            }
+        }
+
         // 1. Verify merchant exists
         const merchant = await prisma.merchant.findUnique({ where: { id: merchant_id } });
         if (!merchant) return NextResponse.json({ error: 'Merchant not found on network' }, { status: 404 });
 
-        // 2. Process items - Deduct from App Reserved Stock (this is the single source of truth for ALL digital networks)
+        // 2. Process items atomically using Prisma decrement (prevents race conditions)
         for (const item of items) {
             const product = await prisma.product.findUnique({ where: { id: item.productId } });
 
             if (product && product.app_reserved_stock >= item.quantity) {
+                // Use atomic decrement instead of read-then-write to prevent race conditions
                 const updated = await prisma.product.update({
                     where: { id: item.productId },
                     data: {
-                        app_reserved_stock: product.app_reserved_stock - item.quantity,
-                        total_stock: product.total_stock - item.quantity // Decrease physical stock immediately
+                        app_reserved_stock: {
+                            decrement: item.quantity,
+                        },
+                        total_stock: {
+                            decrement: item.quantity,
+                        },
                     }
                 });
 

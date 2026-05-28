@@ -13,6 +13,13 @@ import admin from 'firebase-admin';
 
 dotenv.config();
 
+/* ─── Mandatory env checks ─── */
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET || JWT_SECRET.length < 32) {
+  console.error('[FATAL] JWT_SECRET must be set and at least 32 characters long.');
+  process.exit(1);
+}
+
 /* ─── Firebase Admin init ─── */
 let firebaseAdmin = null;
 try {
@@ -67,8 +74,9 @@ const supabase = createClient(
 );
 app.use((req, _res, next) => { req.supabase = supabase; next(); });
 
-/* ─── Simple rate limiter (in-memory) ─── */
+/* ─── Rate limiter with periodic cleanup ─── */
 const rateLimitMap = new Map();
+
 function rateLimit(key, maxReq, windowMs) {
   const now = Date.now();
   const entry = rateLimitMap.get(key) || { count: 0, start: now };
@@ -78,13 +86,24 @@ function rateLimit(key, maxReq, windowMs) {
   return entry.count > maxReq;
 }
 
+// Cleanup expired entries every 5 minutes to prevent memory leak
+setInterval(() => {
+  const now = Date.now();
+  for (const [key, entry] of rateLimitMap.entries()) {
+    // Remove entries older than 30 minutes
+    if (now - entry.start > 30 * 60 * 1000) {
+      rateLimitMap.delete(key);
+    }
+  }
+}, 5 * 60 * 1000);
+
 /* ─── Auth Middleware ─── */
 const authenticateUser = async (req, res, next) => {
   try {
     // Check httpOnly cookie first
     const sessionToken = req.cookies?.casano_session;
     if (sessionToken) {
-      const decoded = jwt.verify(sessionToken, process.env.JWT_SECRET || 'casano-secret');
+      const decoded = jwt.verify(sessionToken, JWT_SECRET);
       req.user = decoded;
       return next();
     }
@@ -102,6 +121,68 @@ const authenticateUser = async (req, res, next) => {
     return res.status(401).json({ error: 'Invalid or expired token' });
   }
 };
+
+/* ─── ONDC / Webhook API Key Middleware ─── */
+const authenticateWebhook = (req, res, next) => {
+  const apiKey = req.headers['x-api-key'] || req.query.api_key;
+  const expectedKey = process.env.WEBHOOK_API_KEY;
+  if (!expectedKey) {
+    console.warn('[Webhook Auth] WEBHOOK_API_KEY not set — rejecting all webhook calls');
+    return res.status(503).json({ error: 'Webhook authentication not configured' });
+  }
+  if (!apiKey || apiKey !== expectedKey) {
+    return res.status(401).json({ error: 'Invalid or missing API key' });
+  }
+  return next();
+};
+
+/* ─── Validation Schemas ─── */
+const productSchema = z.object({
+  name: z.string().min(1).max(200),
+  category: z.string().min(1).max(100),
+  price: z.number().positive(),
+  image_url: z.string().url().optional().nullable(),
+  description: z.string().max(2000).optional().nullable(),
+  is_available: z.boolean().default(true),
+  vendor_id: z.string().min(1),
+});
+
+const productUpdateSchema = z.object({
+  name: z.string().min(1).max(200).optional(),
+  category: z.string().min(1).max(100).optional(),
+  price: z.number().positive().optional(),
+  image_url: z.string().url().optional().nullable(),
+  description: z.string().max(2000).optional().nullable(),
+  is_available: z.boolean().optional(),
+});
+
+const vendorCreateSchema = z.object({
+  profile_id: z.string().min(1),
+  shop_name: z.string().min(1).max(200).optional(),
+  area: z.string().min(1).max(200).optional(),
+  city: z.string().min(1).max(200).optional(),
+});
+
+const vendorUpdateSchema = z.object({
+  shop_name: z.string().min(1).max(200).optional(),
+  area: z.string().min(1).max(200).optional(),
+  city: z.string().min(1).max(200).optional(),
+  is_open: z.boolean().optional(),
+  delivery_radius_km: z.number().positive().max(50).optional(),
+  avg_delivery_minutes: z.number().int().positive().max(120).optional(),
+});
+
+// Whitelist for profile updates — prevents role escalation
+const ALLOWED_PROFILE_FIELDS = ['full_name', 'phone', 'photo_url', 'area', 'city'];
+
+function sanitizeProfileUpdate(body) {
+  const clean = {};
+  for (const key of ALLOWED_PROFILE_FIELDS) {
+    if (body[key] !== undefined) clean[key] = body[key];
+  }
+  clean.updated_at = new Date().toISOString();
+  return clean;
+}
 
 /* ═══════════════════════════════════════════
    AUTH ROUTES
@@ -153,7 +234,7 @@ app.post('/api/auth/firebase-exchange', async (req, res) => {
 
     // Mint session JWT
     const sessionPayload = { uid, role: 'customer', sub: uid };
-    const sessionToken = jwt.sign(sessionPayload, process.env.JWT_SECRET || 'casano-secret', { expiresIn: '7d' });
+    const sessionToken = jwt.sign(sessionPayload, JWT_SECRET, { expiresIn: '7d' });
 
     res.cookie('casano_session', sessionToken, {
       httpOnly: true,
@@ -166,7 +247,7 @@ app.post('/api/auth/firebase-exchange', async (req, res) => {
     return res.json({ user: profile || profileData });
   } catch (err) {
     console.error('[auth/exchange]', err.message);
-    return res.status(401).json({ error: 'Invalid Firebase token', details: err.message });
+    return res.status(401).json({ error: 'Invalid Firebase token' });
   }
 });
 
@@ -188,10 +269,21 @@ app.post('/api/auth/logout', (req, res) => {
   return res.json({ success: true });
 });
 
-// PATCH /api/auth/profile/:id
+// PATCH /api/auth/profile/:id — with ownership check and field whitelist
 app.patch('/api/auth/profile/:id', authenticateUser, async (req, res) => {
   try {
-    const { data, error } = await supabase.from('profiles').update(req.body).eq('uid', req.params.id).select().single();
+    const requestingUid = req.user.uid || req.user.sub;
+    const targetId = req.params.id;
+
+    // Ownership check: users can only update their own profile
+    if (requestingUid !== targetId) {
+      return res.status(403).json({ error: 'You can only update your own profile' });
+    }
+
+    // Sanitize body — only allow whitelisted fields (prevents role escalation)
+    const sanitized = sanitizeProfileUpdate(req.body);
+
+    const { data, error } = await supabase.from('profiles').update(sanitized).eq('uid', targetId).select().single();
     if (error) throw error;
     res.json({ data });
   } catch (err) { res.status(500).json({ error: err.message }); }
@@ -357,7 +449,7 @@ app.post('/api/orders/create', authenticateUser, async (req, res) => {
   }
 });
 
-// GET /api/orders/:orderId
+// GET /api/orders/:orderId — with ownership check
 app.get('/api/orders/:orderId', authenticateUser, async (req, res) => {
   try {
     const { data, error } = await supabase
@@ -366,6 +458,13 @@ app.get('/api/orders/:orderId', authenticateUser, async (req, res) => {
       .eq('id', req.params.orderId)
       .single();
     if (error) throw error;
+
+    // Ownership check: user can only view their own orders
+    const uid = req.user.uid || req.user.sub;
+    if (data.user_id !== uid) {
+      return res.status(403).json({ error: 'Access denied' });
+    }
+
     res.json({ data });
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
@@ -417,11 +516,11 @@ app.post('/api/payments/webhook', express.raw({ type: 'application/json' }), asy
 });
 
 /* ═══════════════════════════════════════════
-   RIDER / DRIVER LOCATION
+   RIDER / DRIVER LOCATION — now authenticated
 ═══════════════════════════════════════════ */
 
 // POST /api/rider/location
-app.post('/api/rider/location', async (req, res) => {
+app.post('/api/rider/location', authenticateUser, async (req, res) => {
   const schema = z.object({
     orderId: z.string(),
     lat: z.number(),
@@ -438,12 +537,16 @@ app.post('/api/rider/location', async (req, res) => {
 });
 
 /* ═══════════════════════════════════════════
-   ORDER STATUS UPDATE (Merchant)
+   ORDER STATUS UPDATE (Merchant) — already authenticated
 ═══════════════════════════════════════════ */
 
 app.patch('/api/orders/:orderId/status', authenticateUser, async (req, res) => {
   try {
-    const { status } = req.body;
+    const statusSchema = z.object({ status: z.string().min(1).max(50) });
+    const parse = statusSchema.safeParse(req.body);
+    if (!parse.success) return res.status(400).json({ error: 'Invalid status' });
+
+    const { status } = parse.data;
     const { data, error } = await supabase.from('orders').update({ status }).eq('id', req.params.orderId).select().single();
     if (error) throw error;
     io.to(`order_${data.id}`).emit('order_status', { status, orderId: data.id });
@@ -454,7 +557,7 @@ app.patch('/api/orders/:orderId/status', authenticateUser, async (req, res) => {
 });
 
 /* ═══════════════════════════════════════════
-   EXISTING ROUTES (vendors, products, etc.)
+   EXISTING ROUTES — now secured with authentication
 ═══════════════════════════════════════════ */
 
 app.get('/api/vendors', async (req, res) => {
@@ -491,27 +594,36 @@ app.get('/api/products/:productId', async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-app.post('/api/products', async (req, res) => {
+// POST /api/products — now authenticated + validated
+app.post('/api/products', authenticateUser, async (req, res) => {
   try {
-    const { data, error } = await req.supabase.from('products').insert(req.body).select().single();
+    const parse = productSchema.safeParse(req.body);
+    if (!parse.success) return res.status(400).json({ error: 'Invalid product data', details: parse.error.flatten() });
+    const { data, error } = await req.supabase.from('products').insert(parse.data).select().single();
     if (error) throw error;
     res.status(201).json({ data });
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-app.patch('/api/products/:productId', async (req, res) => {
+// PATCH /api/products/:productId — now authenticated + validated
+app.patch('/api/products/:productId', authenticateUser, async (req, res) => {
   try {
-    const { data, error } = await req.supabase.from('products').update(req.body).eq('id', req.params.productId).select().single();
+    const parse = productUpdateSchema.safeParse(req.body);
+    if (!parse.success) return res.status(400).json({ error: 'Invalid update data', details: parse.error.flatten() });
+    const { data, error } = await req.supabase.from('products').update(parse.data).eq('id', req.params.productId).select().single();
     if (error) throw error;
     io.emit('product_updated', data);
     res.json({ data });
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-app.patch('/api/products/:productId/availability', async (req, res) => {
+// PATCH /api/products/:productId/availability — now authenticated
+app.patch('/api/products/:productId/availability', authenticateUser, async (req, res) => {
   try {
-    const { is_available } = req.body;
-    const { data, error } = await req.supabase.from('products').update({ is_available }).eq('id', req.params.productId).select().single();
+    const schema = z.object({ is_available: z.boolean() });
+    const parse = schema.safeParse(req.body);
+    if (!parse.success) return res.status(400).json({ error: 'Invalid data' });
+    const { data, error } = await req.supabase.from('products').update({ is_available: parse.data.is_available }).eq('id', req.params.productId).select().single();
     if (error) throw error;
     io.emit('product_updated', data);
     res.json({ data });
@@ -534,21 +646,39 @@ app.get('/api/vendors/:vendorId', async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-app.patch('/api/vendors/:vendorId', async (req, res) => {
+// PATCH /api/vendors/:vendorId — now authenticated + validated
+app.patch('/api/vendors/:vendorId', authenticateUser, async (req, res) => {
   try {
-    const { data, error } = await req.supabase.from('vendors').update(req.body).eq('id', req.params.vendorId).select().single();
+    const parse = vendorUpdateSchema.safeParse(req.body);
+    if (!parse.success) return res.status(400).json({ error: 'Invalid vendor data', details: parse.error.flatten() });
+    const { data, error } = await req.supabase.from('vendors').update(parse.data).eq('id', req.params.vendorId).select().single();
     if (error) throw error;
     res.json({ data });
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-app.post('/api/vendors', async (req, res) => {
+// POST /api/vendors — now authenticated + validated
+app.post('/api/vendors', authenticateUser, async (req, res) => {
   try {
-    const { profile_id, area, city, ...vendorData } = req.body;
+    const parse = vendorCreateSchema.safeParse(req.body);
+    if (!parse.success) return res.status(400).json({ error: 'Invalid vendor data', details: parse.error.flatten() });
+    const { profile_id, area, city, ...vendorData } = parse.data;
     const { data: vendor, error } = await req.supabase.from('vendors').insert({ ...vendorData, profile_id, area, city, is_open: true, delivery_radius_km: 2, avg_delivery_minutes: 30 }).select().single();
     if (error) throw error;
     await req.supabase.from('profiles').update({ role: 'vendor', area, city }).eq('id', profile_id);
     res.status(201).json({ data: vendor });
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+// PATCH /api/vendors/:vendorId/status — now authenticated
+app.patch('/api/vendors/:vendorId/status', authenticateUser, async (req, res) => {
+  try {
+    const schema = z.object({ is_open: z.boolean() });
+    const parse = schema.safeParse(req.body);
+    if (!parse.success) return res.status(400).json({ error: 'Invalid status data' });
+    const { data, error } = await req.supabase.from('vendors').update({ is_open: parse.data.is_open }).eq('id', req.params.vendorId);
+    if (error) throw error;
+    res.json({ data });
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
@@ -571,24 +701,20 @@ app.get('/api/vendors/:vendorId/products', async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-app.patch('/api/vendors/:vendorId/status', async (req, res) => {
-  try {
-    const { is_open } = req.body;
-    const { data, error } = await req.supabase.from('vendors').update({ is_open }).eq('id', req.params.vendorId);
-    if (error) throw error;
-    res.json({ data });
-  } catch (err) { res.status(500).json({ error: err.message }); }
-});
-
+// GET /api/users/:userId/orders — with ownership check
 app.get('/api/users/:userId/orders', authenticateUser, async (req, res) => {
   try {
+    const requestingUid = req.user.uid || req.user.sub;
+    if (requestingUid !== req.params.userId) {
+      return res.status(403).json({ error: 'You can only view your own orders' });
+    }
     const { data, error } = await req.supabase.from('orders').select('*, vendors(shop_name), order_items(*, products(name))').eq('user_id', req.params.userId).order('created_at', { ascending: false });
     if (error) throw error;
     res.json({ data });
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-// Legacy order endpoint
+// Legacy order endpoint — already authenticated
 app.post('/api/orders', authenticateUser, async (req, res) => {
   try {
     const { items, ...orderData } = req.body;
@@ -602,8 +728,8 @@ app.post('/api/orders', authenticateUser, async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-/* ─── Wholesale (unchanged) ─── */
-app.get('/api/wholesale/profile/:profileId', async (req, res) => {
+/* ─── Wholesale — now authenticated ─── */
+app.get('/api/wholesale/profile/:profileId', authenticateUser, async (req, res) => {
   try {
     const { data, error } = await req.supabase.from('wholesalers').select('*').eq('profile_id', req.params.profileId).single();
     if (error) throw error;
@@ -611,7 +737,7 @@ app.get('/api/wholesale/profile/:profileId', async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-app.post('/api/wholesale/profile', async (req, res) => {
+app.post('/api/wholesale/profile', authenticateUser, async (req, res) => {
   try {
     const { data, error } = await req.supabase.from('wholesalers').insert(req.body).select().single();
     if (error) throw error;
