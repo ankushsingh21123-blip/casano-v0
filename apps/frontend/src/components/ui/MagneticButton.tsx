@@ -2,13 +2,9 @@
 
 import { useRef, useCallback, ReactNode } from "react";
 
-interface MagneticButtonProps {
+interface MagneticButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode;
-  onClick?: () => void;
-  className?: string;
-  style?: React.CSSProperties;
   strength?: number;
-  "data-cursor"?: string;
 }
 
 /**

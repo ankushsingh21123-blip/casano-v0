@@ -5,6 +5,8 @@ import ProductDetailsModal from "./ProductDetailsModal";
 import { useState } from "react";
 import { ShoppingCart } from "lucide-react";
 
+import MagneticButton from "./ui/MagneticButton";
+
 interface ProductProps {
   id: string;
   name: string;
@@ -115,7 +117,7 @@ export default function ProductCard(props: ProductProps) {
             </div>
 
             {quantity === 0 ? (
-              <button
+              <MagneticButton
                 onClick={handleAdd}
                 className="px-4 py-1.5 rounded-lg font-bold text-[13px] transition-all"
                 style={{ border: "1.5px solid #C1492E", color: "#C1492E", background: "transparent" }}
@@ -129,7 +131,7 @@ export default function ProductCard(props: ProductProps) {
                 }}
               >
                 ADD
-              </button>
+              </MagneticButton>
             ) : (
               <div
                 className="flex items-center rounded-lg overflow-hidden h-8"

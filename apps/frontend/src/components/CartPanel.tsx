@@ -13,6 +13,8 @@ interface CartPanelProps {
   onLoginClick?: () => void;
 }
 
+import MagneticButton from "./ui/MagneticButton";
+
 export default function CartPanel({ isOpen, onClose, onLoginClick }: CartPanelProps) {
   const router = useRouter();
   const { items, addItem, removeItem, cartTotal } = useCart();
@@ -298,22 +300,22 @@ export default function CartPanel({ isOpen, onClose, onLoginClick }: CartPanelPr
         {items.length > 0 && (
           <div className="absolute bottom-0 left-0 right-0 p-3 z-10" style={{ background: "#EFEADD", borderTop: "1px solid #E2DDD0", boxShadow: "0 -10px 30px rgba(0,0,0,0.04)" }}>
             {!isLoggedIn ? (
-              <button
+              <MagneticButton
                 onClick={onLoginClick}
-                className="w-full text-white rounded-[14px] p-4 flex items-center justify-center font-bold text-[17px] transition-all hover:-translate-y-0.5"
+                className="w-full text-white rounded-[14px] p-4 flex items-center justify-center font-bold text-[17px] transition-all"
                 style={{ background: "#C1492E", boxShadow: "0 4px 16px #C1492E33" }}
                 onMouseEnter={e => (e.currentTarget.style.background = "#A63C25")}
                 onMouseLeave={e => (e.currentTarget.style.background = "#C1492E")}
               >
                 Login to Proceed <ChevronRight className="w-5 h-5 ml-1 stroke-[3]" />
-              </button>
+              </MagneticButton>
             ) : (
-              <button
+              <MagneticButton
                 onClick={() => {
                   onClose();
                   router.push("/checkout");
                 }}
-                className="w-full text-white rounded-[14px] p-4 flex items-center justify-between font-bold transition-all hover:-translate-y-0.5"
+                className="w-full text-white rounded-[14px] p-4 flex items-center justify-between font-bold transition-all"
                 style={{ background: "#C1492E", boxShadow: "0 4px 16px #C1492E33" }}
                 onMouseEnter={e => (e.currentTarget.style.background = "#A63C25")}
                 onMouseLeave={e => (e.currentTarget.style.background = "#C1492E")}
@@ -325,7 +327,7 @@ export default function CartPanel({ isOpen, onClose, onLoginClick }: CartPanelPr
                 <div className="flex items-center text-[17px]">
                   Proceed to Pay <ChevronRight className="w-5 h-5 ml-2 stroke-[3]" />
                 </div>
-              </button>
+              </MagneticButton>
             )}
           </div>
         )}

@@ -19,6 +19,8 @@ interface ProductDetailsModalProps {
   }
 }
 
+import MagneticButton from "./ui/MagneticButton";
+
 export default function ProductDetailsModal({ isOpen, onClose, product }: ProductDetailsModalProps) {
   const [quantity, setQuantity] = useState(1);
 
@@ -101,18 +103,18 @@ export default function ProductDetailsModal({ isOpen, onClose, product }: Produc
 
             {/* Add Button Area / Out of Stock */}
             {product.stock === 0 ? (
-              <button 
+              <MagneticButton 
                 className="ml-auto bg-gray-100 text-gray-500 font-bold px-5 py-2 rounded-lg text-[13px] border border-gray-200 shadow-sm"
               >
                 Notify Me
-              </button>
+              </MagneticButton>
             ) : quantity === 0 ? (
-              <button 
+              <MagneticButton 
                 onClick={() => setQuantity(1)}
                 className="ml-auto border border-brand-green text-brand-green bg-brand-light-green hover:bg-brand-green hover:text-white px-8 py-2 rounded-lg font-bold text-[14px] transition-colors shadow-sm"
               >
                 ADD
-              </button>
+              </MagneticButton>
             ) : (
               <div className="ml-auto flex items-center bg-brand-green text-white rounded-lg overflow-hidden h-10 shadow-sm w-[100px]">
                 <button 
