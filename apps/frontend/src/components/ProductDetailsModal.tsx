@@ -19,8 +19,6 @@ interface ProductDetailsModalProps {
   }
 }
 
-import MagneticButton from "./ui/MagneticButton";
-
 export default function ProductDetailsModal({ isOpen, onClose, product }: ProductDetailsModalProps) {
   const [quantity, setQuantity] = useState(1);
 
@@ -42,12 +40,12 @@ export default function ProductDetailsModal({ isOpen, onClose, product }: Produc
       <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-[900px] h-[90vh] sm:h-[600px] flex flex-col sm:flex-row overflow-hidden animate-in fade-in zoom-in-95 duration-200">
         
         {/* Close Button - Desktop (Absolute) / Mobile (Header) */}
-        <MagneticButton 
+        <button 
           onClick={onClose}
           className="absolute top-4 right-4 z-10 bg-white/80 backdrop-blur-sm p-2 rounded-full shadow-sm hover:bg-gray-100 transition-colors"
         >
           <X className="w-5 h-5 text-gray-800" />
-        </MagneticButton>
+        </button>
 
         {/* Left Side: Images */}
         <div className="w-full sm:w-1/2 h-[45%] sm:h-full bg-white border-b sm:border-b-0 sm:border-r border-gray-100 p-8 flex flex-col items-center justify-center relative">
@@ -66,12 +64,12 @@ export default function ProductDetailsModal({ isOpen, onClose, product }: Produc
               </div>
            </div>
            
-           <MagneticButton className="absolute left-4 top-1/2 -translate-y-1/2 bg-white shadow-md p-2 rounded-full hidden sm:block">
+           <button className="absolute left-4 top-1/2 -translate-y-1/2 bg-white shadow-md p-2 rounded-full hidden sm:block">
               <ChevronLeft className="w-5 h-5 text-gray-600" />
-           </MagneticButton>
-           <MagneticButton className="absolute right-4 top-1/2 -translate-y-1/2 bg-white shadow-md p-2 rounded-full hidden sm:block">
+           </button>
+           <button className="absolute right-4 top-1/2 -translate-y-1/2 bg-white shadow-md p-2 rounded-full hidden sm:block">
               <ChevronRight className="w-5 h-5 text-gray-600" />
-           </MagneticButton>
+           </button>
         </div>
 
         {/* Right Side: Details */}
@@ -103,33 +101,33 @@ export default function ProductDetailsModal({ isOpen, onClose, product }: Produc
 
             {/* Add Button Area / Out of Stock */}
             {product.stock === 0 ? (
-              <MagneticButton 
+              <button 
                 className="ml-auto bg-gray-100 text-gray-500 font-bold px-5 py-2 rounded-lg text-[13px] border border-gray-200 shadow-sm"
               >
                 Notify Me
-              </MagneticButton>
+              </button>
             ) : quantity === 0 ? (
-              <MagneticButton 
+              <button 
                 onClick={() => setQuantity(1)}
                 className="ml-auto border border-brand-green text-brand-green bg-brand-light-green hover:bg-brand-green hover:text-white px-8 py-2 rounded-lg font-bold text-[14px] transition-colors shadow-sm"
               >
                 ADD
-              </MagneticButton>
+              </button>
             ) : (
               <div className="ml-auto flex items-center bg-brand-green text-white rounded-lg overflow-hidden h-10 shadow-sm w-[100px]">
-                <MagneticButton 
+                <button 
                   className="w-1/3 h-full flex items-center justify-center font-bold hover:bg-[#0b721b] transition-colors"
                   onClick={() => setQuantity(q => q - 1)}
                 >
                   −
-                </MagneticButton>
+                </button>
                 <span className="w-1/3 text-center text-[15px] font-bold">{quantity}</span>
-                <MagneticButton 
+                <button 
                    className="w-1/3 h-full flex items-center justify-center font-bold hover:bg-[#0b721b] transition-colors"
                    onClick={() => setQuantity(q => q + 1)}
                 >
                   +
-                </MagneticButton>
+                </button>
               </div>
             )}
           </div>

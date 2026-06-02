@@ -184,10 +184,11 @@ export default function ProductsPage() {
             No products found for &quot;{search}&quot;
           </div>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4">
             {filtered.map((p) => {
               const ProductIcon = ICON_MAP[p.icon] || ShoppingBag;
               const qty = getQuantity(p.id);
+              const imageUrl = `/category_${p.category.toLowerCase().replace(/\s.*/, '')}.png`;
               return (
                 <div
                   key={p.id}
@@ -214,11 +215,11 @@ export default function ProductsPage() {
 
                   {/* Product icon area */}
                   <div
-                    className="w-full aspect-square rounded-xl flex items-center justify-center mb-3 transition-transform group-hover:scale-105"
+                    className="w-full aspect-square rounded-xl flex items-center justify-center mb-3 transition-transform group-hover:scale-105 overflow-hidden"
                     style={{ background: "#252017" }}
                     onClick={() => setSelectedProduct(p)}
                   >
-                    <ProductIcon className="w-10 h-10 transition-colors" style={{ color: "#6b6055" }} />
+                    <img src={imageUrl} alt={p.name} className="w-full h-full object-cover" />
                   </div>
 
                   {/* Category label */}
@@ -246,7 +247,7 @@ export default function ProductsPage() {
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        addItem({ id: p.id, name: p.name, price: p.price, size: p.unit, image: "" });
+                        addItem({ id: p.id, name: p.name, price: p.price, size: p.unit, image: imageUrl });
                       }}
                       className="mt-2.5 w-full text-xs font-bold py-2 rounded-xl transition-all flex items-center justify-center gap-1.5"
                       style={{
@@ -268,7 +269,7 @@ export default function ProductsPage() {
                       </button>
                       <span className="text-sm font-black" style={{ color: "#e8e0d4" }}>{qty}</span>
                       <button
-                        onClick={(e) => { e.stopPropagation(); addItem({ id: p.id, name: p.name, price: p.price, size: p.unit, image: "" }); }}
+                        onClick={(e) => { e.stopPropagation(); addItem({ id: p.id, name: p.name, price: p.price, size: p.unit, image: imageUrl }); }}
                         className="w-8 h-8 rounded-lg flex items-center justify-center transition-colors"
                         style={{ background: "#C1492E", color: "#fff" }}
                       >
@@ -298,10 +299,11 @@ export default function ProductsPage() {
             {(() => {
               const Icon = ICON_MAP[selectedProduct.icon] || ShoppingBag;
               const qty = getQuantity(selectedProduct.id);
+              const modalImageUrl = `/category_${selectedProduct.category.toLowerCase().replace(/\s.*/, '')}.png`;
               return (
                 <>
-                  <div className="w-full aspect-square rounded-2xl flex items-center justify-center mb-4" style={{ background: "#252017" }}>
-                    <Icon className="w-20 h-20" style={{ color: "#B8962E" }} />
+                  <div className="w-full aspect-square rounded-2xl flex items-center justify-center mb-4 overflow-hidden" style={{ background: "#252017" }}>
+                    <img src={modalImageUrl} alt={selectedProduct.name} className="w-full h-full object-cover" />
                   </div>
                   <span className="text-xs font-bold uppercase tracking-widest" style={{ color: "#B8962E" }}>{selectedProduct.category}</span>
                   <h2 className="text-2xl font-black mt-1" style={{ color: "#f5f0e8" }}>{selectedProduct.name}</h2>
@@ -326,10 +328,11 @@ export default function ProductsPage() {
                         .slice(0, 4)
                         .map(alt => {
                           const AltIcon = ICON_MAP[alt.icon] || ShoppingBag;
+                          const altImageUrl = `/category_${alt.category.toLowerCase().replace(/\s.*/, '')}.png`;
                           return (
                             <div key={alt.id} className="flex-shrink-0 w-24 rounded-xl p-2 cursor-pointer" style={{ background: "#252017", border: "1px solid #2e2a25" }} onClick={() => setSelectedProduct(alt)}>
-                              <div className="w-full aspect-square rounded-lg flex items-center justify-center mb-1" style={{ background: "#1a1714" }}>
-                                <AltIcon className="w-6 h-6" style={{ color: "#6b6055" }} />
+                              <div className="w-full aspect-square rounded-lg flex items-center justify-center mb-1 overflow-hidden" style={{ background: "#1a1714" }}>
+                                <img src={altImageUrl} alt={alt.name} className="w-full h-full object-cover" />
                               </div>
                               <p className="text-[10px] font-semibold truncate" style={{ color: "#e8e0d4" }}>{alt.name}</p>
                               <p className="text-[10px] font-black" style={{ color: "#C1492E" }}>₹{alt.price}</p>
@@ -343,7 +346,7 @@ export default function ProductsPage() {
                   <div className="mt-5">
                     {qty === 0 ? (
                       <button
-                        onClick={() => addItem({ id: selectedProduct.id, name: selectedProduct.name, price: selectedProduct.price, size: selectedProduct.unit, image: "" })}
+                        onClick={() => addItem({ id: selectedProduct.id, name: selectedProduct.name, price: selectedProduct.price, size: selectedProduct.unit, image: modalImageUrl })}
                         className="w-full py-3.5 rounded-xl font-bold text-white flex items-center justify-center gap-2 transition-all"
                         style={{ background: "linear-gradient(135deg, #C1492E, #a03a22)", boxShadow: "0 4px 20px rgba(193,73,46,0.3)" }}
                       >
@@ -355,7 +358,7 @@ export default function ProductsPage() {
                           <Minus className="w-5 h-5" />
                         </button>
                         <span className="text-lg font-black" style={{ color: "#e8e0d4" }}>{qty} in cart</span>
-                        <button onClick={() => addItem({ id: selectedProduct.id, name: selectedProduct.name, price: selectedProduct.price, size: selectedProduct.unit, image: "" })} className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ background: "#C1492E", color: "#fff" }}>
+                        <button onClick={() => addItem({ id: selectedProduct.id, name: selectedProduct.name, price: selectedProduct.price, size: selectedProduct.unit, image: modalImageUrl })} className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ background: "#C1492E", color: "#fff" }}>
                           <Plus className="w-5 h-5" />
                         </button>
                       </div>

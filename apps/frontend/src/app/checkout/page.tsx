@@ -46,6 +46,10 @@ export default function CheckoutPage() {
   const [cvv, setCvv] = useState('');
   const [nickname, setNickname] = useState('');
 
+  /* Delivery Address */
+  const [address, setAddress] = useState('');
+  const [isAddressConfirmed, setIsAddressConfirmed] = useState(false);
+
   /* Netbanking */
   const [selectedBank, setSelectedBank] = useState<string | null>(null);
   const [allBanksSearch, setAllBanksSearch] = useState('');
@@ -71,7 +75,7 @@ export default function CheckoutPage() {
   const isValidExpiry = /^(0[1-9]|1[0-2])\/\d{2}$/.test(expiry);
   const isValidCvv = cvv.length >= 3;
   const isValidName = name.trim().length > 0;
-  const isFormValid = isValidCardNumber && isValidExpiry && isValidCvv && isValidName;
+  const isFormValid = isValidCardNumber && isValidExpiry && isValidCvv && isValidName && isAddressConfirmed;
 
   const handleCardNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value.replace(/\D/g, '');
@@ -92,6 +96,10 @@ export default function CheckoutPage() {
   };
 
   const simulatePay = () => {
+    if (!isAddressConfirmed) {
+      alert("Please confirm your delivery address before proceeding.");
+      return;
+    }
     // Stage 1: Initializing request
     setProcessingStep('initializing');
     setTimeout(() => {
@@ -140,6 +148,41 @@ export default function CheckoutPage() {
 
             {/* ── Left Column: Accordion ── */}
             <div className="flex-1 flex flex-col gap-3">
+
+              {/* ── Delivery Address ── */}
+              <div className={`bg-white dark:bg-[#1a1a1a] rounded-2xl overflow-hidden border transition-colors ${!isAddressConfirmed ? 'border-[#19c74a] shadow-sm' : 'border-gray-100 dark:border-gray-800'}`}>
+                <div className="px-5 py-4 flex items-center justify-between bg-gray-50 dark:bg-[#222]">
+                  <div className="flex items-center gap-4 text-gray-900 dark:text-gray-100 font-bold">
+                    <MapPin className={`w-5 h-5 ${!isAddressConfirmed ? 'text-[#19c74a]' : 'text-gray-400'}`} /> 
+                    Delivery Address
+                  </div>
+                  {isAddressConfirmed && <CheckCircle2 className="w-5 h-5 text-[#19c74a]" />}
+                </div>
+                {!isAddressConfirmed ? (
+                  <div className="px-5 pb-6 pt-4">
+                    <textarea 
+                      placeholder="Enter your full delivery address..."
+                      required
+                      rows={3}
+                      value={address} 
+                      onChange={(e: any) => setAddress(e.target.value)}
+                      className="w-full bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 outline-none focus:border-[#19c74a] transition-colors text-gray-900 dark:text-white font-medium placeholder:font-normal placeholder:text-gray-400 resize-none mb-3"
+                    />
+                    <button
+                      onClick={() => { if(address.trim().length > 5) setIsAddressConfirmed(true); }}
+                      disabled={address.trim().length <= 5}
+                      className="w-full bg-[#19c74a] hover:bg-[#15a83e] disabled:bg-[#d4edd9] disabled:dark:bg-[#1a4023] disabled:text-gray-400 disabled:cursor-not-allowed text-white rounded-xl p-4 font-bold text-[16px] transition-all"
+                    >
+                      Confirm Address
+                    </button>
+                  </div>
+                ) : (
+                  <div className="px-5 pb-5 pt-2 flex justify-between items-start">
+                    <p className="text-sm font-medium text-gray-700 dark:text-gray-300 pr-4">{address}</p>
+                    <button onClick={() => setIsAddressConfirmed(false)} className="text-[#19c74a] font-bold text-xs uppercase hover:underline">Edit</button>
+                  </div>
+                )}
+              </div>
 
               {/* ── Wallets ── */}
               <div className={`bg-white dark:bg-[#1a1a1a] rounded-2xl overflow-hidden border transition-colors ${activeAccordion === 'wallets' ? 'border-[#19c74a]' : 'border-gray-100 dark:border-gray-800'}`}>
@@ -466,8 +509,11 @@ export default function CheckoutPage() {
                     <MapPin className="w-4 h-4 text-[#19c74a]" /> Delivery Address
                   </h3>
                   <p className="text-[13px] text-gray-500 dark:text-gray-400 leading-relaxed">
-                    <span className="font-semibold text-[#19c74a]">Home: </span>
-                    Ankush, Scaler, Macdonals, Electronic City Phase I, Electronic City, Bengaluru
+                    {isAddressConfirmed ? (
+                      <span className="font-medium text-gray-800 dark:text-gray-200">{address}</span>
+                    ) : (
+                      <span className="font-medium italic">No address provided yet.</span>
+                    )}
                   </p>
                 </div>
 

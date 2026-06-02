@@ -13,7 +13,7 @@ const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 export const metadata: Metadata = {
   title: "Casano | India's Last Minute App",
-  description: "Get groceries, stationery, medicines and more delivered in 15 minutes. Casano — shop cheap from your local Kirana store.",
+  description: "Get groceries, stationery, medicines and more delivered in 15 minutes. Casano — shop cheap from your nearest store.",
   keywords: "quick commerce, groceries, stationary, pharmacy, instant delivery, India, Casano",
   manifest: "/manifest.json",
   appleWebApp: {
@@ -32,11 +32,26 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "Casano — India's Last Minute App",
-    description: "Groceries, stationery, medicines delivered in 15 minutes from your local Kirana store.",
+    description: "Groceries, stationery, medicines delivered in 15 minutes from your nearest store.",
     type: "website",
     locale: "en_IN",
     siteName: "Casano",
+    url: "https://casano.in",
+    images: [
+      {
+        url: "https://casano.in/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Casano - India's Last Minute App",
+      }
+    ]
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "Casano | India's Last Minute App",
+    description: "Get groceries, stationery, medicines and more delivered in 15 minutes. Casano — shop cheap from your nearest store.",
+    images: ["https://casano.in/og-image.jpg"],
+  }
 };
 
 export const viewport: Viewport = {
