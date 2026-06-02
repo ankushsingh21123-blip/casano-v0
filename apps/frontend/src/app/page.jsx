@@ -32,7 +32,7 @@ export default function Home() {
     <div className="min-h-screen font-sans transition-colors duration-300" style={{ background: "var(--bg-main)" }}>
       <Header />
       <HeroBanner />
-      <main className="pb-0">
+      <main className="pb-0 pt-[76px]">
         <CategoryGrid />
         <CategorySlider />
         <div className="raj-divider" />

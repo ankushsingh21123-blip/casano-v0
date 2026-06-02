@@ -143,7 +143,29 @@ export default function MobileHome() {
           {/* Header */}
           <div className="sticky top-0 z-40 pb-3 pt-3 px-4 shadow-sm border-b transition-colors" style={{ background: "var(--surface-card)", borderColor: "var(--surface-border)" }}>
             <div className="flex items-center justify-between mb-3">
-              <button className="flex items-center gap-2" onClick={() => {}}>
+              <button className="flex items-center gap-2" onClick={() => {
+                if (navigator.geolocation) {
+                  navigator.geolocation.getCurrentPosition(
+                    async (pos) => {
+                      try {
+                        const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${pos.coords.latitude}&lon=${pos.coords.longitude}`);
+                        const data = await res.json();
+                        const addr = data.display_name || 'Detected Location';
+                        // Update the displayed location by reloading the user address display
+                        const shortAddr = addr.split(',').slice(0, 3).join(', ');
+                        // For now store it in a simple way - trigger a page-level state update
+                        const el = document.querySelector('[data-location-text]');
+                        if (el) el.textContent = shortAddr;
+                      } catch {
+                        alert('Could not detect location. Please search manually.');
+                      }
+                    },
+                    () => { alert('Location access denied. Please search manually.'); }
+                  );
+                } else {
+                  alert('Geolocation is not supported by your browser.');
+                }
+              }}>
                 <div className="rounded-xl p-2" style={{ background: "rgba(193,73,46,0.1)" }}>
                   <MapPin size={18} style={{ color: "var(--action-primary)" }} />
                 </div>
@@ -152,7 +174,7 @@ export default function MobileHome() {
                     <span className="font-black text-[15px] leading-none" style={{ fontFamily: "var(--font-heading)" }}>Delivery in 15 mins</span>
                     <ChevronDown size={14} style={{ color: "var(--text-muted)" }} />
                   </div>
-                  <p className="text-xs mt-0.5 truncate max-w-[190px] font-medium" style={{ color: "var(--text-secondary)" }}>
+                  <p data-location-text className="text-xs mt-0.5 truncate max-w-[190px] font-medium" style={{ color: "var(--text-secondary)" }}>
                     {user?.address || 'Select your location'}
                   </p>
                 </div>
@@ -374,17 +396,17 @@ export default function MobileHome() {
           {/* Footer Trust */}
           <div className="px-4 pb-6">
             <div className="rounded-2xl p-4 text-center border" style={{ background: 'var(--surface-card)', borderColor: 'var(--surface-border)' }}>
-              <div className="flex justify-center gap-6 mb-3">
+              <div className="flex items-center justify-center gap-8 mb-3">
                 {[
                   { icon: Shield, label: 'Secure' },
                   { icon: RefreshCw, label: 'Easy Returns' },
                   { icon: Truck, label: 'Free Delivery' },
                 ].map((t, i) => (
-                  <div key={i} className="flex flex-col items-center gap-1">
-                    <div className="w-9 h-9 rounded-full flex items-center justify-center" style={{ background: 'rgba(193,73,46,0.08)' }}>
+                  <div key={i} className="flex flex-col items-center gap-1.5" style={{ minWidth: '64px' }}>
+                    <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ background: 'rgba(193,73,46,0.08)' }}>
                       <t.icon size={16} style={{ color: 'var(--action-primary)' }} />
                     </div>
-                    <span className="text-[9px] font-bold" style={{ color: 'var(--text-muted)' }}>{t.label}</span>
+                    <span className="text-[10px] font-bold" style={{ color: 'var(--text-muted)' }}>{t.label}</span>
                   </div>
                 ))}
               </div>
@@ -398,7 +420,7 @@ export default function MobileHome() {
       {appState === 'orders' && (
         <motion.div initial={{ x: '100%' }} animate={{ x: 0 }} className="fixed inset-0 z-50 flex flex-col" style={{ background: "var(--bg-main)", paddingTop: "env(safe-area-inset-top, 0px)" }}>
           <div className="p-4 flex items-center gap-4 border-b" style={{ background: "var(--surface-card)", borderColor: "var(--surface-border)" }}>
-            <button onClick={() => setAppState('home')} className="w-9 h-9 rounded-full flex items-center justify-center" style={{ background: "var(--surface-border)" }}>
+            <button onClick={() => { if (window.history.length > 1) { window.history.back(); } else { setAppState('home'); } }} className="w-9 h-9 rounded-full flex items-center justify-center" style={{ background: "var(--surface-border)" }}>
               <ArrowLeft size={18} />
             </button>
             <h2 className="text-lg font-black" style={{ fontFamily: "var(--font-heading)" }}>Your Orders</h2>
@@ -505,7 +527,7 @@ export default function MobileHome() {
                   {[
                     { icon: Package, label: 'Your\nOrders', onClick: () => setAppState('orders') },
                     { icon: Headphones, label: 'Help &\nSupport', onClick: () => setAppState('support') },
-                    { icon: Heart, label: 'Your\nWishlist', onClick: () => {} },
+                    { icon: Heart, label: 'Your\nWishlist', onClick: () => window.location.href = '/wishlist' },
                   ].map((item, i) => (
                     <button key={i} onClick={item.onClick}
                       className="flex flex-col items-center gap-2 p-4 rounded-2xl border transition-colors"

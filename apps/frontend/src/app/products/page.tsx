@@ -105,7 +105,7 @@ export default function ProductsPage() {
   return (
     <div className="min-h-screen" style={{ background: "linear-gradient(180deg, #0f0d0a 0%, #1a1714 50%, #0f0d0a 100%)" }}>
       <Header />
-      <main className="max-w-[1400px] mx-auto px-4 pb-20 pt-8">
+      <main className="max-w-[1400px] mx-auto px-4 pb-20 pt-[76px]">
 
         {/* Breadcrumb */}
         <div className="flex items-center gap-2 text-sm mb-6" style={{ color: "#8a8580" }}>
