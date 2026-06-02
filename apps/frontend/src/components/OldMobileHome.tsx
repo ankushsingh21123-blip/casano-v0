@@ -223,13 +223,18 @@ export default function MobileHome() {
               { icon: Zap, text: '15 Min', sub: 'VIP Delivery', color: '#214A36', bgLight: 'rgba(33,74,54,0.1)' },
               { icon: Shield, text: '100% Secure', sub: 'Payments', color: '#7C3AED', bgLight: 'rgba(124,58,237,0.1)' },
             ].map((b, i) => (
-              <motion.div whileTap={{ scale: 0.95 }} key={i} className="flex-1 flex flex-col sm:flex-row items-center sm:items-start justify-center gap-1 sm:gap-2.5 rounded-2xl p-1.5 sm:px-3 sm:py-3 border shadow-sm overflow-hidden text-center sm:text-left" style={{ background: 'var(--surface-card)', borderColor: 'var(--surface-border)' }}>
-                <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: b.bgLight }}>
+              <motion.div 
+                whileTap={{ scale: 0.95 }} 
+                key={i} 
+                className="flex-1 w-0 flex flex-col items-center justify-start gap-1.5 sm:gap-2.5 rounded-2xl p-2 sm:px-3 sm:py-3 border shadow-sm text-center" 
+                style={{ background: 'var(--surface-card)', borderColor: 'var(--surface-border)' }}
+              >
+                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: b.bgLight }}>
                   <b.icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" style={{ color: b.color }} />
                 </div>
-                <div className="flex-1 min-w-0 flex flex-col justify-center">
-                  <p className="text-[8.5px] sm:text-[11px] font-black leading-tight tracking-tight whitespace-normal">{b.text}</p>
-                  <p className="text-[7.5px] sm:text-[9px] font-bold mt-0.5 opacity-80 whitespace-normal" style={{ color: b.color }}>{b.sub}</p>
+                <div className="w-full flex flex-col items-center justify-start">
+                  <p className="text-[10px] sm:text-[11px] font-black leading-tight tracking-tight w-full" style={{ wordBreak: 'break-word', overflowWrap: 'break-word' }}>{b.text}</p>
+                  <p className="text-[8.5px] sm:text-[9px] font-bold mt-0.5 opacity-80 w-full" style={{ color: b.color, wordBreak: 'break-word', overflowWrap: 'break-word' }}>{b.sub}</p>
                 </div>
               </motion.div>
             ))}
