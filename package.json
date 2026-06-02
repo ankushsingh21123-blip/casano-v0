@@ -11,8 +11,8 @@
     "react-dom": "19.1.0"
   },
   "scripts": {
-    "dev": "cd apps/frontend && npm run dev",
-    "build": "cd apps/frontend && npm run build",
-    "start": "cd apps/frontend && npm run start"
+    "dev": "cd apps/casano && npm run dev",
+    "build": "cd apps/casano && npm run build",
+    "start": "cd apps/casano && npm run start"
   }
 }
