@@ -184,7 +184,20 @@ export function CategoryPageTemplate({ category, icon, gradient, products: initi
                 }}
               >
                 <div className="w-full aspect-square rounded-xl flex items-center justify-center mb-3 group-hover:scale-105 transition-transform" style={{ background: "var(--bg-main)" }}>
-                  <ProductIcon className="w-10 h-10 transition-colors" style={{ color: "var(--text-muted)" }} />
+                  <img 
+                    src={p.image || `/category_${category.toLowerCase().replace(/\s.*/, '')}.png`}
+                    alt={p.name}
+                    className="w-full h-full object-cover rounded-xl"
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                      if (e.currentTarget.nextElementSibling) {
+                        (e.currentTarget.nextElementSibling as HTMLElement).style.display = 'flex';
+                      }
+                    }}
+                  />
+                  <div className="w-full h-full items-center justify-center hidden">
+                    <ProductIcon className="w-10 h-10 transition-colors" style={{ color: "var(--text-muted)" }} />
+                  </div>
                 </div>
                 <p className="text-sm font-semibold truncate" style={{ color: "var(--text-primary)" }}>{p.name}</p>
                 <p className="font-black text-sm mt-1" style={{ color: "var(--action-primary)" }}>₹{p.price}</p>

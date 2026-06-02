@@ -219,7 +219,20 @@ export default function ProductsPage() {
                     style={{ background: "#252017" }}
                     onClick={() => setSelectedProduct(p)}
                   >
-                    <img src={imageUrl} alt={p.name} className="w-full h-full object-cover" />
+                    <img 
+                      src={imageUrl} 
+                      alt={p.name} 
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none';
+                        if (e.currentTarget.nextElementSibling) {
+                          (e.currentTarget.nextElementSibling as HTMLElement).style.display = 'flex';
+                        }
+                      }}
+                    />
+                    <div className="w-full h-full items-center justify-center hidden">
+                      <ProductIcon className="w-10 h-10 transition-colors" style={{ color: "#6b6560" }} />
+                    </div>
                   </div>
 
                   {/* Category label */}

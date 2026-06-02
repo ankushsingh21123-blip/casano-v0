@@ -142,7 +142,7 @@ export default function MobileHome() {
 
           {/* Header */}
           <div className="sticky top-0 z-40 pb-3 pt-3 px-4 shadow-sm border-b transition-colors" style={{ background: "var(--surface-card)", borderColor: "var(--surface-border)" }}>
-            <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center justify-between mb-2">
               <button className="flex items-center gap-2" onClick={() => {
                 if (navigator.geolocation) {
                   navigator.geolocation.getCurrentPosition(
@@ -151,16 +151,27 @@ export default function MobileHome() {
                         const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${pos.coords.latitude}&lon=${pos.coords.longitude}`);
                         const data = await res.json();
                         const addr = data.display_name || 'Detected Location';
-                        // Update the displayed location by reloading the user address display
                         const shortAddr = addr.split(',').slice(0, 3).join(', ');
-                        // For now store it in a simple way - trigger a page-level state update
+                        // Persist in DOM and show to user immediately
                         const el = document.querySelector('[data-location-text]');
                         if (el) el.textContent = shortAddr;
                       } catch {
-                        alert('Could not detect location. Please search manually.');
+                        // Fallback: prompt user to type their address
+                        const manualAddr = prompt('We could not detect your location.\nPlease type your delivery address:');
+                        if (manualAddr && manualAddr.trim()) {
+                          const el = document.querySelector('[data-location-text]');
+                          if (el) el.textContent = manualAddr.trim();
+                        }
                       }
                     },
-                    () => { alert('Location access denied. Please search manually.'); }
+                    () => {
+                      // Denied: show manual input prompt
+                      const manualAddr = prompt('Location access denied.\nPlease type your delivery address:');
+                      if (manualAddr && manualAddr.trim()) {
+                        const el = document.querySelector('[data-location-text]');
+                        if (el) el.textContent = manualAddr.trim();
+                      }
+                    }
                   );
                 } else {
                   alert('Geolocation is not supported by your browser.');
@@ -352,13 +363,13 @@ export default function MobileHome() {
               <button className="text-sm font-bold" style={{ color: "var(--action-primary)" }} onClick={() => window.location.href = '/account/orders'}>History</button>
             </div>
             <div className="flex gap-3 px-4 overflow-x-auto hide-scrollbar snap-x pb-2">
-              {PRODUCTS.slice(2, 6).map((p: any) => {
+              {PRODUCTS.slice(0, 4).map((p: any) => {
                 const cartItem = items.find(i => i.id === p.id);
                 const qty = cartItem?.quantity || 0;
                 return (
                   <div
                     key={`reorder-${p.id}`}
-                    className="min-w-[120px] max-w-[120px] rounded-xl p-2.5 border shadow-sm flex flex-col snap-start flex-shrink-0"
+                    className="min-w-[140px] max-w-[140px] rounded-xl p-2.5 border shadow-sm flex flex-col snap-start flex-shrink-0"
                     style={{ background: "var(--bg-main)", borderColor: "var(--surface-border)" }}
                   >
                     <div className="relative mb-2">
