@@ -217,19 +217,19 @@ export default function MobileHome() {
           </div>
 
           {/* Trust Badges */}
-          <div className="px-4 mb-4 flex gap-2 overflow-x-auto hide-scrollbar snap-x pb-2">
+          <div className="px-4 mb-4 flex gap-1.5 sm:gap-2">
             {[
               { icon: Truck, text: 'Free Delivery', sub: 'Above ₹99', color: '#B8962E', bgLight: 'rgba(184,150,46,0.1)' },
               { icon: Zap, text: '15 Min', sub: 'VIP Delivery', color: '#214A36', bgLight: 'rgba(33,74,54,0.1)' },
               { icon: Shield, text: '100% Secure', sub: 'Payments', color: '#7C3AED', bgLight: 'rgba(124,58,237,0.1)' },
             ].map((b, i) => (
-              <motion.div whileTap={{ scale: 0.95 }} key={i} className="flex-1 min-w-[115px] snap-center flex items-center gap-2.5 rounded-2xl px-3 py-3 border shadow-sm" style={{ background: 'var(--surface-card)', borderColor: 'var(--surface-border)' }}>
-                <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: b.bgLight }}>
-                  <b.icon size={16} style={{ color: b.color }} />
+              <motion.div whileTap={{ scale: 0.95 }} key={i} className="flex-1 flex items-center gap-1.5 sm:gap-2.5 rounded-2xl p-2 sm:px-3 sm:py-3 border shadow-sm overflow-hidden" style={{ background: 'var(--surface-card)', borderColor: 'var(--surface-border)' }}>
+                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: b.bgLight }}>
+                  <b.icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" style={{ color: b.color }} />
                 </div>
-                <div>
-                  <p className="text-[11px] font-black leading-tight tracking-tight whitespace-nowrap">{b.text}</p>
-                  <p className="text-[9px] font-bold mt-0.5 opacity-80 whitespace-nowrap" style={{ color: b.color }}>{b.sub}</p>
+                <div className="flex-1 min-w-0">
+                  <p className="text-[9px] sm:text-[11px] font-black leading-tight tracking-tight text-wrap break-words">{b.text}</p>
+                  <p className="text-[8px] sm:text-[9px] font-bold mt-0.5 opacity-80 text-wrap break-words" style={{ color: b.color }}>{b.sub}</p>
                 </div>
               </motion.div>
             ))}
