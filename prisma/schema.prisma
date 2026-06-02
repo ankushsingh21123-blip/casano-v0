@@ -1,0 +1,90 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("SQLITE_DATABASE_URL")
+}
+
+model Merchant {
+  id                   String       @id @default(uuid())
+  name                 String
+  latitude             Float
+  longitude            Float
+  platform_fee_percent Float        @default(5.0)
+  products             Product[]
+  sales_logs           SalesLog[]
+  profits              Profit[]
+  orders               Order[]
+}
+
+model Product {
+  id                 String       @id @default(uuid())
+  merchant_id        String
+  merchant           Merchant     @relation(fields: [merchant_id], references: [id])
+  name               String
+  category           String       // Marts, Stationery, Daily Essentials
+  selling_price      Float
+  cost_price         Float
+  total_stock        Int
+  app_reserved_stock Int
+  safety_buffer      Int
+  is_live            Boolean      @default(false)
+  sales_logs         SalesLog[]
+}
+
+model SalesLog {
+  id          String   @id @default(uuid())
+  product_id  String
+  product     Product  @relation(fields: [product_id], references: [id])
+  merchant_id String
+  merchant    Merchant @relation(fields: [merchant_id], references: [id])
+  sale_type   String   // Walk-in vs App
+  quantity    Int
+  created_at  DateTime @default(now())
+}
+
+model Profit {
+  id          String   @id @default(uuid())
+  merchant_id String
+  merchant    Merchant @relation(fields: [merchant_id], references: [id])
+  date        DateTime @default(now()) // Assuming daily profit
+  net_margin  Float    // (selling_price - cost_price) - platform_fee
+}
+
+model Order {
+  id              String   @id @default(uuid())
+  merchant_id     String
+  customer_id     String
+  status          String   @default("Pending") // Pending, Picked Up, Delivered, Cancelled
+  pickup_otp      String?
+  rider_photo_url String?  
+  created_at      DateTime @default(now())
+
+  merchant        Merchant @relation(fields: [merchant_id], references: [id])
+  customer        Customer @relation(fields: [customer_id], references: [id])
+  return_requests ReturnRequest[]
+}
+
+model ReturnRequest {
+  id               String   @id @default(uuid())
+  order_id         String
+  order            Order    @relation(fields: [order_id], references: [id])
+  reason           String
+  photo_url        String?
+  status           String   @default("Pending Verification") // Approved, Rejected, Pending Review
+  created_at       DateTime @default(now())
+}
+
+model Customer {
+  id          String   @id @default(uuid())
+  name        String
+  phone       String   @unique
+  trust_score Int      @default(100)
+  cod_blocked Boolean  @default(false)
+  orders      Order[]
+}
